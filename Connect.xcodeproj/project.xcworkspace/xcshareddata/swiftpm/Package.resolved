@@ -1,0 +1,34 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "IQKeyboardManagerSwift",
+        "repositoryURL": "https://github.com/hackiftekhar/IQKeyboardManager.git",
+        "state": {
+          "branch": null,
+          "revision": "b0f0a127cca6bb39378447baa2afff74123abd09",
+          "version": "6.5.5"
+        }
+      },
+      {
+        "package": "Kingfisher",
+        "repositoryURL": "https://github.com/onevcat/Kingfisher.git",
+        "state": {
+          "branch": null,
+          "revision": "1339ebea9498ef6c3fc75cc195d7163d7c7167f9",
+          "version": "5.14.1"
+        }
+      },
+      {
+        "package": "Lottie",
+        "repositoryURL": "https://github.com/airbnb/lottie-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "4e5877425dae5c10792fc9d22d53dc6bf6824dc1",
+          "version": "3.1.8"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
