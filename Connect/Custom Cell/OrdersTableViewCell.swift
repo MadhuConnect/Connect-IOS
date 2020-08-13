@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class OrdersTableViewCell: UITableViewCell {
     
@@ -54,6 +55,23 @@ class OrdersTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    func setQRInformation(_ qrInfo: QRInfoModel?) {
+        if let qrInfo = qrInfo {
+            if let imgUrl = URL(string: qrInfo.productImage) {
+                self.downloadImage(url: imgUrl, imageView: iv_prodImageView)
+            }
+            
+            self.lbl_personType.text = qrInfo.personType
+            self.lbl_qrGeneratedDate.text = self.getDateSpecificFormat(qrInfo.qrGeneratedDate)
+            self.lbl_bellCount.text = "\(qrInfo.activeCount)"
+            self.lbl_lockCount.text = "\(qrInfo.lockCount)"
+            self.lbl_chatCount.text = "\(qrInfo.chatCount)"            
+            self.lbl_qrExpireDay.text = self.getDay(qrInfo.expireDate)
+            self.lbl_qrExpireMonthYear.text = self.getMonthYear(qrInfo.expireDate)
+            self.lbl_qrExpireTitle.text = "Expires"            
+        }
+    }
 
 }
 
@@ -66,4 +84,29 @@ extension OrdersTableViewCell {
         self.vw_lockBackView.addRightBorder(with: ConstHelper.lightGray, andWidth: 1)
         
     }
+    
+    func downloadImage(url: URL, imageView: UIImageView) {
+        let processor = DownsamplingImageProcessor(size: imageView.bounds.size)
+            |> RoundCornerImageProcessor(cornerRadius: 10)
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(
+            with: url,
+            placeholder: UIImage(named: "noimage"),
+            options: [
+                .processor(processor),
+                .scaleFactor(UIScreen.main.scale),
+                .transition(.fade(1)),
+                .cacheOriginalImage
+            ])
+        {
+            result in
+            switch result {
+            case .success(let value):
+                print("Task done for: \(value.source.url?.absoluteString ?? "")")
+            case .failure(let error):
+                print("Job failed: \(error.localizedDescription)")
+            }
+        }
+    }
+
 }

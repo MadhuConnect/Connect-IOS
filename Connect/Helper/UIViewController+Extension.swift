@@ -68,3 +68,59 @@ extension UIViewController {
     }
 
 }
+
+extension UITableViewCell {
+    func getDateSpecificFormat(_ date: String) -> String {
+         let dateFormatter = DateFormatter()
+         dateFormatter.dateFormat = "yyyy-MM-dd"
+         
+         let genDate = dateFormatter.date(from: date) ?? Date()
+         dateFormatter.dateFormat = "dd-MMM-yyyy"
+         
+         var daystr = dateFormatter.string(from: genDate)
+         if daystr.count == 10 {
+             daystr = "0"+daystr
+         }
+         
+         return daystr
+     }
+     
+     func getDay(_ date: String) -> String {
+         let dateFormatter = DateFormatter()
+         dateFormatter.dateFormat = "yyyy-MM-dd"
+         
+         let genDate = dateFormatter.date(from: date) ?? Date()
+         
+         let components = Calendar.current.dateComponents([.day], from: genDate)
+         var daystr = "\(components.day ?? 0)"
+         if daystr.count == 1 {
+             daystr = "0"+daystr
+         }
+         return daystr
+     }
+     
+     func getMonthYear(_ date: String) -> String {
+         let dateFormatter = DateFormatter()
+         dateFormatter.dateFormat = "yyyy-MM-dd"
+         
+         let genDate = dateFormatter.date(from: date) ?? Date()
+         dateFormatter.dateFormat = "MMM-yyyy"
+         
+         return dateFormatter.string(from: genDate)
+     }
+    
+    func generateQRCode(from string: String) -> UIImage? {
+        let data = string.data(using: String.Encoding.ascii)
+
+        if let filter = CIFilter(name: "CIQRCodeGenerator") {
+            filter.setValue(data, forKey: "inputMessage")
+            let transform = CGAffineTransform(scaleX: 3, y: 3)
+
+            if let output = filter.outputImage?.transformed(by: transform) {
+                return UIImage(ciImage: output)
+            }
+        }
+
+        return nil
+    }
+}

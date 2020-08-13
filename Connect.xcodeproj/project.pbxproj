@@ -13,6 +13,8 @@
 		35B387AB24E1B30800D9274F /* FormReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B387AA24E1B30800D9274F /* FormReqModel.swift */; };
 		35B387AD24E1B31100D9274F /* FormResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B387AC24E1B31100D9274F /* FormResModel.swift */; };
 		35B387B024E411A200D9274F /* OrdersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B387AF24E411A200D9274F /* OrdersTableViewCell.swift */; };
+		35B387B224E578E400D9274F /* OrdersResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B387B124E578E400D9274F /* OrdersResModel.swift */; };
+		35B387B424E5907C00D9274F /* SlideCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B387B324E5907C00D9274F /* SlideCollectionViewCell.swift */; };
 		35C31D5B24DC401E0067D9A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C31D5A24DC401E0067D9A5 /* AppDelegate.swift */; };
 		35C31D6524DC401E0067D9A5 /* Connect.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 35C31D6324DC401E0067D9A5 /* Connect.xcdatamodeld */; };
 		35C31D6724DC40200067D9A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35C31D6624DC40200067D9A5 /* Assets.xcassets */; };
@@ -105,6 +107,8 @@
 		35B387AA24E1B30800D9274F /* FormReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormReqModel.swift; sourceTree = "<group>"; };
 		35B387AC24E1B31100D9274F /* FormResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormResModel.swift; sourceTree = "<group>"; };
 		35B387AF24E411A200D9274F /* OrdersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersTableViewCell.swift; sourceTree = "<group>"; };
+		35B387B124E578E400D9274F /* OrdersResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersResModel.swift; sourceTree = "<group>"; };
+		35B387B324E5907C00D9274F /* SlideCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideCollectionViewCell.swift; sourceTree = "<group>"; };
 		35C31D5724DC401E0067D9A5 /* Connect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Connect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		35C31D5A24DC401E0067D9A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		35C31D6424DC401E0067D9A5 /* Connect.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Connect.xcdatamodel; sourceTree = "<group>"; };
@@ -328,6 +332,7 @@
 				35B387A824E0787100D9274F /* SubcriptionResModel.swift */,
 				35B387AA24E1B30800D9274F /* FormReqModel.swift */,
 				35B387AC24E1B31100D9274F /* FormResModel.swift */,
+				35B387B124E578E400D9274F /* OrdersResModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -337,6 +342,7 @@
 			children = (
 				35F9677724DF9DE600F56411 /* QRCell.swift */,
 				35B387A624E04A9A00D9274F /* ImageUploadCell.swift */,
+				35B387B324E5907C00D9274F /* SlideCollectionViewCell.swift */,
 			);
 			path = CustomCell;
 			sourceTree = "<group>";
@@ -534,8 +540,10 @@
 				35F9678924DFECF400F56411 /* RegistrationResModel.swift in Sources */,
 				35C31DA324DC47A20067D9A5 /* Switcher.swift in Sources */,
 				35F9678124DFE71B00F56411 /* LoginResModel.swift in Sources */,
+				35B387B424E5907C00D9274F /* SlideCollectionViewCell.swift in Sources */,
 				35B387A924E0787100D9274F /* SubcriptionResModel.swift in Sources */,
 				35C31D6524DC401E0067D9A5 /* Connect.xcdatamodeld in Sources */,
+				35B387B224E578E400D9274F /* OrdersResModel.swift in Sources */,
 				35F9673824DD928500F56411 /* ProfileViewController.swift in Sources */,
 				35C31D9D24DC47000067D9A5 /* SignUpViewController.swift in Sources */,
 				35B387AB24E1B30800D9274F /* FormReqModel.swift in Sources */,

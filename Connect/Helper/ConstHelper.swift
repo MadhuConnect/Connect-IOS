@@ -16,7 +16,7 @@ public class ConstHelper {
     public static var catecoryCellIdentifier = "CategoriesCell"
     public static var categoryCollectionIdentifier = "CategoryCollectionCell"
     public static var formCellIdentifier = "FormCell"
-    public static var sliderCellIdentifier = "SliderCell"
+    public static var sliderCellIdentifier = "SlideCollectionViewCell"
     public static var qRCellIdentifier = "QRCell"
     public static var qrImageUploadCellIdentifier = "ImageUploadCell"
     public static var ordersCellIdentifier = "OrdersTableViewCell"

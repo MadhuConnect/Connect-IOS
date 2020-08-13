@@ -103,6 +103,16 @@ extension APIClient {
              return result
         }, completion: completion)
     }
+    
+    // Post and get my orders
+    func post_getMyOrders(from endpoint: Endpoint, completion: @escaping (Result<OrdersResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> OrdersResModel? in
+            guard let result = json as? OrdersResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
 }
 
 

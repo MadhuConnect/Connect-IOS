@@ -16,6 +16,7 @@ enum Apifeed: String {
     case uploadImage = "/api/Images_api/uploadImage"
     case subscriptionCharges = "/api/QuickNeeds/subscriptionCharges"
     case generateQrcode = "/api/QuickNeeds/generateQrcode"
+    case myOrders = "/api/QuickNeeds/myOrders"
     
     func getApiEndpoint(queryItems: [URLQueryItem] = [], httpMethod: HTTPMethod, headers: [HTTPHeader], body: Data? = Data(), timeInterval: TimeInterval) -> Endpoint {
         return Endpoint(path: self.rawValue, httpMethod: httpMethod, headers: headers, body: body, queryItems: queryItems, timeOut: timeInterval)

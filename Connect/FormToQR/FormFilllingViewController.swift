@@ -104,7 +104,7 @@ class FormFilllingViewController: UIViewController {
             return
         }
         #warning("Uncomment api")
-//        self.getAllSubscriptionPlans(withUserId: userId)
+        self.getAllSubscriptionPlans(withUserId: userId)
         self.updateDefaultUI()
     }
     
@@ -518,7 +518,7 @@ extension FormFilllingViewController {
         //API
         let api: Apifeed = .generateQrcode
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
 
         client.post_getFormFillingData(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }
