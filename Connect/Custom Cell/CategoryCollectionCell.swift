@@ -22,7 +22,7 @@ class CategoryCollectionCell: UICollectionViewCell {
         
         self.lbl_titleLbl.text = title
         
-        self.vw_productBackView.setBorderForView(width: 1, color: .lightGray, radius: 10)
+        self.vw_productBackView.setBorderForView(width: 1, color: UIColor(red: 226/255, green: 226/255, blue: 226/255, alpha: 0.5), radius: 10)
        
     }
     

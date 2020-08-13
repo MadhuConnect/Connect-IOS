@@ -190,17 +190,17 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch collectionView {
         case self.cv_mainCategoryCollectionView:
-            let size = (self.cv_mainCategoryCollectionView.frame.width-52)/4
-            return CGSize(width: size, height: size)
+//            let size = (self.cv_mainCategoryCollectionView.frame.width-8)
+            return CGSize(width: 80, height: 120)
         case self.cv_subCategoryCollectionView:
-            let size = (self.cv_subCategoryCollectionView.frame.width-52)/4
-            return CGSize(width: size, height: size)
+//            let size = (self.cv_subCategoryCollectionView.frame.width-8)
+            return CGSize(width: 80, height: 120)
         case self.cv_miniCategoryCollectionView:
-            let size = (self.cv_miniCategoryCollectionView.frame.width-52)/4
-            return CGSize(width: size, height: size)
+//            let size = (self.cv_miniCategoryCollectionView.frame.width-8)
+            return CGSize(width: 80, height: 120)
         case self.cv_prodCategoryCollectionView:
-            let size = (self.cv_prodCategoryCollectionView.frame.width-52)/4
-            return CGSize(width: size, height: size)
+//            let size = (self.cv_prodCategoryCollectionView.frame.width-8)
+            return CGSize(width: 80, height: 120)
         default:
             return CGSize(width: 0, height: 0)
         }
