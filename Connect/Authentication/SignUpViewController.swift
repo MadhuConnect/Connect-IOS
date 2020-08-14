@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Lottie
 
 class SignUpViewController: UIViewController {
     
@@ -27,6 +28,12 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var lbl_errorPasswordLbl: UILabel!
     @IBOutlet weak var lbl_accountLbl: UILabel!
     
+    //Lottie
+    @IBOutlet weak var loadingBackView: UIView!
+    @IBOutlet weak var loadingView: UIView!
+    
+    let animationView = AnimationView()
+    
     private let client = APIClient()
     
     override func viewDidLoad() {
@@ -46,6 +53,8 @@ class SignUpViewController: UIViewController {
             return
         }
         
+        vw_signUpBackView.isHidden = true
+        self.setupAnimation(withAnimation: true)
         self.postRegistrationUser(withName: name, mobile: mobile, andPassword: password)
     }
     
@@ -103,6 +112,8 @@ extension SignUpViewController {
         self.lbl_errorMobileLbl.text = ""
         self.lbl_errorPasswordLbl.text = ""
         self.lbl_errorFullNameLbl.text = ""
+        self.loadingBackView.isHidden = true
+        self.vw_signUpBackView.isHidden = false
     }
     
     @objc func validateText(_ textField: UITextField) {
@@ -171,6 +182,39 @@ extension SignUpViewController {
         print("executed...")
     }
     
+    private func otpViewController(_ registrationUserInfo: RegistrationResModel) {
+        self.handleUIAfterAPIResponse()
+        if let otpVC = self.storyboard?.instantiateViewController(withIdentifier: "OTPViewController") as? OTPViewController {
+            otpVC.modalPresentationStyle = .fullScreen
+            otpVC.otpType = "Registration"
+            otpVC.registrationUserInfo = registrationUserInfo
+            self.present(otpVC, animated: true, completion: nil)
+        }
+    }
+    
+    private func setupAnimation(withAnimation status: Bool) {
+        animationView.animation = Animation.named("29577-dot-loader-5")
+        animationView.frame = loadingView.bounds
+        animationView.backgroundColor = ConstHelper.white
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        if status {
+            animationView.play()
+            loadingView.addSubview(animationView)
+            loadingBackView.isHidden = false
+        }
+        else {
+            animationView.stop()
+            loadingBackView.isHidden = true
+        }
+
+    }
+    
+    private func handleUIAfterAPIResponse() {
+        self.vw_signUpBackView.isHidden = false
+        self.setupAnimation(withAnimation: false)
+    }
+    
 }
 
 extension SignUpViewController: UITextFieldDelegate {
@@ -215,10 +259,12 @@ extension SignUpViewController {
                     }
                     
                 } else {
+                    strongSelf.handleUIAfterAPIResponse()
                     strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(user.message ?? "")", actionTitle: "Ok")
                     return
                 }
             case .failure(let error):
+                strongSelf.handleUIAfterAPIResponse()
                 strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(error.localizedDescription)", actionTitle: "Ok")
                 return
             }
@@ -226,12 +272,4 @@ extension SignUpViewController {
         //..end
     }
     
-    private func otpViewController(_ registrationUserInfo: RegistrationResModel) {
-        if let otpVC = self.storyboard?.instantiateViewController(withIdentifier: "OTPViewController") as? OTPViewController {
-            otpVC.modalPresentationStyle = .fullScreen
-            otpVC.otpType = "Registration"
-            otpVC.registrationUserInfo = registrationUserInfo
-            self.present(otpVC, animated: true, completion: nil)
-        }
-    }
 }

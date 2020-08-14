@@ -7,11 +7,17 @@
 //
 
 import UIKit
+import Lottie
 
 class OrderHistoryViewController: UIViewController {
     
     @IBOutlet weak var orderTableView: UITableView!
+    //Lottie
+    @IBOutlet weak var loadingBackView: UIView!
+    @IBOutlet weak var loadingView: UIView!
 
+    let animationView = AnimationView()
+    
     private let client = APIClient()
     var qrInfoModel: [QRInfoModel]?
     
@@ -21,7 +27,6 @@ class OrderHistoryViewController: UIViewController {
         self.orderTableView.delegate = self
         self.orderTableView.dataSource = self
         self.orderTableView.tableFooterView = UIView(frame: .zero)
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -30,8 +35,26 @@ class OrderHistoryViewController: UIViewController {
         guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
             return
         }
-        
+        self.setupAnimation(withAnimation: true)
         self.getMyOrders(userId)
+    }
+    
+    private func setupAnimation(withAnimation status: Bool) {
+        animationView.animation = Animation.named("6615-loader-animation")
+        animationView.frame = loadingView.bounds
+        animationView.backgroundColor = ConstHelper.white
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        if status {
+            animationView.play()
+            loadingView.addSubview(animationView)
+            loadingBackView.isHidden = false
+        }
+        else {
+            animationView.stop()
+            loadingBackView.isHidden = true
+        }
+
     }
 
 }
@@ -97,6 +120,7 @@ extension OrderHistoryViewController {
         
         client.post_getMyOrders(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }
+            strongSelf.setupAnimation(withAnimation: false)
             switch result {
             case .success(let response):
                 guard let response = response else { return }

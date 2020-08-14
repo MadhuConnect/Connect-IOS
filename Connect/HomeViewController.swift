@@ -7,11 +7,14 @@
 //
 
 import UIKit
+import Lottie
 
 class HomeViewController: UIViewController {
     
     @IBOutlet weak var vw_emergencyBackView: UIView!
     @IBOutlet weak var btn_emergencyBtn: UIButton!
+    @IBOutlet weak var loadingBackView: UIView!
+    @IBOutlet weak var loadingView: UIView!
     
     //Navbar
     @IBOutlet weak var iv_profile: UIImageView!
@@ -46,6 +49,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var vw_prodCategoryBackView: UIView!
     @IBOutlet weak var cv_prodCategoryCollectionView: UICollectionView!
         
+    let animationView = AnimationView()
     private let client = APIClient()
     
     var categoryModel: CategoryModel?
@@ -56,6 +60,7 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         navigationController?.navigationBar.isHidden = true
         
         self.cv_mainCategoryCollectionView.delegate = self
@@ -76,12 +81,31 @@ class HomeViewController: UIViewController {
         vw_prodBackView.isHidden = true
         
         self.updateDefaultUI()
+        self.setupAnimation(withAnimation: true)
         self.getAllCategories()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
+    }
+    
+    private func setupAnimation(withAnimation status: Bool) {
+        animationView.animation = Animation.named("6615-loader-animation")
+        animationView.frame = loadingView.bounds
+        animationView.backgroundColor = ConstHelper.white
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        if status {
+            animationView.play()
+            loadingView.addSubview(animationView)
+            loadingBackView.isHidden = false
+        }
+        else {
+            animationView.stop()
+            loadingBackView.isHidden = true
+        }
+
     }
     
     @IBAction func logoutAction(_ sender: UIButton) {
@@ -303,6 +327,7 @@ extension HomeViewController {
         client.getAllCategories(from: endPoint) { [weak self] result in
             guard let strongSelf = self else { return }
             print("Downloaded Finished...")
+            strongSelf.setupAnimation(withAnimation: false)
             switch result {
             case .success(let categories):
                 guard let categories = categories else { return }
