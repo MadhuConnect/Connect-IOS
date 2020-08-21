@@ -149,7 +149,7 @@ class FormFilllingViewController: UIViewController {
         let selProductType = (self.sg_productType.selectedSegmentIndex == 0) ? "New" : "Used"
         let uploadImages = self.uploadedImageNames.joined(separator: ",")
 
-        self.postFormFillingData(userId, productId: selProductId, personType: selPersonType, productType: selProductType, uploadImages: uploadImages, description: description, minAmount: minAmount, maxAmount: maxAmount, privacyStatus: selPrivacyStatus, connectRange: selConnectRange, salesTypeId: 1, priceId: selPriceId)
+        self.postFormFillingData(userId, productId: selProductId, personType: selPersonType, productType: selProductType, uploadImages: uploadImages, description: description, minAmount: minAmount, maxAmount: maxAmount, privacyStatus: selPrivacyStatus, connectRange: selConnectRange, salesTypeId: salesTypeId, priceId: selPriceId)
     }
 
 }
@@ -410,6 +410,7 @@ extension FormFilllingViewController {
                     } else {
                         if let prices = strongSelf.subcriptionResModel?.data?.first?.prices {
                             strongSelf.prices = prices
+                            strongSelf.selectedSalesTypeId = strongSelf.subcriptionResModel?.data?.first?.salesTypeId
                             
                             DispatchQueue.main.async {
                                 strongSelf.sg_subscriptionPartner.setTitle("\(strongSelf.rupee) \(prices[0].price) Valid for \(prices[0].days) Days", forSegmentAt: 0)
@@ -528,7 +529,7 @@ extension FormFilllingViewController {
 
                 if response.status {
                     print(response)
-//                    strongSelf.moveToQRGenerateViewController(withQRInfo: response)
+                    strongSelf.moveToQRGenerateViewController(withQRInfo: response)
                 } else {
                     strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: (response.message ?? ""), actionTitle: "Ok")
                     return
@@ -539,6 +540,12 @@ extension FormFilllingViewController {
         }
     }
     
+    func moveToQRGenerateViewController(withQRInfo qrInfo: FormResModel) {    
+        if let qrVC = self.storyboard?.instantiateViewController(withIdentifier: "QRViewController") as? QRViewController {
+        qrVC.qrInfo = qrInfo.data
+        self.navigationController?.pushViewController(qrVC, animated: true)
+      }
+    }
 }
 
 @IBDesignable class VBSegmentedControl: UISegmentedControl {

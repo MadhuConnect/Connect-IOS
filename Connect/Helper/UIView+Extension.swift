@@ -23,6 +23,7 @@ extension UIView {
         self.layer.borderWidth = width
         self.layer.borderColor = color.cgColor
         self.layer.cornerRadius = radius
+        self.layer.masksToBounds = true
     }
     
     

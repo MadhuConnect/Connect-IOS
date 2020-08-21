@@ -9,6 +9,11 @@
 import UIKit
 
 public class ConstHelper {
+    //TEST BASE URL
+    public static var testBaseURL = "http://test.connectyourneed.in"
+    //PROD BASE URL
+    public static var prodBaseURL = "http://connectyourneed.in"
+    
     //Device model
     public static var iPhoneType = UIDevice.current.screenType.rawValue
     

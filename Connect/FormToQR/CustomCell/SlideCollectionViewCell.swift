@@ -16,6 +16,10 @@ class SlideCollectionViewCell: UICollectionViewCell {
     func setQRSlider(_ qrImage: QRImageModel?) {
         if let imgUrl = URL(string: qrImage?.productImage ?? "") {
             self.downloadImage(url: imgUrl, imageView: iv_slideImageView)
+//            DispatchQueue.main.async { [weak self] in
+//                guard let strongSelf = self else { return }
+//                strongSelf.downloadImage(url: imgUrl, imageView: strongSelf.iv_slideImageView)
+//            }
         }
     }
     

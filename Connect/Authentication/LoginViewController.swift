@@ -238,6 +238,7 @@ extension LoginViewController {
                 if user.status {
                     UserDefaults.standard.set(user.data?.userId, forKey: "LoggedUserId")
                     UserDefaults.standard.set(user.data?.name, forKey: "LoggedUserName")
+                    UserDefaults.standard.set(user.data?.mobile, forKey: "LoggedUserMobile")
                     UserDefaults.standard.set(true, forKey: "loginStatusKey")
                     UserDefaults.standard.synchronize()
                     
