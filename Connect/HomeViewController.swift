@@ -48,7 +48,9 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var lbl_prodCategoryName: UILabel!
     @IBOutlet weak var vw_prodCategoryBackView: UIView!
     @IBOutlet weak var cv_prodCategoryCollectionView: UICollectionView!
-        
+    
+    var locationManager: MyLocationManager?
+    
     let animationView = AnimationView()
     private let client = APIClient()
     
@@ -62,6 +64,9 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
 
         navigationController?.navigationBar.isHidden = true
+        
+        locationManager = MyLocationManager()
+        locationManager?.delegate = self
         
         self.cv_mainCategoryCollectionView.delegate = self
         self.cv_mainCategoryCollectionView.dataSource = self
@@ -430,5 +435,17 @@ extension HomeViewController {
         }
         
     }
+    
+}
+
+extension HomeViewController: MyLocationManagerDelegate {
+    func didGetErrorForPermissions(withTitle title: String, andError error: String) {
+        print("Title: \(title), Error: \(error)")
+    }
+    
+    func didGetLocation(withLocation name: String?, latitude: Double?, longitude: Double?) {
+        print("Location: \(name ?? "")\nLatitude: \(latitude ?? 0.0), Longitude: \(longitude ?? 0.0)")
+    }
+    
     
 }

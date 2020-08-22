@@ -133,6 +133,16 @@ extension APIClient {
              return result
         }, completion: completion)
     }
+    
+    // Post lock/unlock/block/unblock user
+    func post_updateCoordinates(from endpoint: Endpoint, completion: @escaping (Result<CoordinatesResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> CoordinatesResModel? in
+            guard let result = json as? CoordinatesResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
 }
 
 

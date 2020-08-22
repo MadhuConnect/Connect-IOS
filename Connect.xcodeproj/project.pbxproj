@@ -32,6 +32,9 @@
 		35B3881B24F19E4A00D9274F /* 13865-sign-for-error-flat-style.json in Resources */ = {isa = PBXBuildFile; fileRef = 35B3881A24F19E4A00D9274F /* 13865-sign-for-error-flat-style.json */; };
 		35B3881D24F1A2F500D9274F /* BlockedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3881C24F1A2F500D9274F /* BlockedUsersViewController.swift */; };
 		35B3881F24F1A37C00D9274F /* BlockedUsersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3881E24F1A37C00D9274F /* BlockedUsersCell.swift */; };
+		35B3882224F1B1AF00D9274F /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3882124F1B1AF00D9274F /* LocationManager.swift */; };
+		35B3882424F1B59A00D9274F /* CoordinatesReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3882324F1B59A00D9274F /* CoordinatesReqModel.swift */; };
+		35B3882624F1B64B00D9274F /* CoordinatesResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3882524F1B64B00D9274F /* CoordinatesResModel.swift */; };
 		35C31D5B24DC401E0067D9A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C31D5A24DC401E0067D9A5 /* AppDelegate.swift */; };
 		35C31D6524DC401E0067D9A5 /* Connect.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 35C31D6324DC401E0067D9A5 /* Connect.xcdatamodeld */; };
 		35C31D6724DC40200067D9A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35C31D6624DC40200067D9A5 /* Assets.xcassets */; };
@@ -143,6 +146,9 @@
 		35B3881A24F19E4A00D9274F /* 13865-sign-for-error-flat-style.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "13865-sign-for-error-flat-style.json"; sourceTree = "<group>"; };
 		35B3881C24F1A2F500D9274F /* BlockedUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersViewController.swift; sourceTree = "<group>"; };
 		35B3881E24F1A37C00D9274F /* BlockedUsersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersCell.swift; sourceTree = "<group>"; };
+		35B3882124F1B1AF00D9274F /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		35B3882324F1B59A00D9274F /* CoordinatesReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatesReqModel.swift; sourceTree = "<group>"; };
+		35B3882524F1B64B00D9274F /* CoordinatesResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatesResModel.swift; sourceTree = "<group>"; };
 		35C31D5724DC401E0067D9A5 /* Connect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Connect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		35C31D5A24DC401E0067D9A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		35C31D6424DC401E0067D9A5 /* Connect.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Connect.xcdatamodel; sourceTree = "<group>"; };
@@ -262,6 +268,14 @@
 			path = CustomCell;
 			sourceTree = "<group>";
 		};
+		35B3882024F1B19E00D9274F /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				35B3882124F1B1AF00D9274F /* LocationManager.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
 		35C31D4E24DC401E0067D9A5 = {
 			isa = PBXGroup;
 			children = (
@@ -285,6 +299,7 @@
 		35C31D5924DC401E0067D9A5 /* Connect */ = {
 			isa = PBXGroup;
 			children = (
+				35B3882024F1B19E00D9274F /* Location */,
 				35B387F324E5BFD100D9274F /* Lottie */,
 				35F9678E24E011D900F56411 /* ImagePicker */,
 				35F9675A24DDCCD700F56411 /* Model */,
@@ -408,6 +423,8 @@
 				35B3880E24F0625500D9274F /* NotificationResModel.swift */,
 				35B3881424F16A2600D9274F /* LockUnLockReqModel.swift */,
 				35B3881624F16AA800D9274F /* LockUnLockResModel.swift */,
+				35B3882324F1B59A00D9274F /* CoordinatesReqModel.swift */,
+				35B3882524F1B64B00D9274F /* CoordinatesResModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -590,6 +607,7 @@
 				35F9675824DDCC4A00F56411 /* Endpoint.swift in Sources */,
 				35B3881124F15D0D00D9274F /* LockedUsersViewController.swift in Sources */,
 				35F9673A24DD929300F56411 /* OrderHistoryViewController.swift in Sources */,
+				35B3882424F1B59A00D9274F /* CoordinatesReqModel.swift in Sources */,
 				35C31DA724DC4A670067D9A5 /* TabBarViewController.swift in Sources */,
 				35F9673224DC6FC900F56411 /* UIView+Extension.swift in Sources */,
 				35C31D9F24DC470B0067D9A5 /* OTPViewController.swift in Sources */,
@@ -601,6 +619,7 @@
 				35B387AD24E1B31100D9274F /* FormResModel.swift in Sources */,
 				35C31D5B24DC401E0067D9A5 /* AppDelegate.swift in Sources */,
 				35F9672E24DC6AE400F56411 /* UIDevice+Extensions.swift in Sources */,
+				35B3882224F1B1AF00D9274F /* LocationManager.swift in Sources */,
 				35F9673424DC728000F56411 /* ConstHelper.swift in Sources */,
 				35F9675524DDCC4A00F56411 /* APIClient.swift in Sources */,
 				35B3880D24F05F2300D9274F /* NotificationReqModel.swift in Sources */,
@@ -611,6 +630,7 @@
 				35F9675924DDCC4A00F56411 /* APIError.swift in Sources */,
 				35B3880F24F0625500D9274F /* NotificationResModel.swift in Sources */,
 				35F9675224DDCC4A00F56411 /* GenericAPI.swift in Sources */,
+				35B3882624F1B64B00D9274F /* CoordinatesResModel.swift in Sources */,
 				35F9674324DD93FA00F56411 /* QRViewController.swift in Sources */,
 				35F9677824DF9DE600F56411 /* QRCell.swift in Sources */,
 				35B3881D24F1A2F500D9274F /* BlockedUsersViewController.swift in Sources */,
@@ -804,7 +824,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Connect/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -812,6 +833,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vb.Connect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -821,7 +843,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Connect/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -829,6 +852,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vb.Connect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
