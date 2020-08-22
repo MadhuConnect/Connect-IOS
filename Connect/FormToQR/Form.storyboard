@@ -96,12 +96,11 @@
                                                                 <rect key="frame" x="0.0" y="0.0" width="371" height="235"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <subviews>
-                                                                    <imageView userInteractionEnabled="NO" tag="111" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dwy-Lj-JPt">
+                                                                    <imageView userInteractionEnabled="NO" tag="111" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dwy-Lj-JPt">
                                                                         <rect key="frame" x="0.0" y="0.0" width="371" height="235"/>
                                                                     </imageView>
                                                                 </subviews>
                                                             </view>
-                                                            <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="bottom" secondItem="dwy-Lj-JPt" secondAttribute="bottom" id="BoP-5g-iE2"/>
                                                                 <constraint firstAttribute="trailing" secondItem="dwy-Lj-JPt" secondAttribute="trailing" id="Exr-k7-8WV"/>

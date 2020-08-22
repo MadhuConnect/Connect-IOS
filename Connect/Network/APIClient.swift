@@ -113,6 +113,16 @@ extension APIClient {
              return result
         }, completion: completion)
     }
+    
+    // Post and get my orders
+    func post_getOrderNotifications(from endpoint: Endpoint, completion: @escaping (Result<NotificationResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> NotificationResModel? in
+            guard let result = json as? NotificationResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
 }
 
 

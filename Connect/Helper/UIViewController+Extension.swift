@@ -109,6 +109,16 @@ extension UITableViewCell {
          return dateFormatter.string(from: genDate)
      }
     
+    func getMonth_Year(_ date: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let genDate = dateFormatter.date(from: date) ?? Date()
+        dateFormatter.dateFormat = "MMM yy"
+        
+        return dateFormatter.string(from: genDate)
+    }
+    
     func generateQRCode(from string: String) -> UIImage? {
         let data = string.data(using: String.Encoding.ascii)
 
@@ -123,4 +133,5 @@ extension UITableViewCell {
 
         return nil
     }
+    
 }

@@ -15,28 +15,32 @@ class OrderHistoryViewController: UIViewController {
     //Lottie
     @IBOutlet weak var loadingBackView: UIView!
     @IBOutlet weak var loadingView: UIView!
+    //Search
+    @IBOutlet weak var vw_searchBackView: UIView!
+    @IBOutlet weak var tf_searchTF: UITextField!
+    @IBOutlet weak var btn_search: UIButton!
+    @IBOutlet weak var btn_searchCancel: UIButton!
 
     let animationView = AnimationView()
     
     private let client = APIClient()
     var qrInfoModel: [QRInfoModel]?
+    var filterQrInfoModel: [QRInfoModel]?
+    var isSearchEnable: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.isHidden = true
+        self.tf_searchTF.delegate = self
         self.orderTableView.delegate = self
         self.orderTableView.dataSource = self
         self.orderTableView.tableFooterView = UIView(frame: .zero)
+        self.updateDefaultUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
-            return
-        }
-        self.setupAnimation(withAnimation: true)
-        self.getMyOrders(userId)
+        self.updateUIWhenViewWillAppear()
     }
     
     private func setupAnimation(withAnimation status: Bool) {
@@ -56,9 +60,44 @@ class OrderHistoryViewController: UIViewController {
         }
 
     }
+    
+    @IBAction func searchEnableAction(_ sender: UIButton) {
+        self.tf_searchTF.text = ""
+        self.tf_searchTF.becomeFirstResponder()
+        self.vw_searchBackView.isHidden = false
+    }
+    
+    @IBAction func searchCancelAction(_ sender: UIButton) {
+        self.tf_searchTF.text = ""
+        self.tf_searchTF.resignFirstResponder()
+        self.vw_searchBackView.isHidden = true
+        isSearchEnable = false
+        self.filterQrInfoModel = nil
+        self.orderTableView.reloadData()
+    }
 
 }
 
+extension OrderHistoryViewController {
+    private func updateDefaultUI() {
+        self.tf_searchTF.addTarget(self, action: #selector(searchWhenTextIsChange(_:)), for: .editingChanged)
+        
+        self.tf_searchTF.font = ConstHelper.h4Normal
+        self.tf_searchTF.textColor = ConstHelper.white
+        self.tf_searchTF.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.white])
+        
+    }
+    
+    private func updateUIWhenViewWillAppear() {
+        self.vw_searchBackView.isHidden = true
+        
+        guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
+             return
+         }
+         self.setupAnimation(withAnimation: true)
+         self.getMyOrders(userId)
+    }
+}
 
 
 //MARK: - UITableViewDelegate
@@ -68,8 +107,14 @@ extension OrderHistoryViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let qrInfoModel = self.qrInfoModel {
-            return qrInfoModel.count
+        if isSearchEnable {
+            if let qrInfoModel = self.filterQrInfoModel {
+                return qrInfoModel.count
+            }
+        } else {
+            if let qrInfoModel = self.qrInfoModel {
+                return qrInfoModel.count
+            }
         }
         return 0
     }
@@ -77,9 +122,22 @@ extension OrderHistoryViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let ordersCell = tableView.dequeueReusableCell(withIdentifier: ConstHelper.ordersCellIdentifier, for: indexPath) as! OrdersTableViewCell
         
-        if let qrInfo = self.qrInfoModel?[indexPath.row] {
-            ordersCell.setQRInformation(qrInfo)
+        if isSearchEnable {
+            if let qrInfo = self.filterQrInfoModel?[indexPath.row] {
+                ordersCell.setQRInformation(qrInfo)
+            }
+        } else {
+            if let qrInfo = self.qrInfoModel?[indexPath.row] {
+                ordersCell.setQRInformation(qrInfo)
+            }
         }
+        
+        //Button actions
+        ordersCell.btn_qrInfo.tag = indexPath.row
+        ordersCell.btn_qrInfo.addTarget(self, action: #selector(qrInfoAction(_:)), for: .touchUpInside)
+        
+        ordersCell.btn_bell.tag = indexPath.row
+        ordersCell.btn_bell.addTarget(self, action: #selector(notifyBellAction(_:)), for: .touchUpInside)
         
         return ordersCell
     }
@@ -88,17 +146,33 @@ extension OrderHistoryViewController: UITableViewDelegate, UITableViewDataSource
         return 140.0
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let storyboard = UIStoryboard(name: "Form", bundle: nil)
-        if let qrVC = storyboard.instantiateViewController(withIdentifier: "QRViewController") as? QRViewController {
-            qrVC.modalPresentationStyle = .fullScreen
-            
-            if let qrInfo = self.qrInfoModel?[indexPath.row] {
-                qrVC.qrInfo = qrInfo
+    @objc private func qrInfoAction(_ sender: UIButton) {
+        if let qrInfo = self.qrInfoModel?[sender.tag] {
+            let storyboard = UIStoryboard(name: "Form", bundle: nil)
+            if let qrVC = storyboard.instantiateViewController(withIdentifier: "QRViewController") as? QRViewController {
+                qrVC.modalPresentationStyle = .fullScreen
+                qrVC.qrInfo = qrInfo                
+                self.present(qrVC, animated: true, completion: nil)
+             }
+        }
+
+    }
+    
+    @objc private func notifyBellAction(_ sender: UIButton) {
+        if let qrInfo = self.qrInfoModel?[sender.tag] {
+            if qrInfo.qrStatus.lowercased() == "Active".lowercased() {
+                let storyboard = UIStoryboard(name: "Notification", bundle: nil)
+                if let notificationVC = storyboard.instantiateViewController(withIdentifier: "NotificationViewController") as? NotificationViewController {
+                    notificationVC.modalPresentationStyle = .fullScreen
+                    notificationVC.qrInfo = qrInfo
+                    self.present(notificationVC, animated: true, completion: nil)
+                 }
+            } else {
+                self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "No Data Found", actionTitle: "Ok")
+                return
             }
-            
-            self.present(qrVC, animated: true, completion: nil)
-         }
+        }
+
     }
 }
 
@@ -143,4 +217,38 @@ extension OrderHistoryViewController {
     }
     
     
+}
+
+//MARK: - UITextFieldDelegate
+extension OrderHistoryViewController: UITextFieldDelegate {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        if textField == self.tf_searchTF {
+            self.tf_searchTF.text = ""
+        }
+        
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField == self.tf_searchTF {
+            self.tf_searchTF.resignFirstResponder()
+        }
+    }
+    
+    @objc func searchWhenTextIsChange(_ textField: UITextField) {
+        if let searchText = textField.text, !searchText.isEmpty {
+            self.filterSearchText(searchText)
+            isSearchEnable = true
+        } else {
+            self.filterQrInfoModel = nil
+            isSearchEnable = false
+        }
+        self.orderTableView.reloadData()
+    }
+    
+    func filterSearchText(_ text: String) {
+        if let qrInfoModel = self.qrInfoModel {
+            self.filterQrInfoModel = qrInfoModel.filter { $0.personType.lowercased().contains(text.lowercased())}
+        }
+    }
 }

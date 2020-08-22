@@ -17,6 +17,7 @@ class OrdersTableViewCell: UITableViewCell {
     @IBOutlet weak var vw_bottomBackView: UIView!
    
     //Top
+    @IBOutlet weak var btn_qrInfo: UIButton!
     //Top left
     @IBOutlet weak var vw_prodImageBackView: UIView!
     @IBOutlet weak var iv_prodImageView: UIImageView!

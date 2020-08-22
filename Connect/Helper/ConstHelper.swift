@@ -25,6 +25,8 @@ public class ConstHelper {
     public static var qRCellIdentifier = "QRCell"
     public static var qrImageUploadCellIdentifier = "ImageUploadCell"
     public static var ordersCellIdentifier = "OrdersTableViewCell"
+    public static var notificationCellIdentifier = "NotificationCell"
+    
     
     //UUID
     public static var deviceToken = UIDevice.current.identifierForVendor?.uuidString
