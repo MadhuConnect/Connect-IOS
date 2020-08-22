@@ -1,15 +1,15 @@
 //
-//  NotificationCell.swift
+//  BlockedUsersCell.swift
 //  Connect
 //
-//  Created by Venkatesh Botla on 22/08/20.
+//  Created by Venkatesh Botla on 23/08/20.
 //  Copyright © 2020 Venkatesh Botla. All rights reserved.
 //
 
 import UIKit
 import Kingfisher
 
-class NotificationCell: UITableViewCell {
+class BlockedUsersCell: UITableViewCell {
     
     @IBOutlet weak var vw_notifyBackView: UIView!
     @IBOutlet weak var vw_topBackView: UIView!
@@ -22,24 +22,16 @@ class NotificationCell: UITableViewCell {
     @IBOutlet weak var lbl_description: UILabel!
     
     @IBOutlet weak var lbl_chat: UILabel!
-    @IBOutlet weak var lbl_lock: UILabel!
     @IBOutlet weak var lbl_block: UILabel!
-    @IBOutlet weak var lbl_share: UILabel!
     
     @IBOutlet weak var btn_chat: UIButton!
-    @IBOutlet weak var btn_lock: UIButton!
     @IBOutlet weak var btn_block: UIButton!
-    @IBOutlet weak var btn_share: UIButton!
     @IBOutlet weak var btn_call: UIButton!
     
-    //Chat view
+    //Bell view
     @IBOutlet weak var vw_chatBackView: UIView!
     //Lock view
-    @IBOutlet weak var vw_lockBackView: UIView!
-    //Block view
-    @IBOutlet weak var vw_blockBackView: UIView!
-    //Share view
-    @IBOutlet weak var vw_shareBackView: UIView!
+    @IBOutlet weak var vw_unLockBackView: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -53,7 +45,7 @@ class NotificationCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setNotificationsForQRCode(_ notification: NotificationModel?) {
+    func setBlockedUsersCellForQRCode(_ notification: NotificationModel?) {
         if let notification = notification {
             self.updateCell(notification)
         }
@@ -61,7 +53,7 @@ class NotificationCell: UITableViewCell {
     
 }
 
-extension NotificationCell {
+extension BlockedUsersCell {
     private func updateDefaultUI() {
         self.vw_notifyBackView.setBorderForView(width: 1, color: ConstHelper.white, radius: 10)
         self.vw_middleBackView.backgroundColor = ConstHelper.lightGray
@@ -80,17 +72,10 @@ extension NotificationCell {
         
         self.lbl_chat.font = ConstHelper.h5Normal
         self.lbl_chat.textColor = ConstHelper.black
-        self.lbl_lock.font = ConstHelper.h5Normal
-        self.lbl_lock.textColor = ConstHelper.black
         self.lbl_block.font = ConstHelper.h5Normal
         self.lbl_block.textColor = ConstHelper.black
-        self.lbl_share.font = ConstHelper.h5Normal
-        self.lbl_share.textColor = ConstHelper.black
         
         self.vw_chatBackView.addRightBorder(with: ConstHelper.lightGray, andWidth: 1)
-        self.vw_lockBackView.addRightBorder(with: ConstHelper.lightGray, andWidth: 1)
-        self.vw_blockBackView.addRightBorder(with: ConstHelper.lightGray, andWidth: 1)
-        
     }
     
     private func updateCell(_ notification: NotificationModel) {

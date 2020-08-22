@@ -1,8 +1,8 @@
 //
-//  NotificationViewController.swift
+//  LockedUsersViewController.swift
 //  Connect
 //
-//  Created by Venkatesh Botla on 21/08/20.
+//  Created by Venkatesh Botla on 22/08/20.
 //  Copyright © 2020 Venkatesh Botla. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import UIKit
 import Kingfisher
 import Lottie
 
-class NotificationViewController: UIViewController {
+class LockedUsersViewController: UIViewController {
 
     @IBOutlet weak var notificationTableView: UITableView!
     @IBOutlet weak var vw_prodBackView: UIView!
@@ -46,8 +46,16 @@ class NotificationViewController: UIViewController {
         self.notificationTableView.dataSource = self
         self.notificationTableView.tableFooterView = UIView(frame: .zero)
         
-        self.getNotificationList()
+        self.getLockedUsers()
         self.updateDefaultUI()
+    }
+    
+    private func getLockedUsers() {
+        guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
+            return
+        }
+        self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
+        self.getNotificationsList(withUserId: userId, qrId: (qrInfo?.qrId ?? 0), qrStatus: ("lock"))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,14 +63,6 @@ class NotificationViewController: UIViewController {
         
         self.updateUIWhenViewWillAppear()
         
-    }
-    
-    private func getNotificationList() {
-        guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
-            return
-        }
-        self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-        self.getNotificationsList(withUserId: userId, qrId: (qrInfo?.qrId ?? 0), qrStatus: (qrInfo?.qrStatus ?? ""))
     }
     
     @IBAction func backToHomeAction(_ sender: UIButton) {
@@ -83,7 +83,7 @@ class NotificationViewController: UIViewController {
         self.filterNotificationModel = nil
         self.notificationTableView.reloadData()
     }
-    
+
     private func setupAnimation(withAnimation status: Bool, name: String) {
         animationView.animation = Animation.named(name)
         animationView.frame = loadingView.bounds
@@ -102,18 +102,13 @@ class NotificationViewController: UIViewController {
 
     }
     
-    private func disableLoaderView() {
-        self.loadingBackView.backgroundColor = ConstHelper.lightGray
-        self.loadingView.backgroundColor = .clear
-    }
-
 }
 
-extension NotificationViewController {
+extension LockedUsersViewController {
     private func updateDefaultUI() {
         self.tf_searchTF.addTarget(self, action: #selector(searchWhenTextIsChange(_:)), for: .editingChanged)
         self.vw_prodBackView.setBorderForView(width: 1, color: ConstHelper.lightGray, radius: 10)
-        self.vw_lineView.backgroundColor = ConstHelper.cyan        
+        self.vw_lineView.backgroundColor = ConstHelper.cyan
         self.tf_searchTF.font = ConstHelper.h4Normal
         self.tf_searchTF.textColor = ConstHelper.white
         self.tf_searchTF.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.white])
@@ -142,11 +137,16 @@ extension NotificationViewController {
 
         }
     }
+    
+    private func disableLoaderView() {
+        self.loadingBackView.backgroundColor = ConstHelper.lightGray
+        self.loadingView.backgroundColor = .clear
+    }
 }
 
 
 //MARK: - UITableViewDelegate
-extension NotificationViewController: UITableViewDelegate, UITableViewDataSource {
+extension LockedUsersViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -165,51 +165,40 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let notificationsCell = tableView.dequeueReusableCell(withIdentifier: ConstHelper.notificationCellIdentifier, for: indexPath) as! NotificationCell
+        let lockedUsersCell = tableView.dequeueReusableCell(withIdentifier: ConstHelper.lockedUsersCellIdentifier, for: indexPath) as! LockedUsersCell
         
         if isSearchEnable {
             if let notification = self.filterNotificationModel?[indexPath.row] {
-                notificationsCell.setNotificationsForQRCode(notification)
+                lockedUsersCell.setLockedUsersCellForQRCode(notification)
             }
         } else {
             if let notification = self.notificationModel?[indexPath.row] {
-                notificationsCell.setNotificationsForQRCode(notification)
+                lockedUsersCell.setLockedUsersCellForQRCode(notification)
             }
         }
         
-        notificationsCell.btn_lock.tag = indexPath.row
-        notificationsCell.btn_lock.addTarget(self, action: #selector(lockUserAction(_:)), for: .touchUpInside)
-        
-        notificationsCell.btn_block.tag = indexPath.row
-        notificationsCell.btn_block.addTarget(self, action: #selector(blockUserAction(_:)), for: .touchUpInside)
+        lockedUsersCell.btn_lock.tag = indexPath.row
+        lockedUsersCell.btn_lock.addTarget(self, action: #selector(unLockUserAction(_:)), for: .touchUpInside)
     
-        return notificationsCell
+        return lockedUsersCell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 140.0
     }
     
-    @objc private func lockUserAction(_ sender: UIButton) {
+    @objc private func unLockUserAction(_ sender: UIButton) {
         if let notification = self.notificationModel?[sender.tag] {
             guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int, let qrId = qrInfo?.qrId else { return }
             self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-            self.unlockuser(withUserId: userId, qrId: qrId, connectedUserId: notification.connectedUserId, qrStatus: "lock")
+            self.unlockuser(withUserId: userId, qrId: qrId, connectedUserId: notification.connectedUserId, qrStatus: "unlock")
         }
+
     }
-    
-    @objc private func blockUserAction(_ sender: UIButton) {
-        if let notification = self.notificationModel?[sender.tag] {
-            guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int, let qrId = qrInfo?.qrId else { return }
-            self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-            self.unBlockuser(withUserId: userId, qrId: qrId, connectedUserId: notification.connectedUserId, qrStatus: "block")
-        }
-    }
-    
 }
 
 //MARK: - API Call
-extension NotificationViewController {
+extension LockedUsersViewController {
     //Post and Get All Notifications Selected Product
     private func getNotificationsList(withUserId userId: Int, qrId: Int, qrStatus: String) {
         let parameters: NotificationReqModel = NotificationReqModel(userId: userId, qrId: qrId, status: qrStatus)
@@ -240,7 +229,6 @@ extension NotificationViewController {
                      }
                  } else {
                     strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
-                    
                     DispatchQueue.main.async {
                         strongSelf.lbl_message.text = response.message
                         strongSelf.notificationTableView.reloadData()
@@ -276,7 +264,7 @@ extension NotificationViewController {
         }
     }
     
-    //Post to lock user
+    //Post to unlock user
     private func unlockuser(withUserId userId: Int, qrId: Int, connectedUserId: Int, qrStatus: String) {
         let parameters: LockUnLockReqModel = LockUnLockReqModel(userId: userId, qrId: qrId, connectedUserId: connectedUserId, status: qrStatus)
             print("Par: \(parameters)")
@@ -297,38 +285,7 @@ extension NotificationViewController {
                  guard let response = response else { return }
                  
                  if response.status {
-                    strongSelf.getNotificationList()
-                 } else {
-                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
-                 }
-             case .failure(let error):
-                 strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(error.localizedDescription)", actionTitle: "Ok")
-             }
-         }
-    }
-    
-    //Post to block user
-    private func unBlockuser(withUserId userId: Int, qrId: Int, connectedUserId: Int, qrStatus: String) {
-        let parameters: LockUnLockReqModel = LockUnLockReqModel(userId: userId, qrId: qrId, connectedUserId: connectedUserId, status: qrStatus)
-            print("Par: \(parameters)")
-
-        //Encode parameters
-        guard let body = try? JSONEncoder().encode(parameters) else { return }
-
-        //API
-        let api: Apifeed = .blockUsers
-
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
-
-        client.post_lockUnLockUserNotifications(from: endpoint) { [weak self] result in
-             guard let strongSelf = self else { return }
-            strongSelf.setupAnimation(withAnimation: false, name: ConstHelper.loader_animation)
-             switch result {
-             case .success(let response):
-                 guard let response = response else { return }
-                 
-                 if response.status {
-                    strongSelf.getNotificationList()
+                    strongSelf.getLockedUsers()
                  } else {
                     strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
                  }
@@ -339,7 +296,7 @@ extension NotificationViewController {
     }
 }
 
-extension NotificationViewController: UITextFieldDelegate {
+extension LockedUsersViewController: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         if textField == self.tf_searchTF {
             self.tf_searchTF.text = ""
@@ -367,7 +324,7 @@ extension NotificationViewController: UITextFieldDelegate {
     
     func filterSearchText(_ text: String) {
         if let notificationModel = self.notificationModel {
-            self.filterNotificationModel = notificationModel.filter { $0.name.lowercased().contains(text.lowercased()) || $0.connectedLocation.lowercased().contains(text.lowercased()) || $0.mobile.lowercased().contains(text.lowercased())                
+            self.filterNotificationModel = notificationModel.filter { $0.name.lowercased().contains(text.lowercased()) || $0.connectedLocation.lowercased().contains(text.lowercased()) || $0.mobile.lowercased().contains(text.lowercased())
             }
         }
     }

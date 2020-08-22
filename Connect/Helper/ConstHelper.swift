@@ -26,7 +26,8 @@ public class ConstHelper {
     public static var qrImageUploadCellIdentifier = "ImageUploadCell"
     public static var ordersCellIdentifier = "OrdersTableViewCell"
     public static var notificationCellIdentifier = "NotificationCell"
-    
+    public static var lockedUsersCellIdentifier = "LockedUsersCell"
+    public static var blockedUsersCellIdentifier = "BlockedUsersCell"
     
     //UUID
     public static var deviceToken = UIDevice.current.identifierForVendor?.uuidString
@@ -64,6 +65,10 @@ public class ConstHelper {
     public static var disableColor = UIColor(red: 226/255, green: 226/255, blue: 226/255, alpha: 1.0)
     public static var enableColor = UIColor.white
     
+    //Lottie
+    public static var construction_animation = "7146-under-construction"
+    public static var loader_animation = "6615-loader-animation"
+    public static var error_animation = "13865-sign-for-error-flat-style"
     
 }
 

@@ -25,6 +25,13 @@
 		35B3880B24F04CBC00D9274F /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3880A24F04CBC00D9274F /* NotificationCell.swift */; };
 		35B3880D24F05F2300D9274F /* NotificationReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3880C24F05F2300D9274F /* NotificationReqModel.swift */; };
 		35B3880F24F0625500D9274F /* NotificationResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3880E24F0625500D9274F /* NotificationResModel.swift */; };
+		35B3881124F15D0D00D9274F /* LockedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3881024F15D0D00D9274F /* LockedUsersViewController.swift */; };
+		35B3881324F15DA100D9274F /* LockedUsersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3881224F15DA100D9274F /* LockedUsersCell.swift */; };
+		35B3881524F16A2600D9274F /* LockUnLockReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3881424F16A2600D9274F /* LockUnLockReqModel.swift */; };
+		35B3881724F16AA800D9274F /* LockUnLockResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3881624F16AA800D9274F /* LockUnLockResModel.swift */; };
+		35B3881B24F19E4A00D9274F /* 13865-sign-for-error-flat-style.json in Resources */ = {isa = PBXBuildFile; fileRef = 35B3881A24F19E4A00D9274F /* 13865-sign-for-error-flat-style.json */; };
+		35B3881D24F1A2F500D9274F /* BlockedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3881C24F1A2F500D9274F /* BlockedUsersViewController.swift */; };
+		35B3881F24F1A37C00D9274F /* BlockedUsersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B3881E24F1A37C00D9274F /* BlockedUsersCell.swift */; };
 		35C31D5B24DC401E0067D9A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C31D5A24DC401E0067D9A5 /* AppDelegate.swift */; };
 		35C31D6524DC401E0067D9A5 /* Connect.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 35C31D6324DC401E0067D9A5 /* Connect.xcdatamodeld */; };
 		35C31D6724DC40200067D9A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35C31D6624DC40200067D9A5 /* Assets.xcassets */; };
@@ -129,6 +136,13 @@
 		35B3880A24F04CBC00D9274F /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		35B3880C24F05F2300D9274F /* NotificationReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationReqModel.swift; sourceTree = "<group>"; };
 		35B3880E24F0625500D9274F /* NotificationResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationResModel.swift; sourceTree = "<group>"; };
+		35B3881024F15D0D00D9274F /* LockedUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedUsersViewController.swift; sourceTree = "<group>"; };
+		35B3881224F15DA100D9274F /* LockedUsersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedUsersCell.swift; sourceTree = "<group>"; };
+		35B3881424F16A2600D9274F /* LockUnLockReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockUnLockReqModel.swift; sourceTree = "<group>"; };
+		35B3881624F16AA800D9274F /* LockUnLockResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockUnLockResModel.swift; sourceTree = "<group>"; };
+		35B3881A24F19E4A00D9274F /* 13865-sign-for-error-flat-style.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "13865-sign-for-error-flat-style.json"; sourceTree = "<group>"; };
+		35B3881C24F1A2F500D9274F /* BlockedUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersViewController.swift; sourceTree = "<group>"; };
+		35B3881E24F1A37C00D9274F /* BlockedUsersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersCell.swift; sourceTree = "<group>"; };
 		35C31D5724DC401E0067D9A5 /* Connect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Connect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		35C31D5A24DC401E0067D9A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		35C31D6424DC401E0067D9A5 /* Connect.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Connect.xcdatamodel; sourceTree = "<group>"; };
@@ -221,6 +235,7 @@
 				35B387FE24E6BA1E00D9274F /* 7146-under-construction.json */,
 				35B387FF24E6BA1E00D9274F /* 8428-loader.json */,
 				35B3880024E6BA1E00D9274F /* 29577-dot-loader-5.json */,
+				35B3881A24F19E4A00D9274F /* 13865-sign-for-error-flat-style.json */,
 			);
 			path = Lottie;
 			sourceTree = "<group>";
@@ -230,6 +245,8 @@
 			children = (
 				35B3880924F04C8500D9274F /* CustomCell */,
 				35B3880424F041F700D9274F /* NotificationViewController.swift */,
+				35B3881024F15D0D00D9274F /* LockedUsersViewController.swift */,
+				35B3881C24F1A2F500D9274F /* BlockedUsersViewController.swift */,
 				35B3880724F0424900D9274F /* Notification.storyboard */,
 			);
 			path = Notification;
@@ -239,6 +256,8 @@
 			isa = PBXGroup;
 			children = (
 				35B3880A24F04CBC00D9274F /* NotificationCell.swift */,
+				35B3881224F15DA100D9274F /* LockedUsersCell.swift */,
+				35B3881E24F1A37C00D9274F /* BlockedUsersCell.swift */,
 			);
 			path = CustomCell;
 			sourceTree = "<group>";
@@ -387,6 +406,8 @@
 				35B387B124E578E400D9274F /* OrdersResModel.swift */,
 				35B3880C24F05F2300D9274F /* NotificationReqModel.swift */,
 				35B3880E24F0625500D9274F /* NotificationResModel.swift */,
+				35B3881424F16A2600D9274F /* LockUnLockReqModel.swift */,
+				35B3881624F16AA800D9274F /* LockUnLockResModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -526,6 +547,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				35B3881B24F19E4A00D9274F /* 13865-sign-for-error-flat-style.json in Resources */,
 				35B3880124E6BA1E00D9274F /* 7146-under-construction.json in Resources */,
 				35C31D6A24DC40200067D9A5 /* LaunchScreen.storyboard in Resources */,
 				35B3880224E6BA1E00D9274F /* 8428-loader.json in Resources */,
@@ -566,6 +588,7 @@
 				35B387A724E04A9A00D9274F /* ImageUploadCell.swift in Sources */,
 				35F9676224DDDDCF00F56411 /* CategoryCollectionCell.swift in Sources */,
 				35F9675824DDCC4A00F56411 /* Endpoint.swift in Sources */,
+				35B3881124F15D0D00D9274F /* LockedUsersViewController.swift in Sources */,
 				35F9673A24DD929300F56411 /* OrderHistoryViewController.swift in Sources */,
 				35C31DA724DC4A670067D9A5 /* TabBarViewController.swift in Sources */,
 				35F9673224DC6FC900F56411 /* UIView+Extension.swift in Sources */,
@@ -584,16 +607,21 @@
 				35F9678B24DFF10E00F56411 /* OTPReqModel.swift in Sources */,
 				35B387B024E411A200D9274F /* OrdersTableViewCell.swift in Sources */,
 				35F9679024E011F900F56411 /* ImagePicker.swift in Sources */,
+				35B3881524F16A2600D9274F /* LockUnLockReqModel.swift in Sources */,
 				35F9675924DDCC4A00F56411 /* APIError.swift in Sources */,
 				35B3880F24F0625500D9274F /* NotificationResModel.swift in Sources */,
 				35F9675224DDCC4A00F56411 /* GenericAPI.swift in Sources */,
 				35F9674324DD93FA00F56411 /* QRViewController.swift in Sources */,
 				35F9677824DF9DE600F56411 /* QRCell.swift in Sources */,
+				35B3881D24F1A2F500D9274F /* BlockedUsersViewController.swift in Sources */,
+				35B3881324F15DA100D9274F /* LockedUsersCell.swift in Sources */,
+				35B3881F24F1A37C00D9274F /* BlockedUsersCell.swift in Sources */,
 				35F9675C24DDCDEF00F56411 /* CategoryModel.swift in Sources */,
 				35F9675724DDCC4A00F56411 /* Result.swift in Sources */,
 				35F9675E24DDD46900F56411 /* UIViewController+Extension.swift in Sources */,
 				35F9678524DFE9F400F56411 /* AlertMessage.swift in Sources */,
 				35F9678D24DFF11700F56411 /* OTPResModel.swift in Sources */,
+				35B3881724F16AA800D9274F /* LockUnLockResModel.swift in Sources */,
 				35F9675424DDCC4A00F56411 /* Apifeed.swift in Sources */,
 				35F9673624DC8CC000F56411 /* VBValidatiors.swift in Sources */,
 				35F9677F24DFE71200F56411 /* LoginReqModel.swift in Sources */,

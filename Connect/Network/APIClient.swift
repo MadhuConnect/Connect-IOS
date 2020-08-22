@@ -123,6 +123,16 @@ extension APIClient {
              return result
         }, completion: completion)
     }
+    
+    // Post lock/unlock/block/unblock user
+    func post_lockUnLockUserNotifications(from endpoint: Endpoint, completion: @escaping (Result<LockUnLockResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> LockUnLockResModel? in
+            guard let result = json as? LockUnLockResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
 }
 
 

@@ -139,6 +139,9 @@ extension OrderHistoryViewController: UITableViewDelegate, UITableViewDataSource
         ordersCell.btn_bell.tag = indexPath.row
         ordersCell.btn_bell.addTarget(self, action: #selector(notifyBellAction(_:)), for: .touchUpInside)
         
+        ordersCell.btn_lock.tag = indexPath.row
+        ordersCell.btn_lock.addTarget(self, action: #selector(lockUserAction(_:)), for: .touchUpInside)
+        
         return ordersCell
     }
     
@@ -166,6 +169,40 @@ extension OrderHistoryViewController: UITableViewDelegate, UITableViewDataSource
                     notificationVC.modalPresentationStyle = .fullScreen
                     notificationVC.qrInfo = qrInfo
                     self.present(notificationVC, animated: true, completion: nil)
+                 }
+            } else {
+                self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "No Data Found", actionTitle: "Ok")
+                return
+            }
+        }
+
+    }
+    
+    @objc private func lockUserAction(_ sender: UIButton) {
+        if let qrInfo = self.qrInfoModel?[sender.tag] {
+            if qrInfo.qrStatus.lowercased() == "Active".lowercased() {
+                let storyboard = UIStoryboard(name: "Notification", bundle: nil)
+                if let lockedUsersVC = storyboard.instantiateViewController(withIdentifier: "LockedUsersViewController") as? LockedUsersViewController {
+                    lockedUsersVC.modalPresentationStyle = .fullScreen
+                    lockedUsersVC.qrInfo = qrInfo
+                    self.present(lockedUsersVC, animated: true, completion: nil)
+                 }
+            } else {
+                self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "No Data Found", actionTitle: "Ok")
+                return
+            }
+        }
+
+    }
+    
+    @objc private func blockUserAction(_ sender: UIButton) {
+        if let qrInfo = self.qrInfoModel?[sender.tag] {
+            if qrInfo.qrStatus.lowercased() == "Active".lowercased() {
+                let storyboard = UIStoryboard(name: "Notification", bundle: nil)
+                if let blockedUsersVC = storyboard.instantiateViewController(withIdentifier: "BlockedUsersViewController") as? BlockedUsersViewController {
+                    blockedUsersVC.modalPresentationStyle = .fullScreen
+                    blockedUsersVC.qrInfo = qrInfo
+                    self.present(blockedUsersVC, animated: true, completion: nil)
                  }
             } else {
                 self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "No Data Found", actionTitle: "Ok")
