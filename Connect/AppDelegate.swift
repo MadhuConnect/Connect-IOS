@@ -20,8 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Device token: \(String(describing: ConstHelper.deviceToken))")
         IQKeyboardManager.shared.enable = true
         
-        UserDefaults.standard.set(1, forKey: "LoggedUserId")
-        UserDefaults.standard.synchronize()
+//        UserDefaults.standard.set(1, forKey: "LoggedUserId")
+//        UserDefaults.standard.synchronize()
         Switcher.updateRootViewController()
         
         return true
