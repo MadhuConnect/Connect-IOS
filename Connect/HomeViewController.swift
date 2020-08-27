@@ -360,7 +360,7 @@ extension HomeViewController {
     private func getAllCategories() {
         print("All Categories Loading...")
         let api: Apifeed = .allProducts
-        let endPoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .get, headers: [.contentType("application/json")], body: nil, timeInterval: 120)
+        let endPoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .get, headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: nil, timeInterval: 120)
         
         client.getAllCategories(from: endPoint) { [weak self] result in
             guard let strongSelf = self else { return }

@@ -210,7 +210,7 @@ extension LockedUsersViewController {
         //API
         let api: Apifeed = .notifications
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
 
         client.post_getOrderNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
@@ -275,7 +275,7 @@ extension LockedUsersViewController {
         //API
         let api: Apifeed = .lockUsers
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
 
         client.post_lockUnLockUserNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }

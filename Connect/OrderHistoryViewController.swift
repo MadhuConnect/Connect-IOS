@@ -227,7 +227,7 @@ extension OrderHistoryViewController {
         //API
         let api: Apifeed = .myOrders
         
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
         
         client.post_getMyOrders(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }

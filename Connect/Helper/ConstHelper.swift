@@ -9,6 +9,9 @@
 import UIKit
 
 public class ConstHelper {
+    //TOKEN
+    public static var staticToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.W10.DUYspuNV8SmP0MKxh_6HdFS17C8F_ofXWjGWG2nX7og"
+    
     //TEST BASE URL
     public static var testBaseURL = "http://test.connectyourneed.in"
     //PROD BASE URL

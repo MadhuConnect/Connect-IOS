@@ -102,7 +102,7 @@ extension MyLocationManager {
         //API
         let api: Apifeed = .updateCoordinates
         
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
         client.post_updateCoordinates(from: endpoint) { [weak self] result in
             guard let _ = self else { return }
             switch result {

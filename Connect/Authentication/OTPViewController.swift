@@ -284,7 +284,7 @@ extension OTPViewController {
         let api: Apifeed = .checkOtp
         
         //Req headers & body
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
         
         client.post_checkReceivedOTP(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }

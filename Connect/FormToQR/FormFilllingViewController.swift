@@ -391,7 +391,7 @@ extension FormFilllingViewController {
         //API
         let api: Apifeed = .subscriptionCharges
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
 
         client.post_getSubscriptionCharges(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }
@@ -482,7 +482,7 @@ extension FormFilllingViewController {
             //API
             let api: Apifeed = .uploadImage
             
-            let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("multipart/form-data; boundary=\(boundary)")], body: postData, timeInterval: Double.infinity)
+            let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("multipart/form-data; boundary=\(boundary)"),.authorization("\(ConstHelper.staticToken);boundary=\(boundary)")], body: postData, timeInterval: Double.infinity)
             
             client.post_uploadImage(from: endpoint) { [weak self] result in
                 guard let strongSelf = self else { return }
@@ -519,7 +519,7 @@ extension FormFilllingViewController {
         //API
         let api: Apifeed = .generateQrcode
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
 
         client.post_getFormFillingData(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }
