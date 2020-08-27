@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class QRCell: UITableViewCell {
     
@@ -22,16 +23,33 @@ class QRCell: UITableViewCell {
     @IBOutlet weak var vw_expiresLineView: UIView!
     @IBOutlet weak var vw_rangeLineView: UIView!
     
-    var imgArr = [  UIImage(named:"Alexandra Daddario"),
-                    UIImage(named:"Angelina Jolie") ,
-                    UIImage(named:"Anne Hathaway") ,
-                    UIImage(named:"Dakota Johnson") ,
-                    UIImage(named:"Emma Stone") ,
-                    UIImage(named:"Emma Watson") ,
-                    UIImage(named:"Halle Berry") ,
-                    UIImage(named:"Jennifer Lawrence") ,
-                    UIImage(named:"Jessica Alba") ,
-                    UIImage(named:"Scarlett Johansson") ]
+    //QR Code
+    @IBOutlet weak var lbl_qrCodeHeading: UILabel!
+    @IBOutlet weak var iv_qrCode: UIImageView!
+    //Person type
+    @IBOutlet weak var lbl_personTypeHeading: UILabel!
+    @IBOutlet weak var lbl_personTypeValue: UILabel!
+    //Product name
+    @IBOutlet weak var lbl_productNameHeading: UILabel!
+    @IBOutlet weak var lbl_productNameValue: UILabel!
+    //Product type
+    @IBOutlet weak var lbl_productTypeHeading: UILabel!
+    @IBOutlet weak var lbl_productTypeValue: UILabel!
+    //Description
+    @IBOutlet weak var lbl_descHeading: UILabel!
+    @IBOutlet weak var lbl_descValue: UILabel!
+    //Price range
+    @IBOutlet weak var lbl_priceRangeHeading: UILabel!
+    @IBOutlet weak var lbl_priceRangeValue: UILabel!
+    //Expires on
+    @IBOutlet weak var lbl_expireHeading: UILabel!
+    @IBOutlet weak var lbl_expireValue: UILabel!
+    //Person type
+    @IBOutlet weak var lbl_connectRangeHeading: UILabel!
+    @IBOutlet weak var lbl_connectRangeValue: UILabel!
+    
+    //slide images
+    var qrImages: [QRImageModel]?
     
     var timer = Timer()
     var counter = 0
@@ -45,27 +63,33 @@ class QRCell: UITableViewCell {
         self.cv_sliderCollectionView.delegate = self
         self.cv_sliderCollectionView.dataSource = self
         
-        pageView.numberOfPages = imgArr.count
-        pageView.currentPage = 0
-        DispatchQueue.main.async {
-            self.timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(self.changeImage), userInfo: nil, repeats: true)
+        self.loadPageView()
+    }
+    
+    func loadPageView() {
+        if let qrImages = self.qrImages {
+            pageView.numberOfPages = qrImages.count
+            pageView.currentPage = 0
+            DispatchQueue.main.async {
+                self.timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(self.changeImage), userInfo: nil, repeats: true)
+            }
         }
-        
     }
     
     @objc func changeImage() {
-        
-        if counter < imgArr.count {
-            let index = IndexPath.init(item: counter, section: 0)
-            self.cv_sliderCollectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: true)
-            pageView.currentPage = counter
-            counter += 1
-        } else {
-            counter = 0
-            let index = IndexPath.init(item: counter, section: 0)
-            self.cv_sliderCollectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: false)
-            pageView.currentPage = counter
-            counter = 1
+        if let qrImages = self.qrImages {
+            if counter < qrImages.count {
+                let index = IndexPath.init(item: counter, section: 0)
+                self.cv_sliderCollectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: true)
+                pageView.currentPage = counter
+                counter += 1
+            } else {
+                counter = 0
+                let index = IndexPath.init(item: counter, section: 0)
+                self.cv_sliderCollectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: false)
+                pageView.currentPage = counter
+                counter = 1
+            }
         }
         
     }
@@ -74,6 +98,26 @@ class QRCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
         // Configure the view for the selected state
+    }
+    
+    func setQRInformation(_ qrInfo: QRInfoModel?) {
+        if let qrInfo = qrInfo {
+            self.iv_qrCode.image = generateQRCode(from: qrInfo.qrCode)
+            lbl_personTypeValue.text = qrInfo.personType
+            lbl_productNameValue.text = qrInfo.productName
+            lbl_productTypeValue.text = qrInfo.productType
+            lbl_descValue.text = qrInfo.description
+            lbl_priceRangeValue.text = "\(qrInfo.minAmount)" + " - " + "\(qrInfo.maxAmount)"
+            lbl_expireValue.text = getDateSpecificFormat(qrInfo.expireDate)
+            lbl_connectRangeValue.text = qrInfo.connectRange
+            
+            self.qrImages = qrInfo.images
+            
+            DispatchQueue.main.async {
+                self.loadPageView()
+                self.cv_sliderCollectionView.reloadData()
+            }
+        }
     }
     
 }
@@ -93,15 +137,20 @@ extension QRCell {
 
 extension QRCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imgArr.count
+        if let qrImages = self.qrImages {
+            return qrImages.count
+        }
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ConstHelper.sliderCellIdentifier, for: indexPath)
-        if let vc = cell.viewWithTag(111) as? UIImageView {
-            vc.image = imgArr[indexPath.row]
+        let sliderCell = collectionView.dequeueReusableCell(withReuseIdentifier: ConstHelper.sliderCellIdentifier, for: indexPath) as! SlideCollectionViewCell
+        
+        if let qrImage = self.qrImages?[indexPath.row] {
+            sliderCell.setQRSlider(qrImage)
         }
-        return cell
+
+        return sliderCell
     }
 }
 

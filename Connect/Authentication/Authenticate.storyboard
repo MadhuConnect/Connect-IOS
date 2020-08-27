@@ -147,6 +147,24 @@
                                             <constraint firstAttribute="height" constant="50" id="pu5-9W-FcT"/>
                                         </constraints>
                                     </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KEQ-m5-jLc">
+                                        <rect key="frame" x="16" y="193" width="382" height="50"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P0X-67-PBk">
+                                                <rect key="frame" x="141" y="0.0" width="100" height="50"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="100" id="MK9-an-nDt"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstItem="P0X-67-PBk" firstAttribute="centerX" secondItem="KEQ-m5-jLc" secondAttribute="centerX" id="Gii-5F-Gnc"/>
+                                            <constraint firstItem="P0X-67-PBk" firstAttribute="height" secondItem="KEQ-m5-jLc" secondAttribute="height" id="cpc-ow-rGf"/>
+                                            <constraint firstItem="P0X-67-PBk" firstAttribute="centerY" secondItem="KEQ-m5-jLc" secondAttribute="centerY" id="nDQ-sH-vxl"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -156,6 +174,7 @@
                                     <constraint firstItem="bMi-iR-99A" firstAttribute="leading" secondItem="sQa-Ge-iE9" secondAttribute="leading" constant="16" id="5aU-ue-tMb"/>
                                     <constraint firstAttribute="trailing" secondItem="NqW-RS-Jbq" secondAttribute="trailing" constant="16" id="5tk-oL-UW0"/>
                                     <constraint firstAttribute="trailing" secondItem="bMi-iR-99A" secondAttribute="trailing" constant="16" id="8n0-dP-lZE"/>
+                                    <constraint firstItem="KEQ-m5-jLc" firstAttribute="bottom" secondItem="bMi-iR-99A" secondAttribute="bottom" id="9kN-AK-BSP"/>
                                     <constraint firstItem="wBs-cN-85g" firstAttribute="trailing" secondItem="Xy8-8L-yic" secondAttribute="trailing" id="CP1-2n-TY1"/>
                                     <constraint firstItem="57l-32-ISl" firstAttribute="top" secondItem="NqW-RS-Jbq" secondAttribute="bottom" constant="2" id="G04-eE-trU"/>
                                     <constraint firstItem="Xy8-8L-yic" firstAttribute="leading" secondItem="sQa-Ge-iE9" secondAttribute="leading" constant="16" id="HVf-LH-cpt"/>
@@ -166,10 +185,13 @@
                                     <constraint firstAttribute="trailing" secondItem="Xy8-8L-yic" secondAttribute="trailing" constant="16" id="afU-Pb-DQO"/>
                                     <constraint firstAttribute="trailing" secondItem="nuE-EB-jCU" secondAttribute="trailing" constant="16" id="b4y-Ia-SSg"/>
                                     <constraint firstItem="fbA-X2-Qv5" firstAttribute="top" secondItem="bMi-iR-99A" secondAttribute="bottom" constant="30" id="fS8-1U-eBt"/>
+                                    <constraint firstItem="KEQ-m5-jLc" firstAttribute="trailing" secondItem="bMi-iR-99A" secondAttribute="trailing" id="fVI-Fz-15d"/>
                                     <constraint firstItem="nuE-EB-jCU" firstAttribute="top" secondItem="57l-32-ISl" secondAttribute="bottom" constant="8" id="g61-cr-VXY"/>
+                                    <constraint firstItem="KEQ-m5-jLc" firstAttribute="leading" secondItem="bMi-iR-99A" secondAttribute="leading" id="noV-Yt-Nyj"/>
                                     <constraint firstItem="NqW-RS-Jbq" firstAttribute="top" secondItem="wBs-cN-85g" secondAttribute="bottom" constant="13" id="p2z-Di-vmj"/>
                                     <constraint firstItem="bMi-iR-99A" firstAttribute="top" secondItem="nuE-EB-jCU" secondAttribute="bottom" constant="20" id="q7V-FD-EnS"/>
                                     <constraint firstItem="Xy8-8L-yic" firstAttribute="top" secondItem="sQa-Ge-iE9" secondAttribute="top" constant="16" id="qfP-0c-SnU"/>
+                                    <constraint firstItem="KEQ-m5-jLc" firstAttribute="top" secondItem="bMi-iR-99A" secondAttribute="top" id="wnb-lh-peg"/>
                                     <constraint firstAttribute="height" constant="360" id="yex-xm-2vQ"/>
                                 </constraints>
                             </view>
@@ -196,6 +218,8 @@
                         <outlet property="lbl_accountLbl" destination="2rD-GY-pZp" id="Up5-cL-clW"/>
                         <outlet property="lbl_errorMobileLbl" destination="wBs-cN-85g" id="pvN-oK-66c"/>
                         <outlet property="lbl_errorPasswordLbl" destination="57l-32-ISl" id="DQU-T6-Q8i"/>
+                        <outlet property="loadingBackView" destination="KEQ-m5-jLc" id="uMF-jL-CQe"/>
+                        <outlet property="loadingView" destination="P0X-67-PBk" id="gVp-09-R3a"/>
                         <outlet property="tf_mobileTF" destination="nNq-Jo-ruA" id="xni-yc-PGz"/>
                         <outlet property="tf_passwordTF" destination="0j8-9N-JNP" id="rLZ-HI-BwD"/>
                         <outlet property="vw_loginBackView" destination="bMi-iR-99A" id="DHL-fX-G4I"/>
@@ -205,7 +229,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1in-eC-7qJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="109.59999999999999" y="117.39130434782609"/>
+            <point key="canvasLocation" x="108.69565217391305" y="117.39130434782609"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="KeM-f4-IJf">
@@ -387,6 +411,24 @@
                                             <constraint firstItem="l7z-dV-xEZ" firstAttribute="leading" secondItem="C9U-FU-1Lz" secondAttribute="trailing" constant="8" id="xk5-xf-1oX"/>
                                         </constraints>
                                     </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IgE-hW-XgL">
+                                        <rect key="frame" x="16" y="278" width="382" height="50"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0rI-Pc-0PQ">
+                                                <rect key="frame" x="141" y="0.0" width="100" height="50"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="100" id="hJq-5b-u1u"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstItem="0rI-Pc-0PQ" firstAttribute="height" secondItem="IgE-hW-XgL" secondAttribute="height" id="g9Q-Wb-OZt"/>
+                                            <constraint firstItem="0rI-Pc-0PQ" firstAttribute="centerX" secondItem="IgE-hW-XgL" secondAttribute="centerX" id="lyF-KQ-aXI"/>
+                                            <constraint firstItem="0rI-Pc-0PQ" firstAttribute="centerY" secondItem="IgE-hW-XgL" secondAttribute="centerY" id="stY-HJ-GkC"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -397,6 +439,7 @@
                                     <constraint firstAttribute="height" constant="460" id="CJL-CZ-N6D"/>
                                     <constraint firstAttribute="trailing" secondItem="QFF-f5-vdq" secondAttribute="trailing" constant="16" id="Ek1-dw-fwu"/>
                                     <constraint firstAttribute="trailing" secondItem="0WP-L9-ZJ5" secondAttribute="trailing" constant="16" id="Ha9-EY-HUN"/>
+                                    <constraint firstItem="IgE-hW-XgL" firstAttribute="bottom" secondItem="QFF-f5-vdq" secondAttribute="bottom" id="Isc-Yz-j3T"/>
                                     <constraint firstItem="tat-pj-GS6" firstAttribute="top" secondItem="lVw-KA-1Vq" secondAttribute="bottom" constant="2" id="J6N-NH-pJ6"/>
                                     <constraint firstItem="h6f-pO-83Q" firstAttribute="top" secondItem="tat-pj-GS6" secondAttribute="bottom" constant="20" id="PgS-LN-Ds2"/>
                                     <constraint firstItem="h6f-pO-83Q" firstAttribute="leading" secondItem="O8M-jV-rQR" secondAttribute="leading" constant="16" id="Pw0-cQ-xtr"/>
@@ -413,6 +456,9 @@
                                     <constraint firstItem="AOb-i8-Jo9" firstAttribute="trailing" secondItem="Evc-Ne-Rox" secondAttribute="trailing" id="meQ-lG-xRn"/>
                                     <constraint firstItem="Evc-Ne-Rox" firstAttribute="top" secondItem="Fx0-OA-DFy" secondAttribute="bottom" constant="13" id="ph8-5O-gDf"/>
                                     <constraint firstAttribute="trailing" secondItem="YDq-3h-9rf" secondAttribute="trailing" constant="16" id="puP-Fy-zBr"/>
+                                    <constraint firstItem="IgE-hW-XgL" firstAttribute="top" secondItem="QFF-f5-vdq" secondAttribute="top" id="rSv-vY-0Fj"/>
+                                    <constraint firstItem="IgE-hW-XgL" firstAttribute="trailing" secondItem="QFF-f5-vdq" secondAttribute="trailing" id="ruZ-q9-HdL"/>
+                                    <constraint firstItem="IgE-hW-XgL" firstAttribute="leading" secondItem="QFF-f5-vdq" secondAttribute="leading" id="teN-K0-yht"/>
                                     <constraint firstAttribute="trailing" secondItem="Evc-Ne-Rox" secondAttribute="trailing" constant="16" id="wSY-jr-fQ5"/>
                                     <constraint firstItem="tat-pj-GS6" firstAttribute="trailing" secondItem="lVw-KA-1Vq" secondAttribute="trailing" id="wVP-LH-NtE"/>
                                     <constraint firstAttribute="trailing" secondItem="lVw-KA-1Vq" secondAttribute="trailing" constant="16" id="wdq-LT-OAa"/>
@@ -443,6 +489,8 @@
                         <outlet property="lbl_errorFullNameLbl" destination="Fx0-OA-DFy" id="I4n-Hs-Jel"/>
                         <outlet property="lbl_errorMobileLbl" destination="AOb-i8-Jo9" id="8ok-Mp-Ve0"/>
                         <outlet property="lbl_errorPasswordLbl" destination="tat-pj-GS6" id="hdu-7M-LjN"/>
+                        <outlet property="loadingBackView" destination="IgE-hW-XgL" id="Adh-46-8N7"/>
+                        <outlet property="loadingView" destination="0rI-Pc-0PQ" id="Jxz-Nn-Dvs"/>
                         <outlet property="tf_fullNameTF" destination="iaa-xW-GZm" id="nnH-7s-Ql7"/>
                         <outlet property="tf_mobileTF" destination="O0Z-po-bTK" id="D2c-hB-XGd"/>
                         <outlet property="tf_passwordTF" destination="MZ5-dq-BHH" id="CAC-Qa-Fcl"/>
@@ -597,6 +645,24 @@
                                             <constraint firstItem="mwm-o6-7Mq" firstAttribute="leading" secondItem="mJk-qq-Pcp" secondAttribute="trailing" constant="8" id="ttq-2s-95Z"/>
                                         </constraints>
                                     </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gQB-p9-dal">
+                                        <rect key="frame" x="16" y="210" width="382" height="50"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zEv-Jn-Cpj">
+                                                <rect key="frame" x="141" y="0.0" width="100" height="50"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="100" id="043-XS-H7P"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstItem="zEv-Jn-Cpj" firstAttribute="centerY" secondItem="gQB-p9-dal" secondAttribute="centerY" id="V0y-VB-qMd"/>
+                                            <constraint firstItem="zEv-Jn-Cpj" firstAttribute="height" secondItem="gQB-p9-dal" secondAttribute="height" id="rdc-Bm-Li5"/>
+                                            <constraint firstItem="zEv-Jn-Cpj" firstAttribute="centerX" secondItem="gQB-p9-dal" secondAttribute="centerX" id="yQi-Y4-iAg"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -604,12 +670,16 @@
                                     <constraint firstAttribute="trailing" secondItem="AFA-5i-bA5" secondAttribute="trailing" constant="16" id="9M0-QB-Pik"/>
                                     <constraint firstItem="kth-Yj-5P8" firstAttribute="leading" secondItem="r3s-zj-aEw" secondAttribute="leading" id="FVZ-47-gPY"/>
                                     <constraint firstAttribute="trailing" secondItem="LMT-K1-t8E" secondAttribute="trailing" id="G3b-no-U9w"/>
+                                    <constraint firstItem="gQB-p9-dal" firstAttribute="trailing" secondItem="AFA-5i-bA5" secondAttribute="trailing" id="Gkj-Ac-0r5"/>
+                                    <constraint firstItem="gQB-p9-dal" firstAttribute="top" secondItem="AFA-5i-bA5" secondAttribute="top" id="JHH-nX-th8"/>
                                     <constraint firstItem="LMT-K1-t8E" firstAttribute="top" secondItem="r3s-zj-aEw" secondAttribute="top" id="KXM-eJ-kXt"/>
                                     <constraint firstItem="kth-Yj-5P8" firstAttribute="top" secondItem="LMT-K1-t8E" secondAttribute="bottom" constant="8" id="LfI-nz-bk3"/>
                                     <constraint firstItem="AFA-5i-bA5" firstAttribute="leading" secondItem="r3s-zj-aEw" secondAttribute="leading" constant="16" id="NQt-wD-aSz"/>
+                                    <constraint firstItem="gQB-p9-dal" firstAttribute="bottom" secondItem="AFA-5i-bA5" secondAttribute="bottom" id="OHK-Ix-sCz"/>
                                     <constraint firstAttribute="trailing" secondItem="Rcf-9h-lSW" secondAttribute="trailing" constant="16" id="ch6-Bp-iE2"/>
                                     <constraint firstAttribute="trailing" secondItem="kth-Yj-5P8" secondAttribute="trailing" id="fON-rG-JDh"/>
                                     <constraint firstItem="LMT-K1-t8E" firstAttribute="leading" secondItem="r3s-zj-aEw" secondAttribute="leading" id="gST-zQ-QIF"/>
+                                    <constraint firstItem="gQB-p9-dal" firstAttribute="leading" secondItem="AFA-5i-bA5" secondAttribute="leading" id="gay-d4-LAR"/>
                                     <constraint firstAttribute="height" constant="340" id="hIA-Fm-b6F"/>
                                     <constraint firstItem="Rcf-9h-lSW" firstAttribute="leading" secondItem="r3s-zj-aEw" secondAttribute="leading" constant="16" id="ibb-kn-035"/>
                                     <constraint firstAttribute="trailing" secondItem="MyN-g2-n7f" secondAttribute="trailing" constant="16" id="iso-8k-W6N"/>
@@ -641,6 +711,8 @@
                         <outlet property="lbl_otpMessageLbl" destination="kth-Yj-5P8" id="iB1-Fu-i6k"/>
                         <outlet property="lbl_otpVerficationLbl" destination="LMT-K1-t8E" id="QFY-Hz-bOx"/>
                         <outlet property="lbl_receiveOtpLbl" destination="mJk-qq-Pcp" id="FEn-r2-Rgh"/>
+                        <outlet property="loadingBackView" destination="gQB-p9-dal" id="REy-Rj-1Lo"/>
+                        <outlet property="loadingView" destination="zEv-Jn-Cpj" id="3SJ-aj-Xrv"/>
                         <outlet property="tf_opt1Tf" destination="x0y-7M-SOe" id="Rhd-kh-Lrr"/>
                         <outlet property="tf_opt2Tf" destination="QrP-XS-mJy" id="m2R-ga-cqf"/>
                         <outlet property="tf_opt3Tf" destination="2K4-qc-eEa" id="EAK-6k-gD6"/>

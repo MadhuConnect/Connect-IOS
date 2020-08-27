@@ -19,6 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         print("Device token: \(String(describing: ConstHelper.deviceToken))")
         IQKeyboardManager.shared.enable = true
+        
+//        UserDefaults.standard.set(1, forKey: "LoggedUserId")
+//        UserDefaults.standard.synchronize()
         Switcher.updateRootViewController()
         
         return true

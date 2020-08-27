@@ -22,7 +22,7 @@ public struct Endpoint {
 extension Endpoint {
     
     var urlComponents: URLComponents {
-        let base: String = "http://connectyourneed.in"
+        let base: String = ConstHelper.testBaseURL
         var component = URLComponents(string: base)!
         component.path = path
         component.queryItems = queryItems

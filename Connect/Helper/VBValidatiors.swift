@@ -10,7 +10,7 @@ import Foundation
 
 public class VBValidatiors {
     public static func validateMobile(_ text: String) -> Bool {
-        let regex = "[0-9]{10,14}" // PhoneNo 10-14 Digits
+        let regex = "[0-9+]{10,14}" // PhoneNo 10-14 Digits
         let trimmedText = text.trimmingCharacters(in: .whitespaces)
         let validate = NSPredicate(format:"SELF MATCHES %@", regex)
         return validate.evaluate(with: trimmedText)

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Lottie
 
 class OTPViewController: UIViewController {
     
@@ -26,6 +27,12 @@ class OTPViewController: UIViewController {
     @IBOutlet weak var btn_verifyBtn: UIButton!
     @IBOutlet weak var btn_resendOtpBtn: UIButton!
     
+    //Lottie
+    @IBOutlet weak var loadingBackView: UIView!
+    @IBOutlet weak var loadingView: UIView!
+    
+    let animationView = AnimationView()
+    
     private let client = APIClient()
     
     var registrationUserInfo: RegistrationResModel?
@@ -41,7 +48,7 @@ class OTPViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        self.lbl_otpMessageLbl.text = self.registrationUserInfo?.message
+        self.updateUIWhenViewWillAppear()
     }
     
     @IBAction func submitOTPAction(_ sender: UIButton) {
@@ -49,6 +56,8 @@ class OTPViewController: UIViewController {
             return
         }
         
+        vw_verifyBackView.isHidden = true
+        self.setupAnimation(withAnimation: true)
         self.postOTPUser(withMobile: mobile, otp: otp, type: type, andToken: token)
         
     }
@@ -114,6 +123,12 @@ extension OTPViewController {
         self.disableVerifyButtonAction()
     }
     
+    private func updateUIWhenViewWillAppear() {
+        self.loadingBackView.isHidden = true
+        self.vw_verifyBackView.isHidden = false
+        self.lbl_otpMessageLbl.text = self.registrationUserInfo?.message
+    }
+    
     func addBottomBorderTo(textField: UITextField) {
         let layer = CALayer()
         layer.backgroundColor = UIColor.white.cgColor
@@ -166,10 +181,34 @@ extension OTPViewController {
     }
     
     private func initialRootViewController() {
+        self.handleUIAfterAPIResponse()
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let rootVC = storyboard.instantiateViewController(withIdentifier: "TabBarViewController") as? TabBarViewController {
             self.view.window?.rootViewController = rootVC
         }
+    }
+    
+    private func setupAnimation(withAnimation status: Bool) {
+        animationView.animation = Animation.named("29577-dot-loader-5")
+        animationView.frame = loadingView.bounds
+        animationView.backgroundColor = ConstHelper.white
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        if status {
+            animationView.play()
+            loadingView.addSubview(animationView)
+            loadingBackView.isHidden = false
+        }
+        else {
+            animationView.stop()
+            loadingBackView.isHidden = true
+        }
+
+    }
+    
+    private func handleUIAfterAPIResponse() {
+        self.vw_verifyBackView.isHidden = false
+        self.setupAnimation(withAnimation: false)
     }
 }
 
@@ -256,6 +295,7 @@ extension OTPViewController {
                 if user.status {
                     UserDefaults.standard.set(user.data?.userId, forKey: "LoggedUserId")
                     UserDefaults.standard.set(user.data?.name, forKey: "LoggedUserName")
+                    UserDefaults.standard.set(user.data?.mobile, forKey: "LoggedUserMobile")
                     UserDefaults.standard.set(true, forKey: "loginStatusKey")
                     UserDefaults.standard.synchronize()
                     
@@ -264,10 +304,12 @@ extension OTPViewController {
                     }
                     
                 } else {
+                    strongSelf.handleUIAfterAPIResponse()
                     strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(user.message ?? "")", actionTitle: "Ok")
                     return
                 }
             case .failure(let error):
+                strongSelf.handleUIAfterAPIResponse()
                 strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(error.localizedDescription)", actionTitle: "Ok")
                 return
             }

@@ -7,11 +7,14 @@
 //
 
 import UIKit
+import Lottie
 
 class HomeViewController: UIViewController {
     
     @IBOutlet weak var vw_emergencyBackView: UIView!
     @IBOutlet weak var btn_emergencyBtn: UIButton!
+    @IBOutlet weak var loadingBackView: UIView!
+    @IBOutlet weak var loadingView: UIView!
     
     //Navbar
     @IBOutlet weak var iv_profile: UIImageView!
@@ -45,7 +48,10 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var lbl_prodCategoryName: UILabel!
     @IBOutlet weak var vw_prodCategoryBackView: UIView!
     @IBOutlet weak var cv_prodCategoryCollectionView: UICollectionView!
-        
+    
+    var locationManager: MyLocationManager?
+    
+    let animationView = AnimationView()
     private let client = APIClient()
     
     var categoryModel: CategoryModel?
@@ -56,7 +62,11 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         navigationController?.navigationBar.isHidden = true
+        
+        locationManager = MyLocationManager()
+        locationManager?.delegate = self
         
         self.cv_mainCategoryCollectionView.delegate = self
         self.cv_mainCategoryCollectionView.dataSource = self
@@ -76,12 +86,31 @@ class HomeViewController: UIViewController {
         vw_prodBackView.isHidden = true
         
         self.updateDefaultUI()
+        self.setupAnimation(withAnimation: true)
         self.getAllCategories()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
+    }
+    
+    private func setupAnimation(withAnimation status: Bool) {
+        animationView.animation = Animation.named("6615-loader-animation")
+        animationView.frame = loadingView.bounds
+        animationView.backgroundColor = ConstHelper.white
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        if status {
+            animationView.play()
+            loadingView.addSubview(animationView)
+            loadingBackView.isHidden = false
+        }
+        else {
+            animationView.stop()
+            loadingBackView.isHidden = true
+        }
+
     }
     
     @IBAction func logoutAction(_ sender: UIButton) {
@@ -123,6 +152,33 @@ extension HomeViewController {
         let username = UserDefaults.standard.value(forKey: "LoggedUserName") as? String ?? ""
         self.lbl_userName.text = "Hi!" + " " + username
     }
+    
+    private func updateDefaultSelectionForAll() {
+        let indexPath = IndexPath(item: 0, section: 0)
+        self.cv_mainCategoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+        self.cv_subCategoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+        self.cv_miniCategoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+        self.cv_prodCategoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+    }
+    
+    private func updateDefaultSelectionForSubMiniProd() {
+        let indexPath = IndexPath(item: 0, section: 0)
+        self.cv_subCategoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+        self.cv_miniCategoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+        self.cv_prodCategoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+    }
+    
+    private func updateDefaultSelectionForMiniProd() {
+        let indexPath = IndexPath(item: 0, section: 0)
+        self.cv_miniCategoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+        self.cv_prodCategoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+    }
+    
+    private func updateDefaultSelectionForProd() {
+        let indexPath = IndexPath(item: 0, section: 0)
+        self.cv_prodCategoryCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+    }
+    
 }
 
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -190,17 +246,13 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch collectionView {
         case self.cv_mainCategoryCollectionView:
-            let size = (self.cv_mainCategoryCollectionView.frame.width-52)/4
-            return CGSize(width: size, height: size)
+            return CGSize(width: 80, height: 120)
         case self.cv_subCategoryCollectionView:
-            let size = (self.cv_subCategoryCollectionView.frame.width-52)/4
-            return CGSize(width: size, height: size)
+            return CGSize(width: 80, height: 120)
         case self.cv_miniCategoryCollectionView:
-            let size = (self.cv_miniCategoryCollectionView.frame.width-52)/4
-            return CGSize(width: size, height: size)
+            return CGSize(width: 80, height: 120)
         case self.cv_prodCategoryCollectionView:
-            let size = (self.cv_prodCategoryCollectionView.frame.width-52)/4
-            return CGSize(width: size, height: size)
+            return CGSize(width: 80, height: 120)
         default:
             return CGSize(width: 0, height: 0)
         }
@@ -245,12 +297,14 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
                     self.cv_subCategoryCollectionView.reloadData()
                     self.cv_miniCategoryCollectionView.reloadData()
                     self.cv_prodCategoryCollectionView.reloadData()
+                    self.updateDefaultSelectionForSubMiniProd()
                 }
             }
         case self.cv_subCategoryCollectionView:
             if let sub = self.subCategoryModel?[indexPath.row] {
                 self.vw_miniBackView.isHidden = true
                 self.vw_prodBackView.isHidden = true
+                self.lbl_subCategoryName.text = sub.name
                 
                 let miniCategoryAvailable = sub.miniCategory
                 if miniCategoryAvailable {
@@ -270,25 +324,33 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
                 DispatchQueue.main.async {
                     self.cv_miniCategoryCollectionView.reloadData()
                     self.cv_prodCategoryCollectionView.reloadData()
+                    self.updateDefaultSelectionForMiniProd()
                 }
             }
         case self.cv_miniCategoryCollectionView:
             if let mini = self.miniCategoryModel?[indexPath.row] {
                 self.productModel = mini.products
+                self.lbl_miniCategoryName.text = mini.name
                 self.lbl_prodCategoryName.text = mini.products?.first?.name
                 self.vw_prodBackView.isHidden = false
                 
                 DispatchQueue.main.async {
                     self.cv_prodCategoryCollectionView.reloadData()
+                    self.updateDefaultSelectionForProd()
                 }
             }
             
         case self.cv_prodCategoryCollectionView:
             let selectedProduct = self.productModel?[indexPath.item]
+            self.lbl_prodCategoryName.text = selectedProduct?.name
             self.formFillingViewController(selectedProduct)
         default:
             break
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        
     }
     
 }
@@ -303,6 +365,7 @@ extension HomeViewController {
         client.getAllCategories(from: endPoint) { [weak self] result in
             guard let strongSelf = self else { return }
             print("Downloaded Finished...")
+            strongSelf.setupAnimation(withAnimation: false)
             switch result {
             case .success(let categories):
                 guard let categories = categories else { return }
@@ -368,8 +431,21 @@ extension HomeViewController {
             self.cv_subCategoryCollectionView.reloadData()
             self.cv_miniCategoryCollectionView.reloadData()
             self.cv_prodCategoryCollectionView.reloadData()
+            self.updateDefaultSelectionForAll()
         }
         
     }
+    
+}
+
+extension HomeViewController: MyLocationManagerDelegate {
+    func didGetErrorForPermissions(withTitle title: String, andError error: String) {
+        print("Title: \(title), Error: \(error)")
+    }
+    
+    func didGetLocation(withLocation name: String?, latitude: Double?, longitude: Double?) {
+        print("Location: \(name ?? "")\nLatitude: \(latitude ?? 0.0), Longitude: \(longitude ?? 0.0)")
+    }
+    
     
 }

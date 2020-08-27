@@ -15,6 +15,12 @@ class CategoryCollectionCell: UICollectionViewCell {
     @IBOutlet weak var lbl_titleLbl: UILabel!
     @IBOutlet weak var iv_productImgView: UIImageView!
     
+    override var isSelected: Bool {
+        didSet {
+            isSelected ? setSelectedCellAppearance(lbl_titleLbl) : setDeselectedCellAppearance(lbl_titleLbl)
+        }
+    }
+    
     func setCategoryCell(_ image: String?, title: String?) {
         if let imgUrl = URL(string: image ?? "") {
             self.downloadImage(url: imgUrl)
@@ -22,8 +28,18 @@ class CategoryCollectionCell: UICollectionViewCell {
         
         self.lbl_titleLbl.text = title
         
-        self.vw_productBackView.setBorderForView(width: 1, color: .lightGray, radius: 10)
+        self.vw_productBackView.setBorderForView(width: 1, color: UIColor(red: 226/255, green: 226/255, blue: 226/255, alpha: 0.5), radius: 10)
        
+    }
+    
+    func setSelectedCellAppearance(_ label: UILabel) {
+        lbl_titleLbl.font = ConstHelper.h5Bold
+        lbl_titleLbl.textColor = ConstHelper.orange
+    }
+    
+    func setDeselectedCellAppearance(_ label: UILabel) {
+        lbl_titleLbl.font = ConstHelper.h5Normal
+        lbl_titleLbl.textColor = ConstHelper.black
     }
     
     func downloadImage(url: URL) {

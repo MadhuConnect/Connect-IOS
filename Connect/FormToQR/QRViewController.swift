@@ -16,6 +16,8 @@ class QRViewController: UIViewController {
     @IBOutlet weak var iv_qrEditImageView: UIImageView!
     @IBOutlet weak var vw_qrShareBackView: UIView!
     @IBOutlet weak var iv_qrShareImageView: UIImageView!
+
+    var qrInfo: QRInfoModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,11 +37,9 @@ class QRViewController: UIViewController {
 extension QRViewController {
     private func updateDefaultUI() {
         self.vw_qrEditBackView.setBorderForView(width: 0, color: ConstHelper.white, radius: vw_qrEditBackView.frame.size.height / 2)
-//        self.vw_qrEditBackView.addShadow(shadowColor: ConstHelper.black, offSet: CGSize(width: 2.6, height: 2.6), opacity: 0.8, shadowRadius: 5.0, cornerRadius: vw_qrEditBackView.frame.size.height / 2, corners: [.allCorners], fillColor: .white)
         self.vw_qrEditBackView.addShadow(offset: CGSize(width:0, height: 1), color: ConstHelper.gray, radius: vw_qrEditBackView.frame.height / 2, opacity: 0.50)
         
         self.vw_qrShareBackView.setBorderForView(width: 0, color: ConstHelper.white, radius: vw_qrShareBackView.frame.size.height / 2)
-//        self.vw_qrShareBackView.addShadow(shadowColor: ConstHelper.black, offSet: CGSize(width: 2.6, height: 2.6), opacity: 0.8, shadowRadius: 5.0, cornerRadius: vw_qrShareBackView.frame.size.height / 2, corners: [.allCorners], fillColor: .white)
         self.vw_qrShareBackView.addShadow(offset: CGSize(width: 0, height: 1), color: ConstHelper.gray, radius: vw_qrShareBackView.frame.height / 2, opacity: 0.50)
     }
 }
@@ -50,13 +50,20 @@ extension QRViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        if let _ = self.qrInfo {
+            return 1
+        }
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let formCell = tableView.dequeueReusableCell(withIdentifier: ConstHelper.qRCellIdentifier, for: indexPath)
-    
-        return formCell
+        let qrCell = tableView.dequeueReusableCell(withIdentifier: ConstHelper.qRCellIdentifier, for: indexPath) as! QRCell
+        
+        if let _ = self.qrInfo {
+            qrCell.setQRInformation(qrInfo)
+        }
+        
+        return qrCell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

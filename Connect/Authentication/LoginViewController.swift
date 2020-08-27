@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Lottie
 
 class LoginViewController: UIViewController {
     
@@ -25,13 +26,19 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var lbl_errorPasswordLbl: UILabel!
     @IBOutlet weak var lbl_accountLbl: UILabel!
     
+    //Lottie
+    @IBOutlet weak var loadingBackView: UIView!
+    @IBOutlet weak var loadingView: UIView!
+    
+    let animationView = AnimationView()
+    
     private let client = APIClient()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        self.tf_mobileTF.text = "9951451156"
+//        self.tf_mobileTF.text = "9121089404"
 //        self.tf_passwordTF.text = "123123"
-//        self.view.gradientColorForView(firstColor: UIColor(red: 255/255, green: 153/255, blue: 0/255, alpha: 1.0), secondColor: UIColor(red: 62/255, green: 75/255, blue: 108/255, alpha: 1.0))
+
         self.updateDefaultUI()
     }
     
@@ -52,7 +59,8 @@ class LoginViewController: UIViewController {
         guard let mobile = self.tf_mobileTF.text, !mobile.isEmpty, let password = self.tf_passwordTF.text, !password.isEmpty, let token = ConstHelper.deviceToken, !token.isEmpty else {
             return
         }
-        
+        vw_loginBackView.isHidden = true
+        self.setupAnimation(withAnimation: true)
         self.self.postLoginUser(withMobile: mobile, password: password, andToken: token)
     }
     
@@ -105,6 +113,8 @@ extension LoginViewController {
     private func updateUIWhenViewWillAppear() {
         self.lbl_errorMobileLbl.text = ""
         self.lbl_errorPasswordLbl.text = ""
+        self.loadingBackView.isHidden = true
+        self.vw_loginBackView.isHidden = false
     }
     
     @objc func validateText(_ textField: UITextField) {
@@ -159,10 +169,34 @@ extension LoginViewController {
     }
     
     private func initialRootViewController() {
+        self.handleUIAfterAPIResponse()
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let rootVC = storyboard.instantiateViewController(withIdentifier: "TabBarViewController") as? TabBarViewController {
             self.view.window?.rootViewController = rootVC
         }
+    }
+    
+    private func setupAnimation(withAnimation status: Bool) {
+        animationView.animation = Animation.named("29577-dot-loader-5")
+        animationView.frame = loadingView.bounds
+        animationView.backgroundColor = ConstHelper.white
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        if status {
+            animationView.play()
+            loadingView.addSubview(animationView)
+            loadingBackView.isHidden = false
+        }
+        else {
+            animationView.stop()
+            loadingBackView.isHidden = true
+        }
+
+    }
+    
+    private func handleUIAfterAPIResponse() {
+        self.vw_loginBackView.isHidden = false
+        self.setupAnimation(withAnimation: false)
     }
     
 }
@@ -185,7 +219,7 @@ extension LoginViewController: UITextFieldDelegate {
 extension LoginViewController {
     private func postLoginUser(withMobile mobile: String, password: String, andToken token: String) {
         //begin..
-        let parameters: LoginReqModel = LoginReqModel(mobile: mobile, password: password, token: "965510AB-5F15-40D9-A7F8-E281D5516B56")
+        let parameters: LoginReqModel = LoginReqModel(mobile: mobile, password: password, token: token)
         
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
@@ -201,10 +235,10 @@ extension LoginViewController {
             switch result {
             case .success(let user):
                 guard  let user = user else { return }
-
                 if user.status {
                     UserDefaults.standard.set(user.data?.userId, forKey: "LoggedUserId")
                     UserDefaults.standard.set(user.data?.name, forKey: "LoggedUserName")
+                    UserDefaults.standard.set(user.data?.mobile, forKey: "LoggedUserMobile")
                     UserDefaults.standard.set(true, forKey: "loginStatusKey")
                     UserDefaults.standard.synchronize()
                     
@@ -213,10 +247,12 @@ extension LoginViewController {
                     }
                     
                 } else {
+                    strongSelf.handleUIAfterAPIResponse()
                     strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(user.message ?? "")", actionTitle: "Ok")
                     return
                 }
             case .failure(let error):
+                strongSelf.handleUIAfterAPIResponse()
                 strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(error.localizedDescription)", actionTitle: "Ok")
                 return
             }
