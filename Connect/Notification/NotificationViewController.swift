@@ -200,9 +200,9 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
     
     @objc private func blockUserAction(_ sender: UIButton) {
         if let notification = self.notificationModel?[sender.tag] {
-            guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int, let qrId = qrInfo?.qrId else { return }
+            guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else { return }
             self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-            self.unBlockuser(withUserId: userId, qrId: qrId, connectedUserId: notification.connectedUserId, qrStatus: "block")
+            self.blockUser(withUserId: userId, connectedUserId: notification.connectedUserId, qrStatus: "block")
         }
     }
     
@@ -308,8 +308,8 @@ extension NotificationViewController {
     }
     
     //Post to block user
-    private func unBlockuser(withUserId userId: Int, qrId: Int, connectedUserId: Int, qrStatus: String) {
-        let parameters: LockUnLockReqModel = LockUnLockReqModel(userId: userId, qrId: qrId, connectedUserId: connectedUserId, status: qrStatus)
+    private func blockUser(withUserId userId: Int, connectedUserId: Int, qrStatus: String) {
+        let parameters: BlockUserReqModel = BlockUserReqModel(userId: userId, connectedUserId: connectedUserId, status: qrStatus)
             print("Par: \(parameters)")
 
         //Encode parameters
@@ -320,7 +320,7 @@ extension NotificationViewController {
 
         let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
 
-        client.post_lockUnLockUserNotifications(from: endpoint) { [weak self] result in
+        client.post_blockUnBlockUserNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
             strongSelf.setupAnimation(withAnimation: false, name: ConstHelper.loader_animation)
              switch result {

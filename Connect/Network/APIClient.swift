@@ -124,7 +124,7 @@ extension APIClient {
         }, completion: completion)
     }
     
-    // Post lock/unlock/block/unblock user
+    // Post lock/unlock
     func post_lockUnLockUserNotifications(from endpoint: Endpoint, completion: @escaping (Result<LockUnLockResModel?, APIError>) -> Void) {
         let request = endpoint.request
 
@@ -134,7 +134,27 @@ extension APIClient {
         }, completion: completion)
     }
     
-    // Post lock/unlock/block/unblock user
+    // Post block/unBlock
+    func post_blockUnBlockUserNotifications(from endpoint: Endpoint, completion: @escaping (Result<BlockUserResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> BlockUserResModel? in
+            guard let result = json as? BlockUserResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
+    
+    // Post bloced users list
+    func post_blockedUsersList(from endpoint: Endpoint, completion: @escaping (Result<BlockedUsersResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> BlockedUsersResModel? in
+            guard let result = json as? BlockedUsersResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
+    
+    // Post update user coordinate
     func post_updateCoordinates(from endpoint: Endpoint, completion: @escaping (Result<CoordinatesResModel?, APIError>) -> Void) {
         let request = endpoint.request
 

@@ -22,6 +22,7 @@ public struct Endpoint {
 extension Endpoint {
     
     var urlComponents: URLComponents {
+        #warning("It should be change to prod-url while depoying to production")
         let base: String = ConstHelper.testBaseURL
         var component = URLComponents(string: base)!
         component.path = path

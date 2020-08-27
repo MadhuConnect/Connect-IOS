@@ -355,7 +355,7 @@ extension FormFilllingViewController: ImagePickerDelegate {
         guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
             return
         }
-        
+        #warning("Need to implement multiple image upload functionality")
         if let image = image {
             DispatchQueue.main.async {
                 self.uploadProductImages(withUserId: "\(userId)", image: image, imagePath: (imagePath ?? ""))
@@ -491,7 +491,11 @@ extension FormFilllingViewController {
                     guard let imageResModel = imageResModel else { return }
                     
                     if imageResModel.status {
-                        strongSelf.uploadedImageNames.append(imageResModel.name ?? "")
+                        if let imageInfo = imageResModel.data {
+                            let names = imageInfo.map { String(format: "%@", ($0.name ?? "")) }
+                            strongSelf.uploadedImageNames = names
+                        }
+//                        strongSelf.uploadedImageNames.append(imageResModel.name ?? "")
                     } else {
                          strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(imageResModel.message ?? "")", actionTitle: "Ok")
                         return

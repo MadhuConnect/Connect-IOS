@@ -201,7 +201,6 @@ extension OrderHistoryViewController: UITableViewDelegate, UITableViewDataSource
                 let storyboard = UIStoryboard(name: "Notification", bundle: nil)
                 if let blockedUsersVC = storyboard.instantiateViewController(withIdentifier: "BlockedUsersViewController") as? BlockedUsersViewController {
                     blockedUsersVC.modalPresentationStyle = .fullScreen
-                    blockedUsersVC.qrInfo = qrInfo
                     self.present(blockedUsersVC, animated: true, completion: nil)
                  }
             } else {

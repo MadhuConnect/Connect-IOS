@@ -11,6 +11,10 @@ import Foundation
 struct ImageResModel: Codable {
     let status: Bool
     let message: String?
+    let data: [ImageInfo]?
+}
+
+struct ImageInfo: Codable {
     let userId: Int?
     let imageId: Int?
     let name: String?

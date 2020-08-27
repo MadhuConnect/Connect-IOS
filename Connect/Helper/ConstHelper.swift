@@ -17,6 +17,11 @@ public class ConstHelper {
     //PROD BASE URL
     public static var prodBaseURL = "http://connectyourneed.in"
     
+    //Terms and Conditins, PrivacyPolicy & Desclaimer
+    public static var termsAndConditions = ConstHelper.testBaseURL + "/TermsAndConditions"
+    public static var privacyPolicy = ConstHelper.testBaseURL + "/PrivacyPolicy"
+    public static var desclaimer = ConstHelper.testBaseURL + "/Desclaimer"
+    
     //Device model
     public static var iPhoneType = UIDevice.current.screenType.rawValue
     
@@ -31,6 +36,7 @@ public class ConstHelper {
     public static var notificationCellIdentifier = "NotificationCell"
     public static var lockedUsersCellIdentifier = "LockedUsersCell"
     public static var blockedUsersCellIdentifier = "BlockedUsersCell"
+    public static var settingsTableViewCellIdentifier = "SettingsTableViewCell"
     
     //UUID
     public static var deviceToken = UIDevice.current.identifierForVendor?.uuidString
