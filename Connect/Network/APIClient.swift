@@ -163,6 +163,18 @@ extension APIClient {
              return result
         }, completion: completion)
     }
+    
+    //MARK: - PROFILE
+    
+    // Reset Password
+    func post_resetPassword(from endpoint: Endpoint, completion: @escaping (Result<ResetResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> ResetResModel? in
+            guard let result = json as? ResetResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
 }
 
 

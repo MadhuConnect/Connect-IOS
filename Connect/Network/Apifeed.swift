@@ -23,6 +23,7 @@ enum Apifeed: String {
     case blockUsers = "/api/QuickNeeds/blockUsers"
     case blockUsersList = "/api/QuickNeeds/blockUsersList"
     case updateCoordinates = "/api/QuickNeeds/updateCoordinates"
+    case resetPassword = "/api/QuickNeeds/resetPassword"
     
     
     func getApiEndpoint(queryItems: [URLQueryItem] = [], httpMethod: HTTPMethod, headers: [HTTPHeader], body: Data? = Data(), timeInterval: TimeInterval) -> Endpoint {
