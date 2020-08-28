@@ -253,7 +253,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xqj-J2-hSa" userLabel="Password">
                                 <rect key="frame" x="0.0" y="436" width="375" height="60"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Password" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y19-kd-QYM">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reset Password" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y19-kd-QYM">
                                         <rect key="frame" x="56" y="8" width="303" height="44"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
@@ -296,16 +296,10 @@
                                     <constraint firstAttribute="height" constant="1" id="Z8Z-tL-kzV"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1MF-YQ-QiJ">
-                                <rect key="frame" x="16" y="552" width="343" height="50"/>
-                                <color key="backgroundColor" name="appCyan"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="Ppy-g1-SS5"/>
-                                </constraints>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="UPDATE PROFILE"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FdU-q9-zxw">
+                                <rect key="frame" x="0.0" y="436" width="375" height="60"/>
                                 <connections>
-                                    <action selector="updateProfileAction:" destination="8MX-mj-XeO" eventType="touchUpInside" id="fHL-JS-2Kv"/>
+                                    <action selector="resetPasswordAction:" destination="8MX-mj-XeO" eventType="touchUpInside" id="kTt-Gh-DEJ"/>
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hlY-2E-WZV">
@@ -332,18 +326,18 @@
                             <constraint firstItem="vFp-IP-r5X" firstAttribute="top" secondItem="7Pk-z3-hUj" secondAttribute="bottom" id="13T-Hw-o1S"/>
                             <constraint firstItem="gsG-xz-c6X" firstAttribute="top" secondItem="VTP-iQ-W8p" secondAttribute="top" id="2Dg-Jj-taQ"/>
                             <constraint firstItem="Xqj-J2-hSa" firstAttribute="leading" secondItem="VTP-iQ-W8p" secondAttribute="leading" id="2dA-Tf-dnm"/>
-                            <constraint firstItem="1MF-YQ-QiJ" firstAttribute="leading" secondItem="VTP-iQ-W8p" secondAttribute="leading" constant="16" id="5I4-jI-3H4"/>
                             <constraint firstAttribute="trailing" secondItem="gsG-xz-c6X" secondAttribute="trailing" id="7AM-vU-GLN"/>
+                            <constraint firstItem="FdU-q9-zxw" firstAttribute="leading" secondItem="Xqj-J2-hSa" secondAttribute="leading" id="IWk-8z-Xhe"/>
                             <constraint firstItem="7Pk-z3-hUj" firstAttribute="top" secondItem="Qek-R3-mID" secondAttribute="bottom" id="Ies-qK-Km8"/>
                             <constraint firstItem="VTP-iQ-W8p" firstAttribute="trailing" secondItem="Qpz-Ck-3hn" secondAttribute="trailing" id="KE8-pD-8hJ"/>
                             <constraint firstItem="VTP-iQ-W8p" firstAttribute="trailing" secondItem="Qek-R3-mID" secondAttribute="trailing" id="KMe-oQ-mIC"/>
                             <constraint firstItem="Qek-R3-mID" firstAttribute="top" secondItem="Ohv-4K-m9k" secondAttribute="bottom" id="KOi-e1-3JN"/>
-                            <constraint firstItem="VTP-iQ-W8p" firstAttribute="trailing" secondItem="1MF-YQ-QiJ" secondAttribute="trailing" constant="16" id="KfO-8I-ShV"/>
                             <constraint firstItem="Ohv-4K-m9k" firstAttribute="top" secondItem="Qpz-Ck-3hn" secondAttribute="bottom" id="Omu-om-78A"/>
                             <constraint firstItem="f27-PL-kFE" firstAttribute="top" secondItem="BLE-1o-xih" secondAttribute="top" id="Pw2-23-Dfx"/>
                             <constraint firstItem="iIG-zL-2J8" firstAttribute="top" secondItem="i0A-k0-81m" secondAttribute="bottom" id="RCj-DG-qbd"/>
-                            <constraint firstItem="VTP-iQ-W8p" firstAttribute="bottom" secondItem="1MF-YQ-QiJ" secondAttribute="bottom" constant="16" id="RF6-hQ-WSi"/>
                             <constraint firstItem="iIG-zL-2J8" firstAttribute="leading" secondItem="i0A-k0-81m" secondAttribute="leading" id="RPu-ne-9My"/>
+                            <constraint firstItem="FdU-q9-zxw" firstAttribute="trailing" secondItem="Xqj-J2-hSa" secondAttribute="trailing" id="RtU-hJ-fU6"/>
+                            <constraint firstItem="FdU-q9-zxw" firstAttribute="bottom" secondItem="Xqj-J2-hSa" secondAttribute="bottom" id="TaJ-cM-ZPo"/>
                             <constraint firstItem="hlY-2E-WZV" firstAttribute="top" secondItem="VTP-iQ-W8p" secondAttribute="top" id="UDt-F1-vGS"/>
                             <constraint firstItem="hlY-2E-WZV" firstAttribute="leading" secondItem="VTP-iQ-W8p" secondAttribute="leading" id="UKr-5m-vAe"/>
                             <constraint firstItem="iIG-zL-2J8" firstAttribute="trailing" secondItem="i0A-k0-81m" secondAttribute="trailing" id="Va5-Ib-niJ"/>
@@ -369,6 +363,7 @@
                             <constraint firstItem="f27-PL-kFE" firstAttribute="bottom" secondItem="gsG-xz-c6X" secondAttribute="bottom" id="olr-UT-Lt6"/>
                             <constraint firstItem="FjN-nP-oyw" firstAttribute="trailing" secondItem="vFp-IP-r5X" secondAttribute="trailing" id="sg4-Ia-7qe"/>
                             <constraint firstAttribute="trailing" secondItem="f27-PL-kFE" secondAttribute="trailing" id="uTD-fb-Ons"/>
+                            <constraint firstItem="FdU-q9-zxw" firstAttribute="top" secondItem="Xqj-J2-hSa" secondAttribute="top" id="vKP-hh-I0T"/>
                             <constraint firstItem="7Pk-z3-hUj" firstAttribute="trailing" secondItem="Qek-R3-mID" secondAttribute="trailing" id="vVt-mq-r9c"/>
                             <constraint firstItem="vFp-IP-r5X" firstAttribute="leading" secondItem="VTP-iQ-W8p" secondAttribute="leading" id="vgX-pQ-3Cb"/>
                             <constraint firstItem="FjN-nP-oyw" firstAttribute="top" secondItem="vFp-IP-r5X" secondAttribute="bottom" id="w7b-dp-ip6"/>
@@ -380,7 +375,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="btn_profilePic" destination="NyO-pU-5Rh" id="HdK-Ax-ehS"/>
-                        <outlet property="btn_updateProfile" destination="1MF-YQ-QiJ" id="ZQT-9x-TzL"/>
+                        <outlet property="btn_resetPassword" destination="FdU-q9-zxw" id="BdA-Zz-TDt"/>
                         <outlet property="iv_emailImageView" destination="oeI-z6-nFr" id="Bcy-ww-4bp"/>
                         <outlet property="iv_fullNameImageView" destination="mqM-hO-ij9" id="oEL-rp-R3c"/>
                         <outlet property="iv_mobileImageView" destination="cVO-tb-BOI" id="qDV-MV-pbJ"/>

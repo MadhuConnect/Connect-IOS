@@ -60,6 +60,8 @@
 		35C9D9CB24F8201A001B77AD /* BlockedUsersResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D9CA24F8201A001B77AD /* BlockedUsersResModel.swift */; };
 		35C9D9CD24F82CA0001B77AD /* BlockUserReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D9CC24F82CA0001B77AD /* BlockUserReqModel.swift */; };
 		35C9D9CF24F82E0F001B77AD /* BlockUserResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D9CE24F82E0F001B77AD /* BlockUserResModel.swift */; };
+		35C9D9D124F8C89A001B77AD /* ResetPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D9D024F8C89A001B77AD /* ResetPasswordViewController.swift */; };
+		35C9D9D424F8C8B8001B77AD /* ResetPassword.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35C9D9D324F8C8B8001B77AD /* ResetPassword.storyboard */; };
 		35F9672E24DC6AE400F56411 /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9672B24DC6AE400F56411 /* UIDevice+Extensions.swift */; };
 		35F9673224DC6FC900F56411 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9673124DC6FC900F56411 /* UIView+Extension.swift */; };
 		35F9673424DC728000F56411 /* ConstHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9673324DC728000F56411 /* ConstHelper.swift */; };
@@ -186,6 +188,8 @@
 		35C9D9CA24F8201A001B77AD /* BlockedUsersResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersResModel.swift; sourceTree = "<group>"; };
 		35C9D9CC24F82CA0001B77AD /* BlockUserReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockUserReqModel.swift; sourceTree = "<group>"; };
 		35C9D9CE24F82E0F001B77AD /* BlockUserResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockUserResModel.swift; sourceTree = "<group>"; };
+		35C9D9D024F8C89A001B77AD /* ResetPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordViewController.swift; sourceTree = "<group>"; };
+		35C9D9D324F8C8B8001B77AD /* ResetPassword.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ResetPassword.storyboard; sourceTree = "<group>"; };
 		35F9672B24DC6AE400F56411 /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		35F9673124DC6FC900F56411 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		35F9673324DC728000F56411 /* ConstHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstHelper.swift; sourceTree = "<group>"; };
@@ -330,6 +334,7 @@
 				35F9673724DD928500F56411 /* ProfileViewController.swift */,
 				35F9673924DD929300F56411 /* OrderHistoryViewController.swift */,
 				35C9D9BC24F8041E001B77AD /* SettingsViewController.swift */,
+				35C9D9D224F8C8A3001B77AD /* ResetPassword */,
 				35C9D9C424F815C8001B77AD /* Terms */,
 				35F9674824DDB83400F56411 /* Custom Cell */,
 				35C31D6624DC40200067D9A5 /* Assets.xcassets */,
@@ -387,6 +392,15 @@
 				35C9D9C824F81C1C001B77AD /* WebKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		35C9D9D224F8C8A3001B77AD /* ResetPassword */ = {
+			isa = PBXGroup;
+			children = (
+				35C9D9D024F8C89A001B77AD /* ResetPasswordViewController.swift */,
+				35C9D9D324F8C8B8001B77AD /* ResetPassword.storyboard */,
+			);
+			path = ResetPassword;
 			sourceTree = "<group>";
 		};
 		35F9673024DC6AED00F56411 /* Helper */ = {
@@ -616,6 +630,7 @@
 				35F9674124DD931E00F56411 /* Form.storyboard in Resources */,
 				35B387F524E5BFDF00D9274F /* 6615-loader-animation.json in Resources */,
 				35C31D6724DC40200067D9A5 /* Assets.xcassets in Resources */,
+				35C9D9D424F8C8B8001B77AD /* ResetPassword.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -662,6 +677,7 @@
 				35F9675524DDCC4A00F56411 /* APIClient.swift in Sources */,
 				35B3880D24F05F2300D9274F /* NotificationReqModel.swift in Sources */,
 				35F9678B24DFF10E00F56411 /* OTPReqModel.swift in Sources */,
+				35C9D9D124F8C89A001B77AD /* ResetPasswordViewController.swift in Sources */,
 				35C9D9BD24F8041E001B77AD /* SettingsViewController.swift in Sources */,
 				35C9D9CF24F82E0F001B77AD /* BlockUserResModel.swift in Sources */,
 				35B387B024E411A200D9274F /* OrdersTableViewCell.swift in Sources */,

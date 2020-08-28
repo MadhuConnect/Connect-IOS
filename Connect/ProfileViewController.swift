@@ -43,9 +43,9 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var iv_passwordImageView: UIImageView!
     @IBOutlet weak var lbl_passwordHeading: UILabel!
     @IBOutlet weak var tf_passwordTF: UITextField!
+    @IBOutlet weak var btn_resetPassword: UIButton!
     @IBOutlet weak var vw_passwordLineView: UIView!
     
-    @IBOutlet weak var btn_updateProfile: UIButton!
     //Lottie
     @IBOutlet weak var loadingBackView: UIView!
     @IBOutlet weak var loadingView: UIView!
@@ -67,6 +67,14 @@ class ProfileViewController: UIViewController {
     
     @IBAction func updateProfileAction(_ sender: UIButton) {
         
+    }
+    
+    @IBAction func resetPasswordAction(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "ResetPassword", bundle: nil)
+        if let resetPasswordVC = storyboard.instantiateViewController(withIdentifier: "ResetPasswordViewController") as? ResetPasswordViewController {
+            resetPasswordVC.modalPresentationStyle = .fullScreen
+            self.present(resetPasswordVC, animated: true, completion: nil)
+        }
     }
     
     private func setupAnimation(withAnimation status: Bool) {
@@ -127,11 +135,6 @@ extension ProfileViewController {
         self.iv_emailImageView.tintColor = ConstHelper.black
         self.iv_mobileImageView.tintColor = ConstHelper.black
         self.iv_passwordImageView.tintColor = ConstHelper.black
-        
-        //Proceed button
-        self.btn_updateProfile.backgroundColor = ConstHelper.cyan
-        self.btn_updateProfile.setTitleColor(ConstHelper.white, for: .normal)
-        self.btn_updateProfile.titleLabel?.font = ConstHelper.h3Normal
         
         //Disable profile input fields
         self.tf_fullNameTF.isUserInteractionEnabled = false
