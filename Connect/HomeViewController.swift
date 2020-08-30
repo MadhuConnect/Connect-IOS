@@ -151,6 +151,13 @@ extension HomeViewController {
         //Update user info
         let username = UserDefaults.standard.value(forKey: "LoggedUserName") as? String ?? ""
         self.lbl_userName.text = "Hi!" + " " + username
+        
+        let namePrefix = username.prefix(1)        
+        self.btn_profile.setTitle("\(namePrefix)", for: .normal)
+        self.btn_profile.titleLabel?.font = ConstHelper.h4Bold
+        self.btn_profile.tintColor = ConstHelper.cyan
+        self.btn_profile.backgroundColor = ConstHelper.white
+        self.btn_profile.setBorderForView(width: 1, color: .white, radius: self.btn_profile.frame.size.height / 2.0)
     }
     
     private func updateDefaultSelectionForAll() {

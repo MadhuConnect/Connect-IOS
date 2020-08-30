@@ -64,6 +64,8 @@
 		35C9D9D424F8C8B8001B77AD /* ResetPassword.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35C9D9D324F8C8B8001B77AD /* ResetPassword.storyboard */; };
 		35C9D9D624F8E302001B77AD /* ResetResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D9D524F8E302001B77AD /* ResetResModel.swift */; };
 		35C9D9D824F8E33A001B77AD /* ResetReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D9D724F8E33A001B77AD /* ResetReqModel.swift */; };
+		35C9D9E124FAB040001B77AD /* BSImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 35C9D9E024FAB040001B77AD /* BSImagePicker */; };
+		35C9D9E724FB7FE0001B77AD /* MultipleImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D9E624FB7FE0001B77AD /* MultipleImagePicker.swift */; };
 		35F9672E24DC6AE400F56411 /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9672B24DC6AE400F56411 /* UIDevice+Extensions.swift */; };
 		35F9673224DC6FC900F56411 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9673124DC6FC900F56411 /* UIView+Extension.swift */; };
 		35F9673424DC728000F56411 /* ConstHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9673324DC728000F56411 /* ConstHelper.swift */; };
@@ -194,6 +196,7 @@
 		35C9D9D324F8C8B8001B77AD /* ResetPassword.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ResetPassword.storyboard; sourceTree = "<group>"; };
 		35C9D9D524F8E302001B77AD /* ResetResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetResModel.swift; sourceTree = "<group>"; };
 		35C9D9D724F8E33A001B77AD /* ResetReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetReqModel.swift; sourceTree = "<group>"; };
+		35C9D9E624FB7FE0001B77AD /* MultipleImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipleImagePicker.swift; sourceTree = "<group>"; };
 		35F9672B24DC6AE400F56411 /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		35F9673124DC6FC900F56411 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		35F9673324DC728000F56411 /* ConstHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstHelper.swift; sourceTree = "<group>"; };
@@ -230,6 +233,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				35C9D9E124FAB040001B77AD /* BSImagePicker in Frameworks */,
 				35C9D9C924F81C1C001B77AD /* WebKit.framework in Frameworks */,
 				35F9677B24DFC20A00F56411 /* Lottie in Frameworks */,
 				35F9676D24DDF10500F56411 /* Kingfisher in Frameworks */,
@@ -500,6 +504,7 @@
 		35F9678E24E011D900F56411 /* ImagePicker */ = {
 			isa = PBXGroup;
 			children = (
+				35C9D9E624FB7FE0001B77AD /* MultipleImagePicker.swift */,
 				35F9678F24E011F900F56411 /* ImagePicker.swift */,
 			);
 			path = ImagePicker;
@@ -528,6 +533,7 @@
 				35F9676924DDF10500F56411 /* KingfisherDynamic */,
 				35F9676C24DDF10500F56411 /* Kingfisher */,
 				35F9677A24DFC20A00F56411 /* Lottie */,
+				35C9D9E024FAB040001B77AD /* BSImagePicker */,
 			);
 			productName = Connect;
 			productReference = 35C31D5724DC401E0067D9A5 /* Connect.app */;
@@ -605,6 +611,7 @@
 				35C31D8D24DC40A90067D9A5 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
 				35F9676624DDF10500F56411 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				35F9677924DFC20A00F56411 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				35C9D9DF24FAB03F001B77AD /* XCRemoteSwiftPackageReference "BSImagePicker" */,
 			);
 			productRefGroup = 35C31D5824DC401E0067D9A5 /* Products */;
 			projectDirPath = "";
@@ -726,6 +733,7 @@
 				35B387B224E578E400D9274F /* OrdersResModel.swift in Sources */,
 				35F9673824DD928500F56411 /* ProfileViewController.swift in Sources */,
 				35C31D9D24DC47000067D9A5 /* SignUpViewController.swift in Sources */,
+				35C9D9E724FB7FE0001B77AD /* MultipleImagePicker.swift in Sources */,
 				35B387AB24E1B30800D9274F /* FormReqModel.swift in Sources */,
 				35F9679224E013E700F56411 /* ImageResModel.swift in Sources */,
 			);
@@ -1056,6 +1064,14 @@
 				minimumVersion = 6.5.5;
 			};
 		};
+		35C9D9DF24FAB03F001B77AD /* XCRemoteSwiftPackageReference "BSImagePicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mikaoj/BSImagePicker.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.2.1;
+			};
+		};
 		35F9676624DDF10500F56411 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -1079,6 +1095,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 35C31D8D24DC40A90067D9A5 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
 			productName = IQKeyboardManagerSwift;
+		};
+		35C9D9E024FAB040001B77AD /* BSImagePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 35C9D9DF24FAB03F001B77AD /* XCRemoteSwiftPackageReference "BSImagePicker" */;
+			productName = BSImagePicker;
 		};
 		35F9676724DDF10500F56411 /* KingfisherStatic */ = {
 			isa = XCSwiftPackageProductDependency;

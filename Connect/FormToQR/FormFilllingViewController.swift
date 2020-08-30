@@ -11,6 +11,7 @@ import Kingfisher
 
 struct UploadImage {
     let image: UIImage
+    let imageUrl: String
 }
 
 class FormFilllingViewController: UIViewController {
@@ -75,11 +76,12 @@ class FormFilllingViewController: UIViewController {
     //Proceed btn
     @IBOutlet weak var btn_proceed: UIButton!
     
-    var imagePicker: ImagePicker!
+    var multipleImagePicker: MultipleImagePicker!
     
     private let client = APIClient()
     var selctedProduct: ProductModel?
     var uploadedLocalImages: [UploadImage] = []
+    var uploadedLocalImagePaths: [String] = []
     var subcriptionResModel: SubcriptionResModel?
     var prices: [Prices]?// = []
     var uploadedImageNames: [String] = []
@@ -95,7 +97,8 @@ class FormFilllingViewController: UIViewController {
         super.viewDidLoad()
 
         navigationController?.navigationBar.isHidden = true
-        self.imagePicker = ImagePicker(presentationController: self, delegate: self)
+        self.multipleImagePicker = MultipleImagePicker(presentationController: self, delegate: self)
+        
         self.tv_descTV.delegate = self
         
         print(selctedProduct as Any)
@@ -124,7 +127,7 @@ class FormFilllingViewController: UIViewController {
     }
     
     @IBAction func uploadImageAction(_ sender: UIButton) {
-        self.imagePicker.present(from: sender)
+        self.multipleImagePicker.present(from: sender, viewController: self)
     }
     
     @IBAction func formSubmitAction(_ sender: UIButton) {
@@ -149,7 +152,7 @@ class FormFilllingViewController: UIViewController {
         let selProductType = (self.sg_productType.selectedSegmentIndex == 0) ? "New" : "Used"
         let uploadImages = self.uploadedImageNames.joined(separator: ",")
 
-        self.postFormFillingData(userId, productId: selProductId, personType: selPersonType, productType: selProductType, uploadImages: uploadImages, description: description, minAmount: minAmount, maxAmount: maxAmount, privacyStatus: selPrivacyStatus, connectRange: selConnectRange, salesTypeId: salesTypeId, priceId: selPriceId)
+        self.postFormFillingData(userId, productId: selProductId, personType: selPersonType, productType: selProductType, uploadImages: uploadImages, title: "Apple Product", description: description, minAmount: minAmount, maxAmount: maxAmount, privacyStatus: selPrivacyStatus, connectRange: selConnectRange, salesTypeId: salesTypeId, priceId: selPriceId)
     }
 
 }
@@ -350,30 +353,29 @@ extension FormFilllingViewController: UICollectionViewDelegate, UICollectionView
 
 }
 
-extension FormFilllingViewController: ImagePickerDelegate {
-    func didSelect(image: UIImage?, imagePath: String?) {
+extension FormFilllingViewController: MultipleImagePickerDelegate {
+    func didSelectMultiple(images: [ImageAsset]?) {
+        self.uploadedLocalImages.removeAll()
+        self.uploadedLocalImagePaths.removeAll()
+        
         guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
             return
         }
-        #warning("Need to implement multiple image upload functionality")
-        if let image = image {
-            DispatchQueue.main.async {
-                self.uploadProductImages(withUserId: "\(userId)", image: image, imagePath: (imagePath ?? ""))
+        
+        if let images = images {
+            for image in images {
+                self.uploadedLocalImages.append(UploadImage(image: image.image!, imageUrl: image.name))
+                self.uploadedLocalImagePaths.append(image.name)
             }
             
-            let uploadImage = UploadImage(image: image)
-            self.uploadedLocalImages.append(uploadImage)
+            print(self.uploadedLocalImagePaths)
+            
+            DispatchQueue.main.async {
+                self.uploadProductImages(withUserId: "\(userId)", imagePaths: self.uploadedLocalImagePaths)
+            }
+            
+            self.cv_imageCollectionView.reloadData()
         }
-        
-        if self.uploadedLocalImages.count > 0 {
-//            self.addPhotosViewHeight.constant = 148
-        } else {
-//            self.addPhotosViewHeight.constant = 40
-            self.uploadedLocalImages.removeAll()
-        }
-        
-        self.cv_imageCollectionView.reloadData()
-        
     }
     
 }
@@ -436,29 +438,33 @@ extension FormFilllingViewController {
     }
     
     //MARK: - Image upload (multipart/form-data)
-    private func uploadProductImages(withUserId userId: String, image: UIImage?, imagePath: String) {
-        let parameters = [
+    private func uploadProductImages(withUserId userId: String, imagePaths: [String]) {
+        
+        var parameters: [[String: Any]]? = nil
+        parameters = [
             [
-                "key": "userId",
-                "value": "\(userId)",
-                "type": "text"
+              "key": "userId",
+              "value": "\(userId)",
+              "type": "text"
             ],
             [
-                "key": "image",
-                "src": "\(imagePath)",
-                "type": "file"
-            ],
-            [
-                "key": "status",
-                "value": "Qrcode",
-                "type": "text"
-            ]] as [[String : Any]]
+              "key": "status",
+              "value": "Qrcode",
+              "type": "text"
+            ]
+        ]
+        
+        for path in imagePaths {
+            parameters?.append(["key": "image[]", "src": "\(path)", "type": "file"])
+        }
+        
+        print("Parameters: \(parameters)")
         
         do {
             let boundary = "Boundary-\(UUID().uuidString)"
             var body = ""
-            //            var error: Error? = nil
-            for param in parameters {
+            var error: Error? = nil
+            for param in parameters! {
                 if param["disabled"] == nil {
                     let paramName = param["key"]!
                     body += "--\(boundary)\r\n"
@@ -482,7 +488,7 @@ extension FormFilllingViewController {
             //API
             let api: Apifeed = .uploadImage
             
-            let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("multipart/form-data; boundary=\(boundary)"),.authorization("\(ConstHelper.staticToken);boundary=\(boundary)")], body: postData, timeInterval: Double.infinity)
+            let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.authorization("\(ConstHelper.staticToken)"), .contentType("multipart/form-data; boundary=\(boundary)")], body: postData, timeInterval: Double.infinity)
             
             client.post_uploadImage(from: endpoint) { [weak self] result in
                 guard let strongSelf = self else { return }
@@ -491,11 +497,12 @@ extension FormFilllingViewController {
                     guard let imageResModel = imageResModel else { return }
                     
                     if imageResModel.status {
+                        strongSelf.uploadedImageNames.removeAll()
                         if let imageInfo = imageResModel.data {
-                            let names = imageInfo.map { String(format: "%@", ($0.name ?? "")) }
-                            strongSelf.uploadedImageNames = names
+                            for info in imageInfo {
+                                strongSelf.uploadedImageNames.append(info.name ?? "")
+                            }
                         }
-//                        strongSelf.uploadedImageNames.append(imageResModel.name ?? "")
                     } else {
                          strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(imageResModel.message ?? "")", actionTitle: "Ok")
                         return
@@ -512,8 +519,8 @@ extension FormFilllingViewController {
     }
     
     //Psot Form Filling Data
-    private func postFormFillingData(_ userId: Int, productId: Int, personType: String, productType: String, uploadImages: String, description: String, minAmount: Int, maxAmount: Int, privacyStatus: String, connectRange: String, salesTypeId: Int, priceId: Int) {
-        let parameters: FormReqModel = FormReqModel(userId: userId, productId: productId, personType: personType, productType: productType, uploadImages: uploadImages, description: description, minAmount: minAmount, maxAmount: maxAmount, privacyStatus: privacyStatus, connectRange: connectRange, salesTypeId: salesTypeId, priceId: priceId)
+    private func postFormFillingData(_ userId: Int, productId: Int, personType: String, productType: String, uploadImages: String, title: String, description: String, minAmount: Int, maxAmount: Int, privacyStatus: String, connectRange: String, salesTypeId: Int, priceId: Int) {
+        let parameters: FormReqModel = FormReqModel(userId: userId, productId: productId, personType: personType, productType: productType, uploadImages: uploadImages, title: title, description: description, minAmount: minAmount, maxAmount: maxAmount, privacyStatus: privacyStatus, connectRange: connectRange, salesTypeId: salesTypeId, priceId: priceId)
         
         print("Par: \(parameters)")
 
@@ -544,7 +551,7 @@ extension FormFilllingViewController {
         }
     }
     
-    func moveToQRGenerateViewController(withQRInfo qrInfo: FormResModel) {    
+    func moveToQRGenerateViewController(withQRInfo qrInfo: FormResModel) {
         if let qrVC = self.storyboard?.instantiateViewController(withIdentifier: "QRViewController") as? QRViewController {
         qrVC.qrInfo = qrInfo.data
         self.navigationController?.pushViewController(qrVC, animated: true)
