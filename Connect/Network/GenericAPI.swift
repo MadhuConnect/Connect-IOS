@@ -29,6 +29,7 @@ extension GenericAPI {
             if (200...209).contains(httpResponse.statusCode) {
                 if let data = data {
                     do {
+                        print(try JSONSerialization.jsonObject(with: data, options: []))
                         let results = try JSONDecoder().decode(codableType, from: data)
                         completion(results, nil)
                     } catch {

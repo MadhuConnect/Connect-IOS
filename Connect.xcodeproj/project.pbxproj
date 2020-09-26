@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		352FAB242506BFB10061057C /* OnboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352FAB232506BFB10061057C /* OnboardViewController.swift */; };
+		35A3F21A251522F9001B6803 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A3F219251522F9001B6803 /* ChangePasswordViewController.swift */; };
+		35A3F21C25163874001B6803 /* ContactUsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A3F21B25163874001B6803 /* ContactUsViewController.swift */; };
+		35A3F21E2516A709001B6803 /* 1631-healthtap-spinner.json in Resources */ = {isa = PBXBuildFile; fileRef = 35A3F21D2516A709001B6803 /* 1631-healthtap-spinner.json */; };
+		35A3F2212516A71B001B6803 /* 24259-pride-month-2020-location-circle-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 35A3F21F2516A71A001B6803 /* 24259-pride-month-2020-location-circle-animation.json */; };
+		35A3F2222516A71B001B6803 /* 21483-lock-outline-icon.json in Resources */ = {isa = PBXBuildFile; fileRef = 35A3F2202516A71B001B6803 /* 21483-lock-outline-icon.json */; };
 		35B387A524E02A6700D9274F /* FormFilllingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B387A424E02A6700D9274F /* FormFilllingViewController.swift */; };
 		35B387A724E04A9A00D9274F /* ImageUploadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B387A624E04A9A00D9274F /* ImageUploadCell.swift */; };
 		35B387A924E0787100D9274F /* SubcriptionResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B387A824E0787100D9274F /* SubcriptionResModel.swift */; };
@@ -66,6 +72,14 @@
 		35C9D9D824F8E33A001B77AD /* ResetReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D9D724F8E33A001B77AD /* ResetReqModel.swift */; };
 		35C9D9E124FAB040001B77AD /* BSImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 35C9D9E024FAB040001B77AD /* BSImagePicker */; };
 		35C9D9E724FB7FE0001B77AD /* MultipleImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D9E624FB7FE0001B77AD /* MultipleImagePicker.swift */; };
+		35E063B5251D250E009E9C03 /* EmergencyRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E063B4251D250D009E9C03 /* EmergencyRequestViewController.swift */; };
+		35E063B8251D253D009E9C03 /* EmergencyNearbyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E063B7251D253D009E9C03 /* EmergencyNearbyViewController.swift */; };
+		35E063BA251D254D009E9C03 /* EmergencyLockedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E063B9251D254D009E9C03 /* EmergencyLockedViewController.swift */; };
+		35E063BC251D2560009E9C03 /* Emergency.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35E063BB251D2560009E9C03 /* Emergency.storyboard */; };
+		35E063C0251E6CF1009E9C03 /* EmergencyTypesResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E063BF251E6CF1009E9C03 /* EmergencyTypesResModel.swift */; };
+		35E063C2251E7F75009E9C03 /* EmergencyTypesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E063C1251E7F75009E9C03 /* EmergencyTypesCollectionViewCell.swift */; };
+		35E063C5251EABA3009E9C03 /* BloodGroupsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E063C4251EABA3009E9C03 /* BloodGroupsCollectionViewCell.swift */; };
+		35E063C7251FD2B7009E9C03 /* 28648-healthcare-business-neon-heartbeat-love-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 35E063C6251FD2B6009E9C03 /* 28648-healthcare-business-neon-heartbeat-love-animation.json */; };
 		35F9672E24DC6AE400F56411 /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9672B24DC6AE400F56411 /* UIDevice+Extensions.swift */; };
 		35F9673224DC6FC900F56411 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9673124DC6FC900F56411 /* UIView+Extension.swift */; };
 		35F9673424DC728000F56411 /* ConstHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9673324DC728000F56411 /* ConstHelper.swift */; };
@@ -134,6 +148,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		352FAB232506BFB10061057C /* OnboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardViewController.swift; sourceTree = "<group>"; };
+		35A3F219251522F9001B6803 /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
+		35A3F21B25163874001B6803 /* ContactUsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsViewController.swift; sourceTree = "<group>"; };
+		35A3F21D2516A709001B6803 /* 1631-healthtap-spinner.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "1631-healthtap-spinner.json"; sourceTree = "<group>"; };
+		35A3F21F2516A71A001B6803 /* 24259-pride-month-2020-location-circle-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "24259-pride-month-2020-location-circle-animation.json"; sourceTree = "<group>"; };
+		35A3F2202516A71B001B6803 /* 21483-lock-outline-icon.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "21483-lock-outline-icon.json"; sourceTree = "<group>"; };
 		35B387A424E02A6700D9274F /* FormFilllingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormFilllingViewController.swift; sourceTree = "<group>"; };
 		35B387A624E04A9A00D9274F /* ImageUploadCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadCell.swift; sourceTree = "<group>"; };
 		35B387A824E0787100D9274F /* SubcriptionResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubcriptionResModel.swift; sourceTree = "<group>"; };
@@ -197,6 +217,14 @@
 		35C9D9D524F8E302001B77AD /* ResetResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetResModel.swift; sourceTree = "<group>"; };
 		35C9D9D724F8E33A001B77AD /* ResetReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetReqModel.swift; sourceTree = "<group>"; };
 		35C9D9E624FB7FE0001B77AD /* MultipleImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipleImagePicker.swift; sourceTree = "<group>"; };
+		35E063B4251D250D009E9C03 /* EmergencyRequestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyRequestViewController.swift; sourceTree = "<group>"; };
+		35E063B7251D253D009E9C03 /* EmergencyNearbyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyNearbyViewController.swift; sourceTree = "<group>"; };
+		35E063B9251D254D009E9C03 /* EmergencyLockedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyLockedViewController.swift; sourceTree = "<group>"; };
+		35E063BB251D2560009E9C03 /* Emergency.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Emergency.storyboard; sourceTree = "<group>"; };
+		35E063BF251E6CF1009E9C03 /* EmergencyTypesResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyTypesResModel.swift; sourceTree = "<group>"; };
+		35E063C1251E7F75009E9C03 /* EmergencyTypesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyTypesCollectionViewCell.swift; sourceTree = "<group>"; };
+		35E063C4251EABA3009E9C03 /* BloodGroupsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodGroupsCollectionViewCell.swift; sourceTree = "<group>"; };
+		35E063C6251FD2B6009E9C03 /* 28648-healthcare-business-neon-heartbeat-love-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "28648-healthcare-business-neon-heartbeat-love-animation.json"; sourceTree = "<group>"; };
 		35F9672B24DC6AE400F56411 /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		35F9673124DC6FC900F56411 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		35F9673324DC728000F56411 /* ConstHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstHelper.swift; sourceTree = "<group>"; };
@@ -268,6 +296,10 @@
 				35B387FE24E6BA1E00D9274F /* 7146-under-construction.json */,
 				35B387FF24E6BA1E00D9274F /* 8428-loader.json */,
 				35B3880024E6BA1E00D9274F /* 29577-dot-loader-5.json */,
+				35E063C6251FD2B6009E9C03 /* 28648-healthcare-business-neon-heartbeat-love-animation.json */,
+				35A3F2202516A71B001B6803 /* 21483-lock-outline-icon.json */,
+				35A3F21F2516A71A001B6803 /* 24259-pride-month-2020-location-circle-animation.json */,
+				35A3F21D2516A709001B6803 /* 1631-healthtap-spinner.json */,
 				35B3881A24F19E4A00D9274F /* 13865-sign-for-error-flat-style.json */,
 			);
 			path = Lottie;
@@ -342,6 +374,7 @@
 				35F9673724DD928500F56411 /* ProfileViewController.swift */,
 				35F9673924DD929300F56411 /* OrderHistoryViewController.swift */,
 				35C9D9BC24F8041E001B77AD /* SettingsViewController.swift */,
+				35E063B6251D251C009E9C03 /* Emergency */,
 				35C9D9D224F8C8A3001B77AD /* ResetPassword */,
 				35C9D9C424F815C8001B77AD /* Terms */,
 				35F9674824DDB83400F56411 /* Custom Cell */,
@@ -377,10 +410,12 @@
 			isa = PBXGroup;
 			children = (
 				35C31D9824DC46D90067D9A5 /* Authenticate.storyboard */,
+				35A3F219251522F9001B6803 /* ChangePasswordViewController.swift */,
 				35C31D9A24DC46F20067D9A5 /* LoginViewController.swift */,
 				35C31D9C24DC47000067D9A5 /* SignUpViewController.swift */,
 				35C31D9E24DC470B0067D9A5 /* OTPViewController.swift */,
 				35C31DA024DC47130067D9A5 /* MobileViewController.swift */,
+				352FAB232506BFB10061057C /* OnboardViewController.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -389,6 +424,7 @@
 			isa = PBXGroup;
 			children = (
 				35C9D9C224F811FB001B77AD /* TermsViewController.swift */,
+				35A3F21B25163874001B6803 /* ContactUsViewController.swift */,
 				35C9D9C524F815D8001B77AD /* Terms.storyboard */,
 			);
 			path = Terms;
@@ -409,6 +445,27 @@
 				35C9D9D324F8C8B8001B77AD /* ResetPassword.storyboard */,
 			);
 			path = ResetPassword;
+			sourceTree = "<group>";
+		};
+		35E063B6251D251C009E9C03 /* Emergency */ = {
+			isa = PBXGroup;
+			children = (
+				35E063B4251D250D009E9C03 /* EmergencyRequestViewController.swift */,
+				35E063B7251D253D009E9C03 /* EmergencyNearbyViewController.swift */,
+				35E063B9251D254D009E9C03 /* EmergencyLockedViewController.swift */,
+				35E063BB251D2560009E9C03 /* Emergency.storyboard */,
+				35E063C3251E7F7B009E9C03 /* Emergency Collection Cell */,
+			);
+			path = Emergency;
+			sourceTree = "<group>";
+		};
+		35E063C3251E7F7B009E9C03 /* Emergency Collection Cell */ = {
+			isa = PBXGroup;
+			children = (
+				35E063C1251E7F75009E9C03 /* EmergencyTypesCollectionViewCell.swift */,
+				35E063C4251EABA3009E9C03 /* BloodGroupsCollectionViewCell.swift */,
+			);
+			path = "Emergency Collection Cell";
 			sourceTree = "<group>";
 		};
 		35F9673024DC6AED00F56411 /* Helper */ = {
@@ -487,6 +544,7 @@
 				35C9D9CA24F8201A001B77AD /* BlockedUsersResModel.swift */,
 				35C9D9D724F8E33A001B77AD /* ResetReqModel.swift */,
 				35C9D9D524F8E302001B77AD /* ResetResModel.swift */,
+				35E063BF251E6CF1009E9C03 /* EmergencyTypesResModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -631,19 +689,24 @@
 			files = (
 				35C9D9C624F815D8001B77AD /* Terms.storyboard in Resources */,
 				35B3881B24F19E4A00D9274F /* 13865-sign-for-error-flat-style.json in Resources */,
+				35A3F21E2516A709001B6803 /* 1631-healthtap-spinner.json in Resources */,
 				35B3880124E6BA1E00D9274F /* 7146-under-construction.json in Resources */,
 				35C31D6A24DC40200067D9A5 /* LaunchScreen.storyboard in Resources */,
 				35B3880224E6BA1E00D9274F /* 8428-loader.json in Resources */,
 				35C31DA524DC48220067D9A5 /* Main.storyboard in Resources */,
 				35C31D9724DC46510067D9A5 /* AppColor.xcassets in Resources */,
 				35B3880824F0424900D9274F /* Notification.storyboard in Resources */,
+				35A3F2222516A71B001B6803 /* 21483-lock-outline-icon.json in Resources */,
 				35C31D9924DC46D90067D9A5 /* Authenticate.storyboard in Resources */,
 				35B3880324E6BA1E00D9274F /* 29577-dot-loader-5.json in Resources */,
 				35B387F724E5C4E400D9274F /* 2329-loader.json in Resources */,
+				35A3F2212516A71B001B6803 /* 24259-pride-month-2020-location-circle-animation.json in Resources */,
 				35F9674124DD931E00F56411 /* Form.storyboard in Resources */,
 				35B387F524E5BFDF00D9274F /* 6615-loader-animation.json in Resources */,
 				35C31D6724DC40200067D9A5 /* Assets.xcassets in Resources */,
+				35E063C7251FD2B7009E9C03 /* 28648-healthcare-business-neon-heartbeat-love-animation.json in Resources */,
 				35C9D9D424F8C8B8001B77AD /* ResetPassword.storyboard in Resources */,
+				35E063BC251D2560009E9C03 /* Emergency.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -671,6 +734,8 @@
 				35B3880524F041F700D9274F /* NotificationViewController.swift in Sources */,
 				35C9D9D824F8E33A001B77AD /* ResetReqModel.swift in Sources */,
 				35B387A724E04A9A00D9274F /* ImageUploadCell.swift in Sources */,
+				35A3F21C25163874001B6803 /* ContactUsViewController.swift in Sources */,
+				35E063C2251E7F75009E9C03 /* EmergencyTypesCollectionViewCell.swift in Sources */,
 				35F9676224DDDDCF00F56411 /* CategoryCollectionCell.swift in Sources */,
 				35F9675824DDCC4A00F56411 /* Endpoint.swift in Sources */,
 				35B3881124F15D0D00D9274F /* LockedUsersViewController.swift in Sources */,
@@ -681,15 +746,18 @@
 				35C31D9F24DC470B0067D9A5 /* OTPViewController.swift in Sources */,
 				35C31D9B24DC46F20067D9A5 /* LoginViewController.swift in Sources */,
 				35F9678724DFECE500F56411 /* RegistrationReqModel.swift in Sources */,
+				35A3F21A251522F9001B6803 /* ChangePasswordViewController.swift in Sources */,
 				35C31DA124DC47130067D9A5 /* MobileViewController.swift in Sources */,
 				35B387A524E02A6700D9274F /* FormFilllingViewController.swift in Sources */,
 				35B387AD24E1B31100D9274F /* FormResModel.swift in Sources */,
+				35E063BA251D254D009E9C03 /* EmergencyLockedViewController.swift in Sources */,
 				35C31D5B24DC401E0067D9A5 /* AppDelegate.swift in Sources */,
 				35F9672E24DC6AE400F56411 /* UIDevice+Extensions.swift in Sources */,
 				35B3882224F1B1AF00D9274F /* LocationManager.swift in Sources */,
 				35F9673424DC728000F56411 /* ConstHelper.swift in Sources */,
 				35F9675524DDCC4A00F56411 /* APIClient.swift in Sources */,
 				35B3880D24F05F2300D9274F /* NotificationReqModel.swift in Sources */,
+				35E063C0251E6CF1009E9C03 /* EmergencyTypesResModel.swift in Sources */,
 				35F9678B24DFF10E00F56411 /* OTPReqModel.swift in Sources */,
 				35C9D9D624F8E302001B77AD /* ResetResModel.swift in Sources */,
 				35C9D9D124F8C89A001B77AD /* ResetPasswordViewController.swift in Sources */,
@@ -705,10 +773,13 @@
 				35F9675224DDCC4A00F56411 /* GenericAPI.swift in Sources */,
 				35B3882624F1B64B00D9274F /* CoordinatesResModel.swift in Sources */,
 				35F9674324DD93FA00F56411 /* QRViewController.swift in Sources */,
+				35E063C5251EABA3009E9C03 /* BloodGroupsCollectionViewCell.swift in Sources */,
 				35F9677824DF9DE600F56411 /* QRCell.swift in Sources */,
 				35B3881D24F1A2F500D9274F /* BlockedUsersViewController.swift in Sources */,
 				35B3881324F15DA100D9274F /* LockedUsersCell.swift in Sources */,
 				35B3881F24F1A37C00D9274F /* BlockedUsersCell.swift in Sources */,
+				352FAB242506BFB10061057C /* OnboardViewController.swift in Sources */,
+				35E063B8251D253D009E9C03 /* EmergencyNearbyViewController.swift in Sources */,
 				35F9675C24DDCDEF00F56411 /* CategoryModel.swift in Sources */,
 				35F9675724DDCC4A00F56411 /* Result.swift in Sources */,
 				35F9675E24DDD46900F56411 /* UIViewController+Extension.swift in Sources */,
@@ -735,6 +806,7 @@
 				35C31D9D24DC47000067D9A5 /* SignUpViewController.swift in Sources */,
 				35C9D9E724FB7FE0001B77AD /* MultipleImagePicker.swift in Sources */,
 				35B387AB24E1B30800D9274F /* FormReqModel.swift in Sources */,
+				35E063B5251D250E009E9C03 /* EmergencyRequestViewController.swift in Sources */,
 				35F9679224E013E700F56411 /* ImageResModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

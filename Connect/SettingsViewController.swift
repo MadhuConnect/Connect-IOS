@@ -20,8 +20,9 @@ class SettingsViewController: UIViewController {
     let settings = [
         Settings(image: UIImage(named: "profileUser"), name: "Privacy policy"),
         Settings(image: UIImage(named: "profileUser"), name: "Terms and conditions"),
+        Settings(image: UIImage(named: "profileUser"), name: "Disclaimer"),
         Settings(image: UIImage(named: "profileUser"), name: "Blocked users"),
-        Settings(image: UIImage(named: "profileUser"), name: "Support")
+        Settings(image: UIImage(named: "profileUser"), name: "Contact us")
     ]
         
     override func viewDidLoad() {
@@ -70,10 +71,11 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         case 1:
             self.moveToTermsViewControler(ConstHelper.termsAndConditions, title: "Terms of service")
         case 2:
-            self.moveToBlockedUsersViewControler()
+            self.moveToTermsViewControler(ConstHelper.desclaimer, title: "Disclaimer")
         case 3:
-//            self.moveToTermsViewControler(ConstHelper.desclaimer, title: "Support")
-            break
+            self.moveToBlockedUsersViewControler()
+        case 4:
+            self.moveToContactUsViewControler("Contact Us")
         default:
             break
         }
@@ -83,6 +85,16 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         let storyboard = UIStoryboard(name: "Terms", bundle: nil)
         if let termsVC = storyboard.instantiateViewController(withIdentifier: "TermsViewController") as? TermsViewController {
             termsVC.loadUrl = url
+            termsVC.headerTitle = title
+            termsVC.modalPresentationStyle = .fullScreen
+            self.present(termsVC, animated: true, completion: nil)
+        }
+        
+    }
+    
+    private func moveToContactUsViewControler(_ title: String) {
+        let storyboard = UIStoryboard(name: "Terms", bundle: nil)
+        if let termsVC = storyboard.instantiateViewController(withIdentifier: "ContactUsViewController") as? ContactUsViewController {
             termsVC.headerTitle = title
             termsVC.modalPresentationStyle = .fullScreen
             self.present(termsVC, animated: true, completion: nil)

@@ -28,6 +28,12 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var lbl_errorPasswordLbl: UILabel!
     @IBOutlet weak var lbl_accountLbl: UILabel!
     
+    @IBOutlet weak var btn_termsCheck: UIButton!
+    @IBOutlet weak var lbl_termsTitle: UILabel!
+    @IBOutlet weak var lbl_termsAnd: UILabel!
+    @IBOutlet weak var btn_termsService: UIButton!
+    @IBOutlet weak var btn_privacyPolicy: UIButton!
+    
     //Lottie
     @IBOutlet weak var loadingBackView: UIView!
     @IBOutlet weak var loadingView: UIView!
@@ -35,6 +41,7 @@ class SignUpViewController: UIViewController {
     let animationView = AnimationView()
     
     private let client = APIClient()
+    var isCheckTerms: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,13 +60,55 @@ class SignUpViewController: UIViewController {
             return
         }
         
+        var newMobile: String = ""
+        if !mobile.contains("+91") {
+            newMobile = "+91" + mobile
+        } else {
+            newMobile = mobile
+        }
+        
+        if !isCheckTerms {
+            self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please aggree the our Terms of service and Privacy policy", actionTitle: "Ok")
+            return
+        }
+        
+        print(newMobile)
         vw_signUpBackView.isHidden = true
         self.setupAnimation(withAnimation: true)
-        self.postRegistrationUser(withName: name, mobile: mobile, andPassword: password)
+        self.postRegistrationUser(withName: name, mobile: newMobile, andPassword: password)
     }
     
     @IBAction func signInUserAction(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func checkboxAction(_ sender: UIButton) {
+        if isCheckTerms {
+            self.isCheckTerms = false
+            self.btn_termsCheck.setImage(UIImage(named: "uncheckbox"), for: .normal)
+        } else {
+            self.isCheckTerms = true
+            self.btn_termsCheck.setImage(UIImage(named: "checkbox"), for: .normal)
+        }
+    }
+    
+    @IBAction func showTermsAction(_ sender: UIButton) {
+        self.moveToTermsViewControler(ConstHelper.termsAndConditions, title: "Terms of service")
+    }
+    
+    @IBAction func showPrivacyPolicyAction(_ sender: UIButton) {
+        self.moveToTermsViewControler(ConstHelper.privacyPolicy, title: "Privacy policy")
+    }
+    
+    private func moveToTermsViewControler(_ url: String, title: String) {
+        let storyboard = UIStoryboard(name: "Terms", bundle: nil)
+        if let termsVC = storyboard.instantiateViewController(withIdentifier: "TermsViewController") as? TermsViewController {
+            termsVC.loadUrl = url
+            termsVC.headerTitle = title
+            termsVC.modalPresentationStyle = .fullScreen
+            self.present(termsVC, animated: true, completion: nil)
+        }
+        
     }
 }
 
@@ -68,6 +117,7 @@ extension SignUpViewController {
         self.tf_mobileTF.delegate = self
         self.tf_passwordTF.delegate = self
         self.tf_fullNameTF.delegate = self
+        self.tf_passwordTF.isSecureTextEntry = true
         
         self.tf_mobileTF.textColor = ConstHelper.hTextColor
         self.tf_mobileTF.font = ConstHelper.h3Normal
@@ -114,6 +164,11 @@ extension SignUpViewController {
         self.lbl_errorFullNameLbl.text = ""
         self.loadingBackView.isHidden = true
         self.vw_signUpBackView.isHidden = false
+        
+        self.isCheckTerms = false
+        btn_termsCheck.setImage(UIImage(named: "uncheckbox"), for: .normal)
+        btn_termsCheck.isUserInteractionEnabled = false
+        btn_signUpBtn.isUserInteractionEnabled = false
     }
     
     @objc func validateText(_ textField: UITextField) {
@@ -172,12 +227,14 @@ extension SignUpViewController {
                 vw_signUpBackView.backgroundColor = ConstHelper.disableColor
                 btn_signUpBtn.setTitleColor(.lightGray, for: .normal)
                 btn_signUpBtn.isUserInteractionEnabled = false
+                btn_termsCheck.isUserInteractionEnabled = false
                 return
         }
         
         vw_signUpBackView.backgroundColor = ConstHelper.cyan
         btn_signUpBtn.setTitleColor(ConstHelper.enableColor, for: .normal)
         btn_signUpBtn.isUserInteractionEnabled = true
+        btn_termsCheck.isUserInteractionEnabled = true
         
         print("executed...")
     }
@@ -245,7 +302,7 @@ extension SignUpViewController {
         let api: Apifeed = .userRegistration
         
         //Req headers & body
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
         
         client.post_registerUser(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }

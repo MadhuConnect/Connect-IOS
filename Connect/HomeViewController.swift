@@ -11,8 +11,7 @@ import Lottie
 
 class HomeViewController: UIViewController {
     
-    @IBOutlet weak var vw_emergencyBackView: UIView!
-    @IBOutlet weak var btn_emergencyBtn: UIButton!
+    // Lottie
     @IBOutlet weak var loadingBackView: UIView!
     @IBOutlet weak var loadingView: UIView!
     
@@ -20,6 +19,30 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var iv_profile: UIImageView!
     @IBOutlet weak var btn_profile: UIButton!
     @IBOutlet weak var lbl_userName: UILabel!
+    
+    // Emergency
+    @IBOutlet weak var vw_emergencyBackView: UIView!
+    @IBOutlet weak var vw_emergencyTitleBackView: UIView!
+    @IBOutlet weak var lbl_emergencyTitle: UILabel!
+    @IBOutlet weak var vw_emergencyListBackView: UIView!
+    @IBOutlet weak var vw_emergencyImgBackView: UIView!
+    @IBOutlet weak var lbl_emergencyListTitle: UILabel!
+    
+    @IBOutlet weak var vw_nearbyListBackView: UIView!
+    @IBOutlet weak var vw_nearbyImgBackView: UIView!
+    @IBOutlet weak var lbl_nearbyListTitle: UILabel!
+    
+    @IBOutlet weak var vw_lockedListBackView: UIView!
+    @IBOutlet weak var vw_lockedImgBackView: UIView!
+    @IBOutlet weak var lbl_lockedListTitle: UILabel!
+    
+    @IBOutlet weak var btn_emergency: UIButton!
+    @IBOutlet weak var btn_nearby: UIButton!
+    @IBOutlet weak var btn_locked: UIButton!
+    
+    @IBOutlet weak var vw_emergencyLottieView: UIView!
+    @IBOutlet weak var vw_nearbyLottieView: UIView!
+    @IBOutlet weak var vw_lockedLottieView: UIView!
     
     // Main Category
     @IBOutlet weak var vw_mainBackView: UIView!
@@ -52,6 +75,10 @@ class HomeViewController: UIViewController {
     var locationManager: MyLocationManager?
     
     let animationView = AnimationView()
+    let emergencyAnimationView = AnimationView()
+    let nearbyAnimationView = AnimationView()
+    let lockedAnimationView = AnimationView()
+    
     private let client = APIClient()
     
     var categoryModel: CategoryModel?
@@ -76,7 +103,7 @@ class HomeViewController: UIViewController {
 
         self.cv_miniCategoryCollectionView.delegate = self
         self.cv_miniCategoryCollectionView.dataSource = self
-//
+        
         self.cv_prodCategoryCollectionView.delegate = self
         self.cv_prodCategoryCollectionView.dataSource = self
         
@@ -86,13 +113,16 @@ class HomeViewController: UIViewController {
         vw_prodBackView.isHidden = true
         
         self.updateDefaultUI()
-        self.setupAnimation(withAnimation: true)
-        self.getAllCategories()
+        self.emergencyLottieAnimation(withAnimation: true)
+        self.nearbyLottieAnimation(withAnimation: true)
+        self.lockedLottieAnimation(withAnimation: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        
+
+        self.setupAnimation(withAnimation: true)
+        self.getAllCategories()
     }
     
     private func setupAnimation(withAnimation status: Bool) {
@@ -113,6 +143,36 @@ class HomeViewController: UIViewController {
 
     }
     
+    private func emergencyLottieAnimation(withAnimation status: Bool) {
+        emergencyAnimationView.animation = Animation.named("1631-healthtap-spinner")
+        emergencyAnimationView.frame = vw_emergencyLottieView.bounds
+        emergencyAnimationView.backgroundColor = ConstHelper.white
+        emergencyAnimationView.contentMode = .scaleAspectFit
+        emergencyAnimationView.loopMode = .loop
+        emergencyAnimationView.play()
+        vw_emergencyLottieView.addSubview(emergencyAnimationView)
+    }
+    
+    private func nearbyLottieAnimation(withAnimation status: Bool) {
+        nearbyAnimationView.animation = Animation.named("24259-pride-month-2020-location-circle-animation")
+        nearbyAnimationView.frame = vw_nearbyLottieView.bounds
+        nearbyAnimationView.backgroundColor = ConstHelper.white
+        nearbyAnimationView.contentMode = .scaleAspectFit
+        nearbyAnimationView.loopMode = .loop
+        nearbyAnimationView.play()
+        vw_nearbyLottieView.addSubview(nearbyAnimationView)
+    }
+    
+    private func lockedLottieAnimation(withAnimation status: Bool) {
+        lockedAnimationView.animation = Animation.named("21483-lock-outline-icon")
+        lockedAnimationView.frame = vw_lockedLottieView.bounds
+        lockedAnimationView.backgroundColor = ConstHelper.white
+        lockedAnimationView.contentMode = .scaleAspectFit
+        lockedAnimationView.loopMode = .loop
+        lockedAnimationView.play()
+        vw_lockedLottieView.addSubview(lockedAnimationView)
+    }
+    
     @IBAction func logoutAction(_ sender: UIButton) {
         self.showAlertMax(title: "Logout", message: "Are you sure you want to logout?", actionTitles: ["Cancel", "Ok"], actionStyle: [.cancel,.default], action: [
             { cancelAction in
@@ -122,7 +182,7 @@ class HomeViewController: UIViewController {
                 UserDefaults.standard.set(nil, forKey: "LoggedUserId")
                 UserDefaults.standard.set(false, forKey: "loginStatusKey")
                 UserDefaults.standard.synchronize()
-                
+                LoginViewController.removeUserDetailsWhenLoggedOut()
                 Switcher.updateRootViewController()
             }
         ])
@@ -137,16 +197,73 @@ class HomeViewController: UIViewController {
             self.view.window?.rootViewController?.present(nav, animated: true, completion: nil)
         }
     }
+    
+    @IBAction func emergencyRequestAction(_ sender: UIButton) {
+        self.emergencyRequestViewController()
+    }
+    
+    @IBAction func emergencyNearbyAction(_ sender: UIButton) {
+        self.emergencyNearbyViewController()
+    }
+    
+    @IBAction func emergencyLockedAction(_ sender: UIButton) {
+        self.emergencyLockedViewController()
+    }
+    
+    private func emergencyRequestViewController() {
+        let storyboard = UIStoryboard(name: "Emergency", bundle: nil)
+        if let emergencyRequestVC = storyboard.instantiateViewController(withIdentifier: "EmergencyRequestViewController") as? EmergencyRequestViewController {
+            emergencyRequestVC.modalPresentationStyle = .fullScreen
+            self.present(emergencyRequestVC, animated: true, completion: nil)
+        }
+    }
+    
+    private func emergencyNearbyViewController() {
+        let storyboard = UIStoryboard(name: "Emergency", bundle: nil)
+        if let emergencyNearbyVC = storyboard.instantiateViewController(withIdentifier: "EmergencyNearbyViewController") as? EmergencyNearbyViewController {
+            emergencyNearbyVC.modalPresentationStyle = .fullScreen
+            self.present(emergencyNearbyVC, animated: true, completion: nil)
+        }
+    }
+    
+    private func emergencyLockedViewController() {
+        let storyboard = UIStoryboard(name: "Emergency", bundle: nil)
+        if let emergencyLockedVC = storyboard.instantiateViewController(withIdentifier: "EmergencyLockedViewController") as? EmergencyLockedViewController {
+            emergencyLockedVC.modalPresentationStyle = .fullScreen
+            self.present(emergencyLockedVC, animated: true, completion: nil)
+        }
+    }
+    
+    @IBAction func emergencyAction(_ sender: UIButton) {
+        print("Emergency action")
+    }
+    
+    @IBAction func nearbyAction(_ sender: UIButton) {
+        print("Nearby action")
+    }
+    
+    @IBAction func lockedAction(_ sender: UIButton) {
+        print("Locked action")
+    }
 
 }
 
 extension HomeViewController {
     private func updateDefaultUI() {
-        self.btn_emergencyBtn.titleLabel?.font = ConstHelper.h3Bold
-        self.btn_emergencyBtn.backgroundColor = .clear
-        self.btn_emergencyBtn.tintColor = ConstHelper.white
-        self.vw_emergencyBackView.backgroundColor = ConstHelper.red
-        self.vw_emergencyBackView.setBorderForView(width: 0, color: .red, radius: 10)
+        self.vw_emergencyImgBackView.setBorderForView(width: 1, color: UIColor(red: 226/255, green: 226/255, blue: 226/255, alpha: 0.5), radius: 10)
+        self.lbl_emergencyListTitle.text = "Request"
+        lbl_emergencyListTitle.font = ConstHelper.h5Normal
+        lbl_emergencyListTitle.textColor = ConstHelper.black
+        
+        self.vw_nearbyImgBackView.setBorderForView(width: 1, color: UIColor(red: 226/255, green: 226/255, blue: 226/255, alpha: 0.5), radius: 10)
+        self.lbl_nearbyListTitle.text = "Nearby"
+        lbl_nearbyListTitle.font = ConstHelper.h5Normal
+        lbl_nearbyListTitle.textColor = ConstHelper.black
+        
+        self.vw_lockedImgBackView.setBorderForView(width: 1, color: UIColor(red: 226/255, green: 226/255, blue: 226/255, alpha: 0.5), radius: 10)
+        self.lbl_lockedListTitle.text = "Locked"
+        lbl_lockedListTitle.font = ConstHelper.h5Normal
+        lbl_lockedListTitle.textColor = ConstHelper.black
         
         //Update user info
         let username = UserDefaults.standard.value(forKey: "LoggedUserName") as? String ?? ""
@@ -158,6 +275,8 @@ extension HomeViewController {
         self.btn_profile.tintColor = ConstHelper.cyan
         self.btn_profile.backgroundColor = ConstHelper.white
         self.btn_profile.setBorderForView(width: 1, color: .white, radius: self.btn_profile.frame.size.height / 2.0)
+        
+
     }
     
     private func updateDefaultSelectionForAll() {
@@ -270,6 +389,8 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case self.cv_mainCategoryCollectionView:
             if let category = self.mainCategoryModel?[indexPath.row] {
                 
+                ConstHelper.productCategory = category.name.lowercased()
+
                 self.vw_subBackView.isHidden = true
                 self.vw_miniBackView.isHidden = true
                 self.vw_prodBackView.isHidden = true
@@ -356,18 +477,16 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        
-    }
-    
 }
 
 //MARK: - API Call
 extension HomeViewController {
     private func getAllCategories() {
         print("All Categories Loading...")
+        print("DYNAMIC_TOKEN >> \(ConstHelper.DYNAMIC_TOKEN)")
+
         let api: Apifeed = .allProducts
-        let endPoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .get, headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: nil, timeInterval: 120)
+        let endPoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .get, headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: nil, timeInterval: 120)
         
         client.getAllCategories(from: endPoint) { [weak self] result in
             guard let strongSelf = self else { return }
@@ -402,7 +521,7 @@ extension HomeViewController {
         self.categoryModel = categoryModel
         
         self.mainCategoryModel = categoryModel.data
-        
+        ConstHelper.productCategory = self.mainCategoryModel?.first?.name.lowercased() ?? ""
         self.vw_mainBackView.isHidden = false
         
         let subCategoryAvailable =  categoryModel.data?.first?.subCategory ?? false

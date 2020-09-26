@@ -27,10 +27,19 @@ class FormFilllingViewController: UIViewController {
     //Product Info
     @IBOutlet weak var vw_view2BackView: UIView!
     //Product Type
+    @IBOutlet weak var vw_productOffererSeekerBackView: UIView!
+    @IBOutlet weak var vw_productTypeBackView: UIView!
     @IBOutlet weak var lbl_personTypeHeading: UILabel!
     @IBOutlet weak var sg_personType: UISegmentedControl!
     @IBOutlet weak var lbl_prodTypeHeading: UILabel!
     @IBOutlet weak var sg_productType: UISegmentedControl!
+    @IBOutlet weak var view2HeightContraint: NSLayoutConstraint!
+    @IBOutlet weak var productTypeHeightContraint: NSLayoutConstraint!
+    //Title
+    @IBOutlet weak var vw_productTitleBackView: UIView!
+    @IBOutlet weak var lbl_titleHeading: UILabel!
+    @IBOutlet weak var vw_titleBackView: UIView!
+    @IBOutlet weak var tf_titleTF: UITextField!
     //Description
     @IBOutlet weak var lbl_descHeading: UILabel!
     @IBOutlet weak var vw_descBackView: UIView!
@@ -65,11 +74,6 @@ class FormFilllingViewController: UIViewController {
     @IBOutlet weak var lbl_notifyPartnerHeading: UILabel!
     @IBOutlet weak var sg_notifyPartner: UISegmentedControl!
     
-    //Subscription Partner
-    @IBOutlet weak var vw_view7BackView: UIView!
-    @IBOutlet weak var lbl_subscriptionHeading: UILabel!
-    @IBOutlet weak var sg_subscriptionPartner: UISegmentedControl!
-    
     //Note: Location
     @IBOutlet weak var lbl_locationNote: UILabel!
     
@@ -87,8 +91,8 @@ class FormFilllingViewController: UIViewController {
     var uploadedImageNames: [String] = []
     var selPersonType: String? = "OFFEROR"
     var selProductType: String? = "New"
-    var selectedPrivacy: String? = "All"
-    var selectedRange: String? = "2km"
+    var selectedPrivacy: String? = "Men"
+    var selectedRange: String? = "10km"
     var selectedSalesTypeId: Int? = 0
     var selectedPriceId: Int? = 0
     let rupee = "\u{20B9}"
@@ -103,11 +107,6 @@ class FormFilllingViewController: UIViewController {
         
         print(selctedProduct as Any)
         
-        guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
-            return
-        }
-        #warning("Uncomment api")
-        self.getAllSubscriptionPlans(withUserId: userId)
         self.updateDefaultUI()
     }
     
@@ -138,8 +137,7 @@ class FormFilllingViewController: UIViewController {
         guard
             let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int,
             let selProductId = self.selctedProduct?.productId,
-            let minAmount = Int(self.tf_minimumTF.text ?? "0"),
-            let maxAmount = Int(self.tf_maximumTF.text ?? "0"),
+            let title = self.lbl_titleHeading.text,
             let selPrivacyStatus = self.selectedPrivacy,
             let selConnectRange = self.selectedRange,
             let salesTypeId = self.selectedSalesTypeId,
@@ -147,12 +145,29 @@ class FormFilllingViewController: UIViewController {
             else {
             return
         }
+
         let description = self.tv_descTV.text ?? ""
+        if description.count == 0 {
+            self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please enter product description", actionTitle: "Ok")
+            return
+        }
+        
         let selPersonType = (self.sg_personType.selectedSegmentIndex == 0) ? "OFFEROR" : "SEEKER"
         let selProductType = (self.sg_productType.selectedSegmentIndex == 0) ? "New" : "Used"
         let uploadImages = self.uploadedImageNames.joined(separator: ",")
 
-        self.postFormFillingData(userId, productId: selProductId, personType: selPersonType, productType: selProductType, uploadImages: uploadImages, title: "Apple Product", description: description, minAmount: minAmount, maxAmount: maxAmount, privacyStatus: selPrivacyStatus, connectRange: selConnectRange, salesTypeId: salesTypeId, priceId: selPriceId)
+        let minAmountStr = self.tf_minimumTF.text ?? "0"
+        let maxAmountStr = self.tf_maximumTF.text ?? "0"
+        
+        let minAmount = Int(minAmountStr) ?? 0
+        let maxAmount = Int(maxAmountStr) ?? 0
+        
+        if maxAmount <= 0 {
+            self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please enter price range", actionTitle: "Ok")
+            return
+        }
+        
+        self.postFormFillingData(userId, productId: selProductId, personType: selPersonType, productType: selProductType, uploadImages: uploadImages, title: title, description: description, minAmount: minAmount, maxAmount: maxAmount, privacyStatus: selPrivacyStatus, connectRange: selConnectRange, salesTypeId: salesTypeId, priceId: selPriceId)
     }
 
 }
@@ -179,11 +194,16 @@ extension FormFilllingViewController {
         self.lbl_prodTypeHeading.font = ConstHelper.h5Bold
         self.lbl_prodTypeHeading.textColor = ConstHelper.gray
         
+        //Title
+        self.lbl_titleHeading.font = ConstHelper.h5Bold
+        self.lbl_titleHeading.textColor = ConstHelper.gray
+        self.vw_titleBackView.setBorderForView(width: 1, color: ConstHelper.lightGray, radius: 10)
+        
         //Prduct description
         self.lbl_descHeading.font = ConstHelper.h5Bold
         self.lbl_descHeading.textColor = ConstHelper.gray
         self.lbl_descPlaceholder.font = ConstHelper.h5Normal
-        self.lbl_descPlaceholder.textColor = ConstHelper.gray
+        self.lbl_descPlaceholder.textColor = ConstHelper.lightGray
         self.vw_descBackView.setBorderForView(width: 1, color: ConstHelper.lightGray, radius: 10)
         
         //Prduct upload image
@@ -198,6 +218,7 @@ extension FormFilllingViewController {
         self.lbl_priceToHeading.textColor = ConstHelper.gray
         self.vw_minBackView.setBorderForView(width: 1, color: ConstHelper.lightGray, radius: 10)
         self.vw_maxBackView.setBorderForView(width: 1, color: ConstHelper.lightGray, radius: 10)
+        self.tf_minimumTF.text = "0"
         
         //Connect Partner
         self.lbl_connectPartnerHeading.font = ConstHelper.h5Bold
@@ -206,10 +227,6 @@ extension FormFilllingViewController {
         //Notify Partner
         self.lbl_notifyPartnerHeading.font = ConstHelper.h5Bold
         self.lbl_notifyPartnerHeading.textColor = ConstHelper.gray
-        
-        //Subscription Partner
-        self.lbl_subscriptionHeading.font = ConstHelper.h5Bold
-        self.lbl_subscriptionHeading.textColor = ConstHelper.gray
         
         //Note: Location
         self.lbl_locationNote.font = ConstHelper.h5Normal
@@ -232,16 +249,17 @@ extension FormFilllingViewController {
         sg_notifyPartner.backgroundColor = ConstHelper.lightGray
         sg_notifyPartner.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ConstHelper.white], for: .selected)
         
-        sg_subscriptionPartner.backgroundColor = ConstHelper.lightGray
-        sg_subscriptionPartner.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ConstHelper.white], for: .selected)
-        
         self.showSelectedProductOnUI()
         
         self.sg_personType.addTarget(self, action: #selector(personTypeChanged(_:)), for: .valueChanged)
-        self.sg_personType.addTarget(self, action: #selector(productTypeChanged(_:)), for: .valueChanged)
+        self.sg_productType.addTarget(self, action: #selector(productTypeChanged(_:)), for: .valueChanged)
         self.sg_connectPartner.addTarget(self, action: #selector(connectPartnerTypeChanged(_:)), for: .valueChanged)
         self.sg_notifyPartner.addTarget(self, action: #selector(notifyNearByTypeChanged(_:)), for: .valueChanged)
-        self.sg_subscriptionPartner.addTarget(self, action: #selector(subscriptionPlanTypeChanged(_:)), for: .valueChanged)
+        
+        self.tf_titleTF.attributedPlaceholder = NSAttributedString(string: "Title of the product", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightGray])
+        self.tf_minimumTF.attributedPlaceholder = NSAttributedString(string: "Minimum Price", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightGray])
+        self.tf_maximumTF.attributedPlaceholder = NSAttributedString(string: "Maximum Price", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightGray])
+
     }
     
     private func showSelectedProductOnUI() {
@@ -251,7 +269,19 @@ extension FormFilllingViewController {
             if let imgUrl = URL(string: product.image) {
                 self.downloadImage(url: imgUrl)
             }
+            
+            if ConstHelper.productCategory.lowercased().elementsEqual("Quick needs".lowercased()) {
+                self.vw_productTypeBackView.isHidden = false
+                self.productTypeHeightContraint.constant = 60
+                self.view2HeightContraint.constant = 350
+            } else {
+                self.vw_productTypeBackView.isHidden = true
+                self.productTypeHeightContraint.constant = 0
+                self.view2HeightContraint.constant = 278
+            }
+            
         }
+        
     }
     
     @objc
@@ -283,13 +313,13 @@ extension FormFilllingViewController {
     func connectPartnerTypeChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
-            self.selectedPrivacy = "All"
-        case 1:
             self.selectedPrivacy = "Men"
-        case 2:
+        case 1:
             self.selectedPrivacy = "Women"
+        case 2:
+            self.selectedPrivacy = "Trans"
         case 3:
-            self.selectedPrivacy = "T-Gender"
+            self.selectedPrivacy = "Any"
         default:
             break
         }
@@ -299,32 +329,11 @@ extension FormFilllingViewController {
     func notifyNearByTypeChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
-            self.selectedRange = "2km"
+            self.selectedRange = "10km"
         case 1:
-            self.selectedRange = "6km"
+            self.selectedRange = "15km"
         case 2:
-            self.selectedRange = "8km"
-        default:
-            break
-        }
-    }
-    
-    @objc
-    func subscriptionPlanTypeChanged(_ sender: UISegmentedControl) {
-        self.selectedSalesTypeId = self.subcriptionResModel?.data?.first?.salesTypeId
-        switch sender.selectedSegmentIndex {
-        case 0:
-            if let pid = self.prices?[0].priceId {
-                self.selectedPriceId = pid
-            }
-        case 1:
-            if let pid = self.prices?[1].priceId {
-                self.selectedPriceId = pid
-            }
-        case 2:
-            if let pid = self.prices?[2].priceId {
-                self.selectedPriceId = pid
-            }
+            self.selectedRange = "25km"
         default:
             break
         }
@@ -382,61 +391,6 @@ extension FormFilllingViewController: MultipleImagePickerDelegate {
 
 //MARK: - API Call
 extension FormFilllingViewController {
-    //Get All Subscription Plans
-    private func getAllSubscriptionPlans(withUserId userId: Int) {
-        let parameters = ["userId": userId]
-        print("Par: \(parameters)")
-
-        //Encode parameters
-        guard let body = try? JSONEncoder().encode(parameters) else { return }
-
-        //API
-        let api: Apifeed = .subscriptionCharges
-
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
-
-        client.post_getSubscriptionCharges(from: endpoint) { [weak self] result in
-            guard let strongSelf = self else { return }
-            switch result {
-            case .success(let response):
-                guard let response = response else { return }
-                
-                if response.status {
-                    strongSelf.subcriptionResModel = response
-                    
-                    let freeOfCost = strongSelf.subcriptionResModel?.FreeOfCost ?? false
-                    if freeOfCost {
-                        print("Hide subcription plan")
-                        strongSelf.selectedSalesTypeId = 0
-                        strongSelf.selectedPriceId = 0
-                    } else {
-                        if let prices = strongSelf.subcriptionResModel?.data?.first?.prices {
-                            strongSelf.prices = prices
-                            strongSelf.selectedSalesTypeId = strongSelf.subcriptionResModel?.data?.first?.salesTypeId
-                            
-                            DispatchQueue.main.async {
-                                strongSelf.sg_subscriptionPartner.setTitle("\(strongSelf.rupee) \(prices[0].price) Valid for \(prices[0].days) Days", forSegmentAt: 0)
-                                strongSelf.sg_subscriptionPartner.setTitle("\(strongSelf.rupee) \(prices[1].price) Valid for \(prices[1].days) Days", forSegmentAt: 1)
-                                strongSelf.sg_subscriptionPartner.setTitle("\(strongSelf.rupee) \(prices[2].price) Valid for \(prices[2].days) Days", forSegmentAt: 2)
-                                
-                                strongSelf.sg_subscriptionPartner.layoutSubviews()
-                            }
-
-                        }
-                        
-                    }
-                    
-                } else {
-                    strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(response.message ?? "")", actionTitle: "Ok")
-                    return
-                }
-                
-            case .failure(let error):
-                strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(error.localizedDescription)", actionTitle: "Ok")
-            }
-        }
-    }
-    
     //MARK: - Image upload (multipart/form-data)
     private func uploadProductImages(withUserId userId: String, imagePaths: [String]) {
         
@@ -488,7 +442,7 @@ extension FormFilllingViewController {
             //API
             let api: Apifeed = .uploadImage
             
-            let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.authorization("\(ConstHelper.staticToken)"), .contentType("multipart/form-data; boundary=\(boundary)")], body: postData, timeInterval: Double.infinity)
+            let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.authorization("\(ConstHelper.DYNAMIC_TOKEN)"), .contentType("multipart/form-data; boundary=\(boundary)")], body: postData, timeInterval: Double.infinity)
             
             client.post_uploadImage(from: endpoint) { [weak self] result in
                 guard let strongSelf = self else { return }
@@ -530,7 +484,7 @@ extension FormFilllingViewController {
         //API
         let api: Apifeed = .generateQrcode
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
         client.post_getFormFillingData(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }
@@ -559,6 +513,7 @@ extension FormFilllingViewController {
     }
 }
 
+//MARK: - Custom UISegmentedControl
 @IBDesignable class VBSegmentedControl: UISegmentedControl {
 
     @IBInspectable var height: CGFloat = 29 {
@@ -592,6 +547,7 @@ extension FormFilllingViewController {
 
 }
 
+//MARK: - Download Image
 extension FormFilllingViewController {
     func downloadImage(url: URL) {
         let processor = DownsamplingImageProcessor(size: iv_prodImageView.bounds.size)
@@ -618,6 +574,7 @@ extension FormFilllingViewController {
     }
 }
 
+//MARK: - UITextViewDelegate
 extension FormFilllingViewController: UITextViewDelegate {
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         self.lbl_descPlaceholder.isHidden = true

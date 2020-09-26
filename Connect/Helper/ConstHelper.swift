@@ -7,10 +7,20 @@
 //
 
 import UIKit
+/*
+UserDefaults.standard.set(user.verificationStatus, forKey: "UserVerificationStatus")
+UserDefaults.standard.set(user.data?.userId, forKey: "LoggedUserId")
+UserDefaults.standard.set(user.data?.name, forKey: "LoggedUserName")
+UserDefaults.standard.set(user.data?.mobile, forKey: "LoggedUserMobile")
+UserDefaults.standard.set(user.data?.email, forKey: "LoggedUserEmail")
+UserDefaults.standard.set(user.data?.jwToken, forKey: "LoggedUserJWTToken")
+UserDefaults.standard.set(user.data?.profileImage, forKey: "LoggedUserProfileImage")
+UserDefaults.standard.set(true, forKey: "loginStatusKey")
+*/
 
 public class ConstHelper {
     //TOKEN
-    public static var staticToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.W10.DUYspuNV8SmP0MKxh_6HdFS17C8F_ofXWjGWG2nX7og"
+    public static var DYNAMIC_TOKEN = UserDefaults.standard.value(forKey: "LoggedUserJWTToken") as? String ?? ""
     
     //TEST BASE URL
     public static var testBaseURL = "http://test.connectyourneed.in"
@@ -37,7 +47,8 @@ public class ConstHelper {
     public static var lockedUsersCellIdentifier = "LockedUsersCell"
     public static var blockedUsersCellIdentifier = "BlockedUsersCell"
     public static var settingsTableViewCellIdentifier = "SettingsTableViewCell"
-    
+    public static var emergencyTypesCollectionViewCell = "EmergencyTypesCollectionViewCell"
+    public static var bloodGroupsCollectionViewCell = "BloodGroupsCollectionViewCell"
     //UUID
     public static var deviceToken = UIDevice.current.identifierForVendor?.uuidString
     
@@ -78,7 +89,10 @@ public class ConstHelper {
     public static var construction_animation = "7146-under-construction"
     public static var loader_animation = "6615-loader-animation"
     public static var error_animation = "13865-sign-for-error-flat-style"
+    public static var dot_animation = "29577-dot-loader-5"
+    public static var empty_animation = "8428-loader"
+    public static var heartbeat_animation = "28648-healthcare-business-neon-heartbeat-love-animation"
+    
+    public static var productCategory = ""
     
 }
-
-

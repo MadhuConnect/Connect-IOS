@@ -188,6 +188,20 @@ extension OTPViewController {
         }
     }
     
+    private func onboardingViewController() {
+        self.handleUIAfterAPIResponse()
+        if let onboardVC = self.storyboard?.instantiateViewController(withIdentifier: "OnboardViewController") as? OnboardViewController {
+            self.view.window?.rootViewController = onboardVC
+        }
+    }
+    
+    private func changePasswordViewController() {
+        if let changePasswordVC = self.storyboard?.instantiateViewController(withIdentifier: "ChangePasswordViewController") as? ChangePasswordViewController {
+            changePasswordVC.modalPresentationStyle = .fullScreen
+            self.present(changePasswordVC, animated: true, completion: nil)
+        }
+    }
+    
     private func setupAnimation(withAnimation status: Bool) {
         animationView.animation = Animation.named("29577-dot-loader-5")
         animationView.frame = loadingView.bounds
@@ -284,7 +298,7 @@ extension OTPViewController {
         let api: Apifeed = .checkOtp
         
         //Req headers & body
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
         
         client.post_checkReceivedOTP(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }
@@ -293,14 +307,15 @@ extension OTPViewController {
                 guard  let user = user else { return }
 
                 if user.status {
-                    UserDefaults.standard.set(user.data?.userId, forKey: "LoggedUserId")
-                    UserDefaults.standard.set(user.data?.name, forKey: "LoggedUserName")
-                    UserDefaults.standard.set(user.data?.mobile, forKey: "LoggedUserMobile")
-                    UserDefaults.standard.set(true, forKey: "loginStatusKey")
-                    UserDefaults.standard.synchronize()
-                    
+                    strongSelf.storeUserDetailsForFurtherUse(user)
                     DispatchQueue.main.async {
-                        strongSelf.initialRootViewController()
+                        if let registration = strongSelf.otpType, (registration.elementsEqual("Registration")) {
+                            strongSelf.onboardingViewController()
+                        } else if let forget = strongSelf.otpType, (forget.lowercased().elementsEqual("Forget".lowercased())){
+                            strongSelf.changePasswordViewController()
+                        } else {
+                            strongSelf.initialRootViewController()
+                        }
                     }
                     
                 } else {
@@ -315,6 +330,18 @@ extension OTPViewController {
             }
         }
         //..end
+    }
+    
+    private func storeUserDetailsForFurtherUse(_ user: OTPResModel) {
+        UserDefaults.standard.set(user.verificationStatus, forKey: "UserVerificationStatus")
+        UserDefaults.standard.set(user.data?.userId, forKey: "LoggedUserId")
+        UserDefaults.standard.set(user.data?.name, forKey: "LoggedUserName")
+        UserDefaults.standard.set(user.data?.mobile, forKey: "LoggedUserMobile")
+        UserDefaults.standard.set(user.data?.email, forKey: "LoggedUserEmail")
+        UserDefaults.standard.set(user.data?.jwToken, forKey: "LoggedUserJWTToken")
+        UserDefaults.standard.set(user.data?.profileImage, forKey: "LoggedUserProfileImage")
+        UserDefaults.standard.set(true, forKey: "loginStatusKey")
+        UserDefaults.standard.synchronize()
     }
     
     

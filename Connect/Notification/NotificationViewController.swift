@@ -221,7 +221,7 @@ extension NotificationViewController {
         //API
         let api: Apifeed = .notifications
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
         client.post_getOrderNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
@@ -287,7 +287,7 @@ extension NotificationViewController {
         //API
         let api: Apifeed = .lockUsers
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
         client.post_lockUnLockUserNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
@@ -318,7 +318,7 @@ extension NotificationViewController {
         //API
         let api: Apifeed = .blockUsers
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
         client.post_blockUnBlockUserNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }

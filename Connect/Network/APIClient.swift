@@ -44,6 +44,16 @@ extension APIClient {
         }, completion: completion)
     }
     
+    // Post forgot user password
+    func post_forgotUserPassword(from endpoint: Endpoint, completion: @escaping (Result<RegistrationResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> RegistrationResModel? in
+            guard let result = json as? RegistrationResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
+    
     // Check user's received otp
     func post_checkReceivedOTP(from endpoint: Endpoint, completion: @escaping (Result<OTPResModel?, APIError>) -> Void) {
         let request = endpoint.request
@@ -172,6 +182,17 @@ extension APIClient {
 
         makeRequest(with: request, codable: { (json) -> ResetResModel? in
             guard let result = json as? ResetResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
+    
+    //MARK: - EMERGENCY
+    //Emergency Types
+    func get_EmergencyTypes(from endpoint: Endpoint, completion: @escaping (Result<EmergencyTypesResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> EmergencyTypesResModel? in
+            guard let result = json as? EmergencyTypesResModel else { return nil }
              return result
         }, completion: completion)
     }

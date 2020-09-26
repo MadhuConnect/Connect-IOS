@@ -43,8 +43,8 @@ class OrderHistoryViewController: UIViewController {
         self.updateUIWhenViewWillAppear()
     }
     
-    private func setupAnimation(withAnimation status: Bool) {
-        animationView.animation = Animation.named("6615-loader-animation")
+    private func setupAnimation(withAnimation status: Bool, name: String) {
+        animationView.animation = Animation.named(name)
         animationView.frame = loadingView.bounds
         animationView.backgroundColor = ConstHelper.white
         animationView.contentMode = .scaleAspectFit
@@ -94,7 +94,7 @@ extension OrderHistoryViewController {
         guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
              return
          }
-         self.setupAnimation(withAnimation: true)
+        self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
          self.getMyOrders(userId)
     }
 }
@@ -216,21 +216,14 @@ extension OrderHistoryViewController: UITableViewDelegate, UITableViewDataSource
 //MARK: - API Call
 extension OrderHistoryViewController {
     private func getMyOrders(_ userId: Int) {
-        let parameters = ["userId": userId]
-        
-        print("Par: \(parameters)")
-        
-        //Encode parameters
-        guard let body = try? JSONEncoder().encode(parameters) else { return }
-        
         //API
         let api: Apifeed = .myOrders
         
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: nil, timeInterval: 120)
         
         client.post_getMyOrders(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }
-            strongSelf.setupAnimation(withAnimation: false)
+            strongSelf.setupAnimation(withAnimation: false, name: ConstHelper.loader_animation)
             switch result {
             case .success(let response):
                 guard let response = response else { return }
@@ -241,10 +234,11 @@ extension OrderHistoryViewController {
                         DispatchQueue.main.async {
                             strongSelf.orderTableView.reloadData()
                         }
-                    }                    
+                    }  else {
+                        strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.empty_animation)
+                    }
                 } else {
-                    strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: (response.message ?? ""), actionTitle: "Ok")
-                    return
+                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.empty_animation)
                 }
             case .failure(let error):
                 strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(error.localizedDescription)", actionTitle: "Ok")

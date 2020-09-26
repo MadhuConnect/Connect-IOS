@@ -194,16 +194,10 @@ extension BlockedUsersViewController: UITableViewDelegate, UITableViewDataSource
 extension BlockedUsersViewController {
     //Post and Get All Notifications Selected Product
     private func getBlockedUsersList(withUserId userId: Int) {
-        let parameters = ["userId": userId]
-        print("Par: \(parameters)")
-
-        //Encode parameters
-        guard let body = try? JSONEncoder().encode(parameters) else { return }
-
         //API
         let api: Apifeed = .blockUsersList
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: nil, timeInterval: 120)
 
         client.post_blockedUsersList(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
@@ -221,7 +215,7 @@ extension BlockedUsersViewController {
                         }
                      }
                  } else {
-                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
+                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.empty_animation)
                     DispatchQueue.main.async {
                         strongSelf.lbl_message.text = response.message
                         strongSelf.blockedUsersTableView.reloadData()
@@ -244,7 +238,7 @@ extension BlockedUsersViewController {
         //API
         let api: Apifeed = .blockUsers
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.staticToken)], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
         client.post_blockUnBlockUserNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
