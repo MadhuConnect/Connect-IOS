@@ -226,6 +226,17 @@ extension APIClient {
              return result
         }, completion: completion)
     }
+    
+    //MARK: - Contact us Form
+    //Contact Us
+    func post_ContactUsForm(from endpoint: Endpoint, completion: @escaping (Result<ContactUsResFormModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> ContactUsResFormModel? in
+            guard let result = json as? ContactUsResFormModel else { return nil }
+             return result
+        }, completion: completion)
+    }
 }
 
 

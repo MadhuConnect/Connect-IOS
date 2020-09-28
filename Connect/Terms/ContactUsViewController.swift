@@ -45,6 +45,8 @@ class ContactUsViewController: UIViewController {
     
     var headerTitle: String = ""
     
+    private let client = APIClient()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -65,11 +67,37 @@ class ContactUsViewController: UIViewController {
     @IBAction func submitContactUsAction(_ sender: UIButton) {
         switch sg_contactType.selectedSegmentIndex {
         case 0:
-            print("Enguiry")
+            guard let enquiryDescription = self.tv_enquiryDescTV.text, !enquiryDescription.isEmpty else {
+                self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please enter your query in description", actionTitle: "Ok")
+                return
+            }
+            self.postContactUsForm("Enquiry", formRequest: FormRequestModel(product: nil, category: nil, description: enquiryDescription, images: nil))
         case 1:
-            print("Feedback")
+            guard let feedbackDescription = self.tv_feedbackDescTV.text, !feedbackDescription.isEmpty else {
+                self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please enter your feedback in description", actionTitle: "Ok")
+                return
+            }
+            self.postContactUsForm("Feedback", formRequest: FormRequestModel(product: nil, category: nil, description: feedbackDescription, images: nil))
         case 2:
-            print("Request")
+            
+            guard let productTitle = self.tf_prodTitleTF.text, let productCategory = self.tf_prodCategoryTF.text, let productDescription = self.tv_requestDescTV.text  else {
+                return
+            }
+            if productTitle.isEmpty {
+                self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please enter product title", actionTitle: "Ok")
+                return
+            }
+            
+            if productCategory.isEmpty {
+                self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please enter product category", actionTitle: "Ok")
+                return
+            }
+            
+            if productDescription.isEmpty {
+                self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please enter product description", actionTitle: "Ok")
+                return
+            }
+            self.postContactUsForm("Request", formRequest: FormRequestModel(product: productTitle, category: productCategory, description: productDescription, images: ""))
         default:
             break
         }
@@ -181,5 +209,49 @@ extension ContactUsViewController: UITextViewDelegate {
                 self.lbl_requestDescPlaceholder.isHidden = true
             }
         }
+    }
+}
+
+//MARK: - API Call
+extension ContactUsViewController {
+    //Psot Form Filling Data
+    private func postContactUsForm(_ formName: String, formRequest: FormRequestModel) {
+        let parameters: ContactUsReqFormModel = ContactUsReqFormModel(form: formName, formRequest: formRequest)
+        
+        print("Par: \(parameters)")
+
+        //Encode parameters
+        guard let body = try? JSONEncoder().encode(parameters) else { return }
+
+        //API
+        let api: Apifeed = .contactUsForm
+
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
+
+        client.post_ContactUsForm(from: endpoint) { [weak self] result in
+            guard let strongSelf = self else { return }
+            switch result {
+            case .success(let response):
+                guard let response = response else { return }
+
+                if response.status {
+                    print(response)
+                    strongSelf.emptyAllFormRequestInfo()
+                } else {
+                    strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: (response.message ?? ""), actionTitle: "Ok")
+                    return
+                }
+            case .failure(let error):
+                strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(error.localizedDescription)", actionTitle: "Ok")
+            }
+        }
+    }
+    
+    private func emptyAllFormRequestInfo() {
+        self.tv_enquiryDescTV.text = ""
+        self.tv_feedbackDescTV.text = ""
+        self.tv_requestDescTV.text = ""
+        self.tf_prodTitleTF.text = ""
+        self.tf_prodCategoryTF.text = ""
     }
 }

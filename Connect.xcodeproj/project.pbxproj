@@ -83,6 +83,8 @@
 		35E063C9251FFBEC009E9C03 /* EmergencyReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E063C8251FFBEC009E9C03 /* EmergencyReqModel.swift */; };
 		35E063CB251FFC2A009E9C03 /* EmergencyResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E063CA251FFC2A009E9C03 /* EmergencyResModel.swift */; };
 		35E063CD2520FDAD009E9C03 /* 4565-heartbeat-medical.json in Resources */ = {isa = PBXBuildFile; fileRef = 35E063CC2520FDAC009E9C03 /* 4565-heartbeat-medical.json */; };
+		35E063CF2522712E009E9C03 /* ContactUsReqFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E063CE2522712E009E9C03 /* ContactUsReqFormModel.swift */; };
+		35E063D1252272E6009E9C03 /* ContactUsResFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E063D0252272E6009E9C03 /* ContactUsResFormModel.swift */; };
 		35F9672E24DC6AE400F56411 /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9672B24DC6AE400F56411 /* UIDevice+Extensions.swift */; };
 		35F9673224DC6FC900F56411 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9673124DC6FC900F56411 /* UIView+Extension.swift */; };
 		35F9673424DC728000F56411 /* ConstHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F9673324DC728000F56411 /* ConstHelper.swift */; };
@@ -231,6 +233,8 @@
 		35E063C8251FFBEC009E9C03 /* EmergencyReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyReqModel.swift; sourceTree = "<group>"; };
 		35E063CA251FFC2A009E9C03 /* EmergencyResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyResModel.swift; sourceTree = "<group>"; };
 		35E063CC2520FDAC009E9C03 /* 4565-heartbeat-medical.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "4565-heartbeat-medical.json"; sourceTree = "<group>"; };
+		35E063CE2522712E009E9C03 /* ContactUsReqFormModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsReqFormModel.swift; sourceTree = "<group>"; };
+		35E063D0252272E6009E9C03 /* ContactUsResFormModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsResFormModel.swift; sourceTree = "<group>"; };
 		35F9672B24DC6AE400F56411 /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		35F9673124DC6FC900F56411 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		35F9673324DC728000F56411 /* ConstHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstHelper.swift; sourceTree = "<group>"; };
@@ -554,6 +558,8 @@
 				35E063BF251E6CF1009E9C03 /* EmergencyTypesResModel.swift */,
 				35E063C8251FFBEC009E9C03 /* EmergencyReqModel.swift */,
 				35E063CA251FFC2A009E9C03 /* EmergencyResModel.swift */,
+				35E063CE2522712E009E9C03 /* ContactUsReqFormModel.swift */,
+				35E063D0252272E6009E9C03 /* ContactUsResFormModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -758,6 +764,7 @@
 				35C31D9B24DC46F20067D9A5 /* LoginViewController.swift in Sources */,
 				35F9678724DFECE500F56411 /* RegistrationReqModel.swift in Sources */,
 				35A3F21A251522F9001B6803 /* ChangePasswordViewController.swift in Sources */,
+				35E063CF2522712E009E9C03 /* ContactUsReqFormModel.swift in Sources */,
 				35C31DA124DC47130067D9A5 /* MobileViewController.swift in Sources */,
 				35B387A524E02A6700D9274F /* FormFilllingViewController.swift in Sources */,
 				35B387AD24E1B31100D9274F /* FormResModel.swift in Sources */,
@@ -803,6 +810,7 @@
 				35F9677F24DFE71200F56411 /* LoginReqModel.swift in Sources */,
 				35F9675324DDCC4A00F56411 /* HTTPMethod.swift in Sources */,
 				35F9675624DDCC4A00F56411 /* HTTPHeader.swift in Sources */,
+				35E063D1252272E6009E9C03 /* ContactUsResFormModel.swift in Sources */,
 				35C31DA924DC4C060067D9A5 /* HomeViewController.swift in Sources */,
 				35F9678924DFECF400F56411 /* RegistrationResModel.swift in Sources */,
 				35C31DA324DC47A20067D9A5 /* Switcher.swift in Sources */,

@@ -29,6 +29,7 @@ enum Apifeed: String {
     case emergencyRequest = "/api/Emergency/emergencyRequest"
     case updateProfilePic = "/api/QuickNeeds/updateProfilePic"
     case updateProfileData = "/api/QuickNeeds/updateProfileData"
+    case contactUsForm = "/api/QuickNeeds/contactUsForm"
         
     func getApiEndpoint(queryItems: [URLQueryItem] = [], httpMethod: HTTPMethod, headers: [HTTPHeader], body: Data? = Data(), timeInterval: TimeInterval) -> Endpoint {
         return Endpoint(path: self.rawValue, httpMethod: httpMethod, headers: headers, body: body, queryItems: queryItems, timeOut: timeInterval)
