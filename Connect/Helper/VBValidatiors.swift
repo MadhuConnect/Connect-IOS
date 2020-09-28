@@ -17,9 +17,9 @@ public class VBValidatiors {
     }
     
     public static func validatePassword(_ text: String) -> Bool {
-        let regex = "^.{4,20}$" // Password length 4-15
-//        //Minimum 8 characters at least 1 Uppercase Alphabet, 1 Lowercase Alphabet, 1 Number and 1 Special Character:
-//        let regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[d$@$!%*?&#])[A-Za-z\\dd$@$!%*?&#]{8,20}"
+//        let regex = "^.{4,20}$" // Password length 4-15
+        //Minimum 8 characters at least 1 Uppercase Alphabet, 1 Lowercase Alphabet, 1 Number and 1 Special Character:
+        let regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[d$@$!%*?&#])[A-Za-z\\dd$@$!%*?&#]{8,20}"
         let trimmedText = text.trimmingCharacters(in: .whitespaces)
         let validate = NSPredicate(format:"SELF MATCHES %@", regex)
         return validate.evaluate(with: trimmedText)

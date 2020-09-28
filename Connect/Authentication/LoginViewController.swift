@@ -394,6 +394,7 @@ extension LoginViewController {
         UserDefaults.standard.set(user.data?.name, forKey: "LoggedUserName")
         UserDefaults.standard.set(user.data?.mobile, forKey: "LoggedUserMobile")
         UserDefaults.standard.set(user.data?.email, forKey: "LoggedUserEmail")
+        ConstHelper.DYNAMIC_TOKEN = user.data?.jwToken ?? ""
         UserDefaults.standard.set(user.data?.jwToken, forKey: "LoggedUserJWTToken")
         UserDefaults.standard.set(user.data?.profileImage, forKey: "LoggedUserProfileImage")
         UserDefaults.standard.set(true, forKey: "loginStatusKey")

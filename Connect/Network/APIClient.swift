@@ -186,6 +186,26 @@ extension APIClient {
         }, completion: completion)
     }
     
+    // Upload Profile Picture
+    func post_ProfilePicture(from endpoint: Endpoint, completion: @escaping (Result<LoginResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> LoginResModel? in
+            guard let result = json as? LoginResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
+    
+    // Update Profile Name and Email
+    func post_ProfileNameEmail(from endpoint: Endpoint, completion: @escaping (Result<LoginResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> LoginResModel? in
+            guard let result = json as? LoginResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
+    
     //MARK: - EMERGENCY
     //Emergency Types
     func get_EmergencyTypes(from endpoint: Endpoint, completion: @escaping (Result<EmergencyTypesResModel?, APIError>) -> Void) {
@@ -193,6 +213,16 @@ extension APIClient {
 
         makeRequest(with: request, codable: { (json) -> EmergencyTypesResModel? in
             guard let result = json as? EmergencyTypesResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
+    
+    //Emergency Request
+    func post_EmergencyRequest(from endpoint: Endpoint, completion: @escaping (Result<EmergencyResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> EmergencyResModel? in
+            guard let result = json as? EmergencyResModel else { return nil }
              return result
         }, completion: completion)
     }

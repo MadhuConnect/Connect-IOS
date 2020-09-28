@@ -48,6 +48,9 @@ class EmergencyRequestViewController: UIViewController {
     var emergencyTypes: [EmergencyModel]?
     var bloodGroups: [EmergencyTypes]?
     
+    var eTypeId: Int?
+    var eType: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -66,7 +69,13 @@ class EmergencyRequestViewController: UIViewController {
     
     @IBAction func postAction(_ sender: UIButton) {
         print("Post emergemcy request")
-        self.vw_postResultAlphaBackView.isHidden = false
+        guard let additionalInfo = self.tv_requestDescTV.text, !additionalInfo.isEmpty else {
+            self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please enter information", actionTitle: "Ok")
+            return
+        }
+        
+        self.postEmergencyRequest(eTypeId ?? 0, bloodType: eType, additionalInformation: additionalInfo)
+        
     }
     
     @IBAction func homeAction(_ sender: UIButton) {
@@ -74,6 +83,7 @@ class EmergencyRequestViewController: UIViewController {
     }
     
     @IBAction func closeAction(_ sender: UIButton) {
+        self.tv_requestDescTV.text = ""
         self.vw_postResultAlphaBackView.isHidden = true
     }
 
@@ -110,7 +120,7 @@ extension EmergencyRequestViewController {
         self.vw_requestDescBackView.setBorderForView(width: 1, color: ConstHelper.cyan, radius: 10)
         
         self.vw_postResultBackView.setBorderForView(width: 1, color: .clear, radius: 10)
-        self.lbl_postedSuccess.font = ConstHelper.h6Bold
+        self.lbl_postedSuccess.font = ConstHelper.h4Bold
         self.lbl_postedSuccess.textColor = ConstHelper.orange
         self.lbl_emergencyReason.font = ConstHelper.h4Bold
         self.lbl_emergencyReason.textColor = ConstHelper.black
@@ -162,12 +172,58 @@ extension EmergencyRequestViewController {
                 if result.status {
                     strongSelf.emergencyTypes = result.data
                     strongSelf.bloodGroups = result.data?.first?.types
+                    strongSelf.eTypeId = result.data?.first?.emergecnyTypeId
+                    strongSelf.eType = result.data?.first?.types?.first?.type
                     DispatchQueue.main.async {
                         strongSelf.cv_emergencyTypesCollectionView.reloadData()
                         strongSelf.cv_bloodGroupsCollectionView.reloadData()
                         let indexPath = IndexPath(item: 0, section: 0)
                         strongSelf.cv_emergencyTypesCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
                         strongSelf.cv_bloodGroupsCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+                    }
+                } else {
+                    strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(result.message ?? "")", actionTitle: "Ok")
+                    return
+                }
+            case .failure(let error):
+                strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(error.localizedDescription)", actionTitle: "Ok")
+                return
+            }
+        }
+        
+    }
+    
+    //POST emergency request
+    private func postEmergencyRequest(_ emergecnyTypeId: Int, bloodType type: String?, additionalInformation message: String) {
+        let parameters: EmergencyReqModel = EmergencyReqModel(emergecnyTypeId: emergecnyTypeId, type: type, message: message)
+        print(parameters)
+        //Encode parameters
+        guard let body = try? JSONEncoder().encode(parameters) else { return }
+        
+        //API
+        let api: Apifeed = .emergencyRequest
+        
+        //Req headers & body
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
+        
+        client.post_EmergencyRequest(from: endpoint) { [weak self] result in
+            guard let strongSelf = self else { return }
+            switch result {
+            case .success(let result):
+                guard  let result = result else { return }
+
+                if result.status {
+                    DispatchQueue.main.async {
+                        strongSelf.vw_postResultAlphaBackView.isHidden = false
+                        strongSelf.lbl_postedSuccess.text = result.message
+                        
+                        if let emergencyType = result.data?.emergencyType {
+                            strongSelf.lbl_emergencyReason.text = "Reason: \(emergencyType)"
+                        }
+                        if let type = result.data?.type {
+                            strongSelf.lbl_emergencyType.text = "Type: \(type)"
+                        }
+                        
                     }
                 } else {
                     strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(result.message ?? "")", actionTitle: "Ok")
@@ -241,8 +297,16 @@ extension EmergencyRequestViewController: UICollectionViewDelegate, UICollection
         case self.cv_emergencyTypesCollectionView:
             if let emergencyType = self.emergencyTypes?[indexPath.row] {
                 self.bloodGroups = emergencyType.types
+                
+                self.eTypeId = emergencyType.emergecnyTypeId
+                self.eType = emergencyType.types?.first?.type
+                
                 self.cv_bloodGroupsCollectionView.reloadData()
                 self.updateDefaultSelectionForEmergency()
+            }
+        case self.cv_bloodGroupsCollectionView:
+            if let bloodGroup = self.bloodGroups?[indexPath.row] {
+                self.eType = bloodGroup.type
             }
         default:
             break

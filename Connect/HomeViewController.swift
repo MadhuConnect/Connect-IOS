@@ -144,7 +144,7 @@ class HomeViewController: UIViewController {
     }
     
     private func emergencyLottieAnimation(withAnimation status: Bool) {
-        emergencyAnimationView.animation = Animation.named("1631-healthtap-spinner")
+        emergencyAnimationView.animation = Animation.named(ConstHelper.heartbeat_medical)
         emergencyAnimationView.frame = vw_emergencyLottieView.bounds
         emergencyAnimationView.backgroundColor = ConstHelper.white
         emergencyAnimationView.contentMode = .scaleAspectFit

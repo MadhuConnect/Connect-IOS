@@ -92,6 +92,7 @@ public class ConstHelper {
     public static var dot_animation = "29577-dot-loader-5"
     public static var empty_animation = "8428-loader"
     public static var heartbeat_animation = "28648-healthcare-business-neon-heartbeat-love-animation"
+    public static var heartbeat_medical = "4565-heartbeat-medical"
     
     public static var productCategory = ""
     
