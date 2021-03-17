@@ -22,6 +22,7 @@ struct LoginInfo: Codable {
     let email: String?
     let jwToken: String
     let profileImage: String?
+    let kyc: Int
 }
 
 /*

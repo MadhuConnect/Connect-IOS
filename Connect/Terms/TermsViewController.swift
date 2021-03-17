@@ -35,6 +35,15 @@ class TermsViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
+    @IBAction func emergencyReqAction(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Emergency", bundle: nil)
+        if let emergencyRequestVC = storyboard.instantiateViewController(withIdentifier: "EmergencyRequestViewController") as? EmergencyRequestViewController {
+            emergencyRequestVC.modalPresentationStyle = .fullScreen
+            emergencyRequestVC.isFromNotHome = true
+            self.present(emergencyRequestVC, animated: true, completion: nil)
+        }
+    }
+    
     private func loadTermsOnWeb(_ url: String) {
         self.lbl_title.text = headerTitle
         guard let url = URL(string: url) else { return }

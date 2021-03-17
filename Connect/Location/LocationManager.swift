@@ -49,7 +49,9 @@ public class MyLocationManager: NSObject {
     func getLocationDetails(fromLocation location: CLLocation) {
         let latitude = Double(location.coordinate.latitude)
         let longitude = Double(location.coordinate.longitude)
-//        print("Lat: \(latitude), Lng: \(longitude)")
+        
+        ConstHelper.myLatitude = latitude
+        ConstHelper.myLogitude = longitude
         
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
@@ -58,13 +60,12 @@ public class MyLocationManager: NSObject {
             } else if let placemarks = placemarks {
                 for placemark in placemarks {
                     let address = [placemark.name, placemark.subThoroughfare, placemark.thoroughfare, placemark.locality, placemark.subAdministrativeArea, placemark.country, placemark.postalCode].compactMap({$0}).joined(separator: ", ")
-                    print(address)
+//                    print(address)
                     
-                    guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
-                        return
-                    }
+                    ConstHelper.myLocationName = (placemark.name ?? "")
                     
-                    self.updateLocationToServer(witUser: userId, lat: latitude, lng: longitude, location: placemark.name ?? "")
+                    self.updateLocationToServer(witCordinates: latitude, lng: longitude, location: (placemark.name ?? ""))
+                    
                     self.delegate?.didGetLocation(withLocation: "\(placemark.locality ?? ""), \(placemark.locality ?? ""), \(placemark.postalCode ?? "")", latitude: latitude, longitude: longitude)
                 }
             }
@@ -91,15 +92,14 @@ extension MyLocationManager: CLLocationManagerDelegate {
 }
 
 extension MyLocationManager {
-    func updateLocationToServer(witUser id: Int, lat: Double, lng: Double, location: String) {
-        let parameters = CoordinatesReqModel(userId: id, latitude: lat, longitude: lng, location: location)
-        
-        print("Par: \(parameters)")
-        
+    func updateLocationToServer(witCordinates lat: Double, lng: Double, location: String) {
+        let parameters = CoordinatesReqModel(latitude: lat, longitude: lng, location: location)
+                
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
         
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .updateCoordinates
         
         let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
@@ -110,9 +110,7 @@ extension MyLocationManager {
                 guard let response = response else { return }
 
                 if response.status {
-                    print(response)
-                } else {
-                    print(response.message as Any)
+//                    print("<< Cooridnates Updated >>")
                 }
             case .failure(let error):
                 print(error.localizedDescription)
@@ -121,5 +119,10 @@ extension MyLocationManager {
 
     }
 
+    
+}
+
+
+extension MyLocationManager {
     
 }

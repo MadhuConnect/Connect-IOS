@@ -9,7 +9,11 @@
 import Foundation
 
 struct NotificationReqModel: Codable {
-    let userId: Int
     let qrId: Int
     let status: String
+}
+
+struct NotificationStatusReqModel: Codable {
+    let qrId: Int
+    let status: Bool
 }

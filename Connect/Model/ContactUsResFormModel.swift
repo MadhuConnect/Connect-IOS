@@ -34,6 +34,56 @@ struct FormImagesModell: Codable {
 
 
 /*
+ 
+ ======= Enquiry
+ {
+     message = " Thank you for contacting us. We will be get back to you with in 24 hours.";
+     requestData =     {
+         description = "Testing\n";
+         requestDate = "2020-11-29";
+         requestId = 2;
+         requestStatus = New;
+         requestTime = "10:10:37 AM";
+         userId = 4;
+     };
+     status = 1;
+ }
+ ======= Feedback
+ {
+     message = " Thanks for your feedback. Please keep sending your feedback to us for improvement.";
+     requestData =     {
+         description = "Testing feedback\n";
+         requestDate = "2020-11-29";
+         requestId = 3;
+         requestStatus = New;
+         requestTime = "10:20:34 AM";
+         userId = 4;
+     };
+     status = 1;
+ }
+ 
+ ======= Request
+ {
+     message = " Thank you for contacting us. We will be get back to you with in 24 hours.";
+     requestData =     {
+         category = "test category ";
+         description = "Test request ";
+         images =         (
+         );
+         product = "test title ";
+         requestDate = "2020-11-29";
+         requestId = 2;
+         requestStatus = New;
+         requestTime = "10:23:27 AM";
+         userId = 4;
+     };
+     status = 1;
+ }
+ 
+ */
+
+
+/*
 {
  "status":true,
  "message":" Thank you for contacting us. We will be get back to you with in 24 hours.",

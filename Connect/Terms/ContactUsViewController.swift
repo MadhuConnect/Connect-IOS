@@ -43,6 +43,9 @@ class ContactUsViewController: UIViewController {
     @IBOutlet weak var lbl_prodCategory: UILabel!
     @IBOutlet weak var tf_prodCategoryTF: UITextField!
     
+    @IBOutlet weak var btn_support: UIButton!
+    @IBOutlet weak var lbl_supportTime: UILabel!
+    
     var headerTitle: String = ""
     
     private let client = APIClient()
@@ -62,6 +65,15 @@ class ContactUsViewController: UIViewController {
     
     @IBAction func backToHomeAction(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func emergencyReqAction(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Emergency", bundle: nil)
+        if let emergencyRequestVC = storyboard.instantiateViewController(withIdentifier: "EmergencyRequestViewController") as? EmergencyRequestViewController {
+            emergencyRequestVC.modalPresentationStyle = .fullScreen
+            emergencyRequestVC.isFromNotHome = true
+            self.present(emergencyRequestVC, animated: true, completion: nil)
+        }
     }
     
     @IBAction func submitContactUsAction(_ sender: UIButton) {
@@ -103,6 +115,21 @@ class ContactUsViewController: UIViewController {
         }
     }
     
+    @IBAction func supportAction(_ sender: UIButton) {
+        let mobile = ConstHelper.callToSupport
+        if let url = URL(string: "tel://\(mobile)"), UIApplication.shared.canOpenURL(url) {
+            if #available(iOS 10, *) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            } else {
+                UIApplication.shared.openURL(url)
+            }
+        } else {
+            self.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "Something went wrong", actionTitle: "Ok")
+            return
+        }
+        
+    }
+    
 }
 
 extension ContactUsViewController {
@@ -111,7 +138,15 @@ extension ContactUsViewController {
         
         btn_submit.backgroundColor = ConstHelper.cyan
         btn_submit.setTitleColor(ConstHelper.enableColor, for: .normal)
+        
+        btn_support.backgroundColor = ConstHelper.cyan
+        btn_support.setTitleColor(ConstHelper.enableColor, for: .normal)
 
+        self.lbl_supportTime.text = ConstHelper.supportMessage
+        self.lbl_supportTime.font = ConstHelper.h6Normal
+        self.lbl_supportTime.textColor = ConstHelper.gray
+        self.lbl_supportTime.font = UIFont.italicSystemFont(ofSize: 12)
+        
         sg_contactType.backgroundColor = ConstHelper.lightGray
         sg_contactType.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: ConstHelper.white], for: .selected)
         self.sg_contactType.addTarget(self, action: #selector(contactTypeChanged(_:)), for: .valueChanged)
@@ -145,8 +180,20 @@ extension ContactUsViewController {
         self.vw_prodTitleTFBackView.setBorderForView(width: 1, color: ConstHelper.lightGray, radius: 10)
         self.vw_prodCategoryTFBackView.setBorderForView(width: 1, color: ConstHelper.lightGray, radius: 10)
         
+        self.tf_prodTitleTF.textColor = ConstHelper.black
+        self.tf_prodCategoryTF.textColor = ConstHelper.black
+        
         self.tf_prodTitleTF.attributedPlaceholder = NSAttributedString(string: "Title of the product", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightGray])
         self.tf_prodCategoryTF.attributedPlaceholder = NSAttributedString(string: "Category of the product", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightGray])
+        
+        self.tv_enquiryDescTV.backgroundColor = .white
+        self.tv_enquiryDescTV.textColor = ConstHelper.black
+        
+        self.tv_feedbackDescTV.backgroundColor = .white
+        self.tv_feedbackDescTV.textColor = ConstHelper.black
+        
+        self.tv_requestDescTV.backgroundColor = .white
+        self.tv_requestDescTV.textColor = ConstHelper.black
     }
     
     private func updateUIWhenViewWillAppear() {        
@@ -218,12 +265,11 @@ extension ContactUsViewController {
     private func postContactUsForm(_ formName: String, formRequest: FormRequestModel) {
         let parameters: ContactUsReqFormModel = ContactUsReqFormModel(form: formName, formRequest: formRequest)
         
-        print("Par: \(parameters)")
-
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
 
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .contactUsForm
 
         let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
@@ -235,14 +281,18 @@ extension ContactUsViewController {
                 guard let response = response else { return }
 
                 if response.status {
-                    print(response)
                     strongSelf.emptyAllFormRequestInfo()
+                    ConstHelper.contactSuccessMsg = response.message ?? ""
+                    strongSelf.dismiss(animated: true, completion: nil)
                 } else {
                     strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: (response.message ?? ""), actionTitle: "Ok")
+                    ConstHelper.contactSuccessMsg = ""
                     return
                 }
             case .failure(let error):
                 strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(error.localizedDescription)", actionTitle: "Ok")
+                ConstHelper.contactSuccessMsg = ""
+                return
             }
         }
     }

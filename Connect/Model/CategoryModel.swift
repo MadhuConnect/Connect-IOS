@@ -15,41 +15,43 @@ struct CategoryModel: Codable {
 }
 
 struct MainCategoryModel: Codable {
-    let categoryId: Int
-    let name: String
-    let image: String
-    let uniqueId: String
-    let subCategory: Bool
+    let categoryId: Int?
+    let name: String?
+    let image: String?
+    let uniqueId: String?
+    let subCategory: Bool?
     let subCategoryData: [SubCategoryModel]?
     let products: [ProductModel]?
 }
 
 struct SubCategoryModel: Codable {
-    let subCategoryId: Int
-    let name: String
-    let image: String
-    let uniqueId: String
-    let status: String
-    let miniCategory: Bool
+    let subCategoryId: Int?
+    let name: String?
+    let image: String?
+    let uniqueId: String?
+    let status: String?
+    let miniCategory: Bool?
     let miniCategoryData: [MiniCategoryModel]?
     let products: [ProductModel]?
 }
 
 struct MiniCategoryModel: Codable {
-    let miniCategoryId: Int
-    let name: String
-    let image: String
-    let uniqueId: String
-    let status: String
+    let miniCategoryId: Int?
+    let name: String?
+    let image: String?
+    let uniqueId: String?
+    let status: String?
     let products: [ProductModel]?
 }
 
 struct ProductModel: Codable {
-    let productId: Int
-    let name: String
-    let image: String
-    let uniqueId: String
-    let status: String
+    let productId: Int?
+    let name: String?
+    let image: String?
+    let uniqueId: String?
+    let serviceType: Int?
+    let status: String?
+    
 }
 
 

@@ -16,6 +16,9 @@ class SettingsTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        lbl_settingName.font = ConstHelper.h4Normal
+        lbl_settingName.textColor = ConstHelper.black
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

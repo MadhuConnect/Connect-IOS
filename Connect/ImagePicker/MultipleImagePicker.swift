@@ -16,7 +16,7 @@ public struct ImageAsset {
 }
 
 public protocol MultipleImagePickerDelegate: class {
-    func didSelectMultiple(images: [ImageAsset]?)
+    func didSelectMultiple(_ imageAsset: [ImageAsset]?)
 }
 
 open class MultipleImagePicker: NSObject {
@@ -95,13 +95,13 @@ open class MultipleImagePicker: NSObject {
         
         viewController.presentImagePicker(imagePicker,
         select: { (asset) in
-            print("selected asset")
+            //print("selected asset")
         }, deselect: { (asset) in
-            print("Deselected asset")
+            //print("Deselected asset")
         }, cancel: { (assets) in
-            print("Canceld assets")
+            //print("Canceld assets")
         }, finish: { (assets) in
-            print("finished asset selection")
+            //print("finished asset selection")
             self.myImages.removeAll()
             
             //Creating images
@@ -123,9 +123,8 @@ open class MultipleImagePicker: NSObject {
                     self.imageAssets.append(ImageAsset(image: myimage.image, name: path))
                 }
             }
-            print(self.imageAssets)
             
-            self.delegate?.didSelectMultiple(images: self.imageAssets)
+            self.delegate?.didSelectMultiple(self.imageAssets)
             
         }, completion: nil)
     }
@@ -152,7 +151,7 @@ open class MultipleImagePicker: NSObject {
     private func pickerController(_ controller: UIImagePickerController, didSelect images: [ImageAsset]?) {
         controller.dismiss(animated: true, completion: nil)
         
-        self.delegate?.didSelectMultiple(images: images)
+        self.delegate?.didSelectMultiple(images)
     }
     
 }
@@ -165,14 +164,34 @@ extension MultipleImagePicker: UINavigationControllerDelegate, UIImagePickerCont
             let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
             let localPath = documentDirectory?.appending("/" + imgName)
             let image = info[.originalImage] as! UIImage
-            let data = image.pngData()! as NSData
+            let data = image.jpegData(compressionQuality: 1)! as NSData
             data.write(toFile: localPath!, atomically: true)
-            //let imageData = NSData(contentsOfFile: localPath!)!
-            let photoURL = URL.init(fileURLWithPath: localPath!)//NSURL(fileURLWithPath: localPath!)
-//            print(photoURL.path)
+            let photoURL = URL.init(fileURLWithPath: localPath!)
             self.pickerController(picker, didSelect: [ImageAsset(image: image, name: photoURL.path)])
+        } else {
+            if let image = info[.originalImage] as? UIImage {
+                UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+                
+                if picker.sourceType == .camera{
+                    let imgName = UUID().uuidString
+                    let documentDirectory = NSTemporaryDirectory()
+                    let localPath = documentDirectory.appending(imgName)
+
+                    let data = image.jpegData(compressionQuality: 1)! as NSData
+                    data.write(toFile: localPath, atomically: true)
+                    let photoURL = URL.init(fileURLWithPath: localPath)
+                    self.pickerController(picker, didSelect: [ImageAsset(image: image, name: photoURL.path)])
+                }
+            }
         }
         
+    }
+    
+    
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            print("ERROR: \(error)")
+        }
     }
 }
 
@@ -194,16 +213,13 @@ extension MultipleImagePicker {
         guard let filePath = self.append(toPath: direcotry, withPathComponent: filename) else {
             return
         }
-        
-//        print(filePath)
-        
+                
         do {
             try data.write(toFile: filePath, options: .atomic)
         } catch {
-            print("Error", error)
+//            print("Error", error)
             return
         }
-        print("Saved successful")
         
     }
     

@@ -42,14 +42,29 @@ class EmergencyRequestViewController: UIViewController {
     @IBOutlet weak var btn_close: UIButton!
     @IBOutlet weak var btn_home: UIButton!
     
+    //Lottie
+    @IBOutlet weak var loadingBackView: UIView!
+    @IBOutlet weak var loadingView: UIView!
+    @IBOutlet weak var lbl_message: UILabel!
+    
+    //Lottie
+    @IBOutlet weak var loaderWaitBackView: UIView!
+    @IBOutlet weak var waitBackView: UIView!
+    @IBOutlet weak var waitView: UIView!
+    @IBOutlet weak var lbl_waitMessage: UILabel!
+    
     private let client = APIClient()
     let animationView = AnimationView()
+    let animationWaitView = AnimationView()
+    let animationEmergencyLogoView = AnimationView()
     
     var emergencyTypes: [EmergencyModel]?
     var bloodGroups: [EmergencyTypes]?
+    let booldTypesLottie = [ConstHelper.lottie_bloodBag, ConstHelper.lottie_plasma]
     
     var eTypeId: Int?
     var eType: String?
+    var isFromNotHome: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,25 +83,76 @@ class EmergencyRequestViewController: UIViewController {
     }
     
     @IBAction func postAction(_ sender: UIButton) {
-        print("Post emergemcy request")
         guard let additionalInfo = self.tv_requestDescTV.text, !additionalInfo.isEmpty else {
             self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please enter information", actionTitle: "Ok")
             return
         }
         
+        self.setupWaitAnimation(withAnimation: true, name: ConstHelper.lottie_emerequest)
         self.postEmergencyRequest(eTypeId ?? 0, bloodType: eType, additionalInformation: additionalInfo)
         
     }
     
     @IBAction func homeAction(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
+        if self.isFromNotHome {
+            Switcher.updateRootViewController(setTabIndex: 0)
+        } else {
+            self.dismiss(animated: true, completion: nil)
+        }
+        
+        
     }
     
     @IBAction func closeAction(_ sender: UIButton) {
         self.tv_requestDescTV.text = ""
         self.vw_postResultAlphaBackView.isHidden = true
     }
+    
+    private func setupAnimation(withAnimation status: Bool, name: String) {
+        animationView.animation = Animation.named(name)
+        animationView.frame = loadingView.bounds
+        animationView.backgroundColor = ConstHelper.white
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        if status {
+            animationView.play()
+            loadingView.addSubview(animationView)
+            loadingBackView.isHidden = false
+        }
+        else {
+            animationView.stop()
+            loadingBackView.isHidden = true
+        }
 
+    }
+
+    private func setupWaitAnimation(withAnimation status: Bool, name: String) {
+        animationWaitView.animation = Animation.named(name)
+        animationWaitView.frame = waitView.bounds
+        animationWaitView.backgroundColor = ConstHelper.white
+        animationWaitView.contentMode = .scaleAspectFit
+        animationWaitView.loopMode = .loop
+        if status {
+            animationWaitView.play()
+            waitView.addSubview(animationWaitView)
+            loaderWaitBackView.isHidden = false
+        }
+        else {
+            animationWaitView.stop()
+            loaderWaitBackView.isHidden = true
+        }
+
+    }
+    
+    private func setupEmergencyLogoAnimation(withAnimation status: Bool, name: String) {
+        animationEmergencyLogoView.animation = Animation.named(name)
+        animationEmergencyLogoView.frame = vw_emergencyLogoView.bounds
+        animationEmergencyLogoView.backgroundColor = ConstHelper.white
+        animationEmergencyLogoView.contentMode = .scaleAspectFit
+        animationEmergencyLogoView.loopMode = .loop
+        animationEmergencyLogoView.play()
+        vw_emergencyLogoView.addSubview(animationEmergencyLogoView)
+    }
 }
 
 extension EmergencyRequestViewController {
@@ -133,36 +199,42 @@ extension EmergencyRequestViewController {
         self.btn_home.setTitleColor(ConstHelper.white, for: .normal)
         self.btn_home.titleLabel?.font = ConstHelper.h4Bold
         
-        self.setupAnimation(withAnimation: true, name: ConstHelper.heartbeat_animation)
+        self.lbl_message.font = ConstHelper.h6Normal
+        self.lbl_message.textColor = ConstHelper.gray
+        
+        self.lbl_waitMessage.font = ConstHelper.h6Normal
+        self.lbl_waitMessage.textColor = ConstHelper.gray
+        
+        self.lbl_waitMessage.text = "Emergency Request"
+        
+        self.loaderWaitBackView.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.5)
+        self.waitBackView.setBorderForView(width: 0, color: ConstHelper.white, radius: 10)
+        
+        self.tv_requestDescTV.backgroundColor = .white
+        self.tv_requestDescTV.textColor = ConstHelper.black
     }
     
-    private func updateUIWhenViewWillAppear() {
+    private func updateUIWhenViewWillAppear() {        
+        self.setupWaitAnimation(withAnimation: false, name: ConstHelper.lottie_emerequest)
+        self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
         self.getEmergencyRequestInfo()
         self.vw_postResultAlphaBackView.isHidden = true
     }
-    
-    private func setupAnimation(withAnimation status: Bool, name: String) {
-        animationView.animation = Animation.named(name)
-        animationView.frame = vw_emergencyLogoView.bounds
-        animationView.backgroundColor = ConstHelper.white
-        animationView.contentMode = .scaleAspectFit
-        animationView.loopMode = .loop
-        animationView.play()
-        vw_emergencyLogoView.addSubview(animationView)
-    }
+
 }
 
 //MARK: - API Call
 extension EmergencyRequestViewController {
     private func getEmergencyRequestInfo() {
         //API
+//        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseEmergencyTypes.rawValue
         let api: Apifeed = .emergencyTypes
-        
         //Req headers & body
         let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .get , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: nil, timeInterval: 120)
         
         client.get_EmergencyTypes(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }
+            strongSelf.setupAnimation(withAnimation: false, name: ConstHelper.loader_animation)
             switch result {
             case .success(let result):
                 guard  let result = result else { return }
@@ -174,15 +246,18 @@ extension EmergencyRequestViewController {
                     strongSelf.bloodGroups = result.data?.first?.types
                     strongSelf.eTypeId = result.data?.first?.emergecnyTypeId
                     strongSelf.eType = result.data?.first?.types?.first?.type
+                    
+                    strongSelf.cv_emergencyTypesCollectionView.reloadData()
+                    strongSelf.cv_bloodGroupsCollectionView.reloadData()
+                    
                     DispatchQueue.main.async {
-                        strongSelf.cv_emergencyTypesCollectionView.reloadData()
-                        strongSelf.cv_bloodGroupsCollectionView.reloadData()
                         let indexPath = IndexPath(item: 0, section: 0)
                         strongSelf.cv_emergencyTypesCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
                         strongSelf.cv_bloodGroupsCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
                     }
                 } else {
-                    strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(result.message ?? "")", actionTitle: "Ok")
+                    strongSelf.lbl_message.text = result.message ?? ""
+                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
                     return
                 }
             case .failure(let error):
@@ -196,11 +271,11 @@ extension EmergencyRequestViewController {
     //POST emergency request
     private func postEmergencyRequest(_ emergecnyTypeId: Int, bloodType type: String?, additionalInformation message: String) {
         let parameters: EmergencyReqModel = EmergencyReqModel(emergecnyTypeId: emergecnyTypeId, type: type, message: message)
-        print(parameters)
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
         
         //API
+//        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseEmergencyNotifications.rawValue
         let api: Apifeed = .emergencyRequest
         
         //Req headers & body
@@ -208,6 +283,7 @@ extension EmergencyRequestViewController {
         
         client.post_EmergencyRequest(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }
+            strongSelf.setupWaitAnimation(withAnimation: false, name: ConstHelper.lottie_emerequest)
             switch result {
             case .success(let result):
                 guard  let result = result else { return }
@@ -224,9 +300,11 @@ extension EmergencyRequestViewController {
                             strongSelf.lbl_emergencyType.text = "Type: \(type)"
                         }
                         
+                        strongSelf.setupEmergencyLogoAnimation(withAnimation: true, name: ConstHelper.lottie_health)
                     }
                 } else {
-                    strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(result.message ?? "")", actionTitle: "Ok")
+                    strongSelf.lbl_message.text = result.message ?? ""
+                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
                     return
                 }
             case .failure(let error):
@@ -263,7 +341,8 @@ extension EmergencyRequestViewController: UICollectionViewDelegate, UICollection
             let emergencyTypesCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: ConstHelper.emergencyTypesCollectionViewCell, for: indexPath) as! EmergencyTypesCollectionViewCell
             
             if let emergencyType = self.emergencyTypes?[indexPath.row] {
-                emergencyTypesCollectionViewCell.setEmergencyTypeCell(emergencyType.image, title: emergencyType.emergencyType)
+                let lottie = self.booldTypesLottie[indexPath.row]
+                emergencyTypesCollectionViewCell.setEmergencyTypeCell(emergencyType.image, title: emergencyType.emergencyType, lottie: lottie)
             }
             
             return emergencyTypesCollectionViewCell
@@ -280,13 +359,20 @@ extension EmergencyRequestViewController: UICollectionViewDelegate, UICollection
         }
         
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch collectionView {
         case self.cv_emergencyTypesCollectionView:
             return CGSize(width: 110, height: 140)
         case self.cv_bloodGroupsCollectionView:
-            return CGSize(width: 60, height: 40)
+            
+            if let bloodGroup = self.bloodGroups?[indexPath.row] {
+                let label = UILabel(frame: CGRect.zero)
+                label.text = bloodGroup.type
+                label.sizeToFit()
+                return CGSize(width: label.frame.width + 20, height: 40)
+            }
+            return CGSize(width: 0, height: 0)
         default:
             return CGSize(width: 0, height: 0)
         }

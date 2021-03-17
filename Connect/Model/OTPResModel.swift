@@ -22,6 +22,7 @@ struct OTPInfo: Codable {
     let email: String?
     let jwToken: String
     let profileImage: String?
+    let kyc: Int
 }
 
 //{"status":true,"message":"Login Success","data":{"userId":1,"name":"Gana","mobile":"+919502244622"}}

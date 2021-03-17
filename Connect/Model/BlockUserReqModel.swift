@@ -9,7 +9,6 @@
 import Foundation
 
 struct BlockUserReqModel: Codable {
-    let userId: Int
     let connectedUserId: Int
     let status: String
 }

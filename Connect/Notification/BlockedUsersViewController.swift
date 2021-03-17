@@ -45,18 +45,14 @@ class BlockedUsersViewController: UIViewController {
     }
     
     private func getBlockedUsers() {
-        guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
-            return
-        }
         self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-        self.getBlockedUsersList(withUserId: userId)
+        self.getBlockedUsersList()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.updateUIWhenViewWillAppear()
-        
     }
     
     @IBAction func backToHomeAction(_ sender: UIButton) {
@@ -76,6 +72,15 @@ class BlockedUsersViewController: UIViewController {
         isSearchEnable = false
         self.filterBlockedUsers = nil
         self.blockedUsersTableView.reloadData()
+    }
+    
+    @IBAction func emergencyReqAction(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Emergency", bundle: nil)
+        if let emergencyRequestVC = storyboard.instantiateViewController(withIdentifier: "EmergencyRequestViewController") as? EmergencyRequestViewController {
+            emergencyRequestVC.modalPresentationStyle = .fullScreen
+            emergencyRequestVC.isFromNotHome = true
+            self.present(emergencyRequestVC, animated: true, completion: nil)
+        }
     }
 
     private func setupAnimation(withAnimation status: Bool, name: String) {
@@ -106,8 +111,8 @@ extension BlockedUsersViewController {
         self.tf_searchTF.textColor = ConstHelper.white
         self.tf_searchTF.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.white])
         
-        self.lbl_message.font = ConstHelper.h4Normal
-        self.lbl_message.textColor = ConstHelper.cyan
+        self.lbl_message.font = ConstHelper.h6Normal
+        self.lbl_message.textColor = ConstHelper.gray
         
         self.disableLoaderView()
     }
@@ -118,8 +123,7 @@ extension BlockedUsersViewController {
     }
     
     private func disableLoaderView() {
-        self.loadingBackView.backgroundColor = ConstHelper.lightGray
-        self.loadingView.backgroundColor = .clear
+        self.loadingBackView.backgroundColor = ConstHelper.white        
     }
 }
 
@@ -169,35 +173,27 @@ extension BlockedUsersViewController: UITableViewDelegate, UITableViewDataSource
     @objc private func unBlockUserAction(_ sender: UIButton) {
         if isSearchEnable {
             if let blockedUser = self.filterBlockedUsers?[sender.tag] {
-                guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else { return }
                 self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-                self.unBlockuser(withUserId: userId, connectedUserId: blockedUser.blockedUserId, qrStatus: "unblock")
+                self.unBlockuser(blockedUser.blockedUserId, qrStatus: "unblock")
             }
         } else {
             if let blockedUser = self.blockedUsers?[sender.tag] {
-                guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else { return }
                 self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-                self.unBlockuser(withUserId: userId, connectedUserId: blockedUser.blockedUserId, qrStatus: "unblock")
+                self.unBlockuser(blockedUser.blockedUserId, qrStatus: "unblock")
             }
         }
-        
-//        if let blockedUser = self.blockedUsers?[sender.tag] {
-//            guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else { return }
-//            self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-//            self.unBlockuser(withUserId: userId, connectedUserId: blockedUser., qrStatus: "unblock")
-//        }
-
     }
 }
 
 //MARK: - API Call
 extension BlockedUsersViewController {
     //Post and Get All Notifications Selected Product
-    private func getBlockedUsersList(withUserId userId: Int) {
+    private func getBlockedUsersList() {
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .blockUsersList
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: nil, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .get , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: nil, timeInterval: 120)
 
         client.post_blockedUsersList(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
@@ -215,9 +211,9 @@ extension BlockedUsersViewController {
                         }
                      }
                  } else {
-                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.empty_animation)
+                    strongSelf.lbl_message.text = "No blocked users"
+                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.lottie_nodata)
                     DispatchQueue.main.async {
-                        strongSelf.lbl_message.text = response.message
                         strongSelf.blockedUsersTableView.reloadData()
                     }
                  }
@@ -228,14 +224,14 @@ extension BlockedUsersViewController {
     }
     
     //Post to unblock user
-    private func unBlockuser(withUserId userId: Int, connectedUserId: Int, qrStatus: String) {
-        let parameters: BlockUserReqModel = BlockUserReqModel(userId: userId, connectedUserId: connectedUserId, status: qrStatus)
-            print("Par: \(parameters)")
+    private func unBlockuser(_ connectedUserId: Int, qrStatus: String) {
+        let parameters: BlockUserReqModel = BlockUserReqModel(connectedUserId: connectedUserId, status: qrStatus)
 
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
 
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .blockUsers
 
         let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
@@ -250,6 +246,7 @@ extension BlockedUsersViewController {
                  if response.status {
                     strongSelf.getBlockedUsers()
                  } else {
+                    strongSelf.lbl_message.text = response.message ?? ""
                     strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
                  }
              case .failure(let error):

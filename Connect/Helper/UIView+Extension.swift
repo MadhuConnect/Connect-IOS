@@ -72,6 +72,13 @@ extension UIView {
          layer.backgroundColor =  backgroundCGColor
      }
     
+    func roundCorners(_ corners: UIRectCorner, radius: CGFloat) {
+         let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+         let mask = CAShapeLayer()
+         mask.path = path.cgPath
+         self.layer.mask = mask
+    }
+    
 //    func addShadow(shadowColor: UIColor, offSet: CGSize, opacity: Float, shadowRadius: CGFloat, cornerRadius: CGFloat, corners: UIRectCorner, fillColor: UIColor = .white) {
 //
 //        let shadowLayer = CAShapeLayer()
@@ -88,17 +95,4 @@ extension UIView {
 //        self.layer.addSublayer(shadowLayer)
 //    }
 
-}
-
-extension UILabel {
-    func gradientColorForLabel(firstColor: UIColor, secondColor: UIColor) {
-        let gradientColor = CAGradientLayer()
-        gradientColor.colors = [firstColor.cgColor, secondColor.cgColor]
-        gradientColor.locations = [0.0, 1.0]
-        gradientColor.startPoint = CGPoint(x: 0.0, y: 0.5)
-        gradientColor.endPoint = CGPoint(x: 1.0, y: 0.5)
-        gradientColor.frame = self.bounds
-        self.layer.addSublayer(gradientColor)
-    }
-    
 }

@@ -21,13 +21,10 @@ class OrdersTableViewCell: UITableViewCell {
     //Top left
     @IBOutlet weak var vw_prodImageBackView: UIView!
     @IBOutlet weak var iv_prodImageView: UIImageView!
-    @IBOutlet weak var lbl_personType: UILabel!
+    @IBOutlet weak var lbl_title: UILabel!
     @IBOutlet weak var lbl_qrGeneratedDate: UILabel!
-    //Top right
-    @IBOutlet weak var vw_expireDateBackView: UIView!
-    @IBOutlet weak var lbl_qrExpireDay: UILabel!
-    @IBOutlet weak var lbl_qrExpireMonthYear: UILabel!
-    @IBOutlet weak var lbl_qrExpireTitle: UILabel!
+    @IBOutlet weak var lbl_personType: UILabel!
+
     //Bottom
     //Bell
     @IBOutlet weak var vw_bellBackView: UIView!
@@ -39,12 +36,17 @@ class OrdersTableViewCell: UITableViewCell {
     @IBOutlet weak var iv_lockImageView: UIImageView!
     @IBOutlet weak var lbl_lockCount: UILabel!
     @IBOutlet weak var btn_lock: UIButton!
-    //Chat
-    @IBOutlet weak var vw_chatBackView: UIView!
-    @IBOutlet weak var iv_chatImageView: UIImageView!
-    @IBOutlet weak var lbl_chatCount: UILabel!
-    @IBOutlet weak var btn_chat: UIButton!
-
+    //Buy
+    @IBOutlet weak var vw_buyBackView: UIView!
+    @IBOutlet weak var iv_buyImageView: UIImageView!
+    @IBOutlet weak var lbl_buyCount: UILabel!
+    @IBOutlet weak var btn_buy: UIButton!
+    //Delete
+    @IBOutlet weak var vw_deleteBackView: UIView!
+    @IBOutlet weak var iv_deleteImageView: UIImageView!
+    @IBOutlet weak var lbl_deleteCount: UILabel!
+    @IBOutlet weak var btn_delete: UIButton!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -57,20 +59,19 @@ class OrdersTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setQRInformation(_ qrInfo: QRInfoModel?) {
+    func setQRInformation(_ qrInfo: QrCodeData?) {
         if let qrInfo = qrInfo {
-            if let imgUrl = URL(string: qrInfo.productImage) {
+            if let imgUrl = URL(string: qrInfo.productImage ?? "") {
                 self.downloadImage(url: imgUrl, imageView: iv_prodImageView)
             }
             
-            self.lbl_personType.text = qrInfo.personType
-            self.lbl_qrGeneratedDate.text = self.getDateSpecificFormat(qrInfo.qrGeneratedDate)
-            self.lbl_bellCount.text = "\(qrInfo.activeCount)"
-            self.lbl_lockCount.text = "\(qrInfo.lockCount)"
-            self.lbl_chatCount.text = "\(qrInfo.chatCount)"            
-            self.lbl_qrExpireDay.text = self.getDay(qrInfo.expireDate)
-            self.lbl_qrExpireMonthYear.text = self.getMonthYear(qrInfo.expireDate)
-            self.lbl_qrExpireTitle.text = "Expires"            
+            self.lbl_title.text = qrInfo.title
+            self.lbl_personType.text = "As \(qrInfo.personType ?? "")"
+            self.lbl_qrGeneratedDate.text = "Generated on \(self.getDateSpecificFormat(qrInfo.qrGeneratedDate ?? ""))"
+            self.lbl_bellCount.text = "\(qrInfo.activeCount ?? 0)"
+            self.lbl_lockCount.text = "\(qrInfo.lockCount ?? 0)"
+            self.lbl_buyCount.text = "\(qrInfo.paidConnections?.count ?? 0)"
+            self.lbl_deleteCount.text = "Delete"
         }
     }
 
@@ -83,7 +84,23 @@ extension OrdersTableViewCell {
         self.vw_middleBackView.backgroundColor = ConstHelper.lightGray
         self.vw_bellBackView.addRightBorder(with: ConstHelper.lightGray, andWidth: 1)
         self.vw_lockBackView.addRightBorder(with: ConstHelper.lightGray, andWidth: 1)
+        self.vw_buyBackView.addRightBorder(with: ConstHelper.lightGray, andWidth: 1)
         
+        self.lbl_title.font = ConstHelper.h4Bold
+        self.lbl_title.textColor = ConstHelper.cyan
+        
+        self.lbl_qrGeneratedDate.font = ConstHelper.h6Normal
+        self.lbl_qrGeneratedDate.textColor = ConstHelper.gray
+        
+        self.lbl_personType.font = ConstHelper.h5Normal
+        self.lbl_personType.textColor = ConstHelper.gray
+        
+        self.lbl_deleteCount.font = ConstHelper.h5Normal
+        self.lbl_deleteCount.textColor = ConstHelper.red
+        
+        self.lbl_bellCount.textColor = .black
+        self.lbl_lockCount.textColor = .black
+        self.lbl_buyCount.textColor = .black
     }
     
     func downloadImage(url: URL, imageView: UIImageView) {

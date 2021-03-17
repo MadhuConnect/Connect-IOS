@@ -73,19 +73,14 @@ extension OTPViewController {
         tf_opt5Tf.delegate = self
         tf_opt6Tf.delegate = self
         
+        tf_opt1Tf.becomeFirstResponder()
+        
         tf_opt1Tf.backgroundColor = .clear
         tf_opt2Tf.backgroundColor = .clear
         tf_opt3Tf.backgroundColor = .clear
         tf_opt4Tf.backgroundColor = .clear
         tf_opt5Tf.backgroundColor = .clear
         tf_opt6Tf.backgroundColor = .clear
-        
-        addBottomBorderTo(textField: tf_opt1Tf)
-        addBottomBorderTo(textField: tf_opt2Tf)
-        addBottomBorderTo(textField: tf_opt3Tf)
-        addBottomBorderTo(textField: tf_opt4Tf)
-        addBottomBorderTo(textField: tf_opt5Tf)
-        addBottomBorderTo(textField: tf_opt6Tf)
         
         self.tf_opt1Tf.textColor = ConstHelper.white
         self.tf_opt1Tf.font = ConstHelper.h1Normal
@@ -118,6 +113,7 @@ extension OTPViewController {
         self.btn_resendOtpBtn.setTitleColor(ConstHelper.blue, for: .normal)
         
         self.vw_verifyBackView.setBorderForView(width: 0, color: .white, radius: 10)
+        self.loadingBackView.setBorderForView(width: 0, color: .white, radius: 10)
         
         btn_verifyBtn.titleLabel?.font = ConstHelper.h4Bold
         self.disableVerifyButtonAction()
@@ -127,13 +123,6 @@ extension OTPViewController {
         self.loadingBackView.isHidden = true
         self.vw_verifyBackView.isHidden = false
         self.lbl_otpMessageLbl.text = self.registrationUserInfo?.message
-    }
-    
-    func addBottomBorderTo(textField: UITextField) {
-        let layer = CALayer()
-        layer.backgroundColor = UIColor.white.cgColor
-        layer.frame = CGRect(x: 0.0, y: textField.frame.size.height - 2.0, width: textField.frame.size.width, height: 4.0)
-        textField.layer.addSublayer(layer)
     }
     
     private func enableVerifyButtonAction() {
@@ -177,7 +166,6 @@ extension OTPViewController {
         
         self.enableVerifyButtonAction()
         self.receivedOTP = otp1 + otp2 + otp3 + otp4 + otp5 + otp6
-        print("executed...")
     }
     
     private func initialRootViewController() {
@@ -295,6 +283,7 @@ extension OTPViewController {
         guard let body = try? JSONEncoder().encode(parameters) else { return }
         
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .checkOtp
         
         //Req headers & body
@@ -340,6 +329,7 @@ extension OTPViewController {
         UserDefaults.standard.set(user.data?.email, forKey: "LoggedUserEmail")
         UserDefaults.standard.set(user.data?.jwToken, forKey: "LoggedUserJWTToken")
         UserDefaults.standard.set(user.data?.profileImage, forKey: "LoggedUserProfileImage")
+        UserDefaults.standard.set(user.data?.kyc, forKey: "LoggedKYC")
         UserDefaults.standard.set(true, forKey: "loginStatusKey")
         UserDefaults.standard.synchronize()
     }

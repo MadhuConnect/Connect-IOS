@@ -9,14 +9,13 @@
 import UIKit
 
 class Switcher {
-    static func updateRootViewController() {
+    static func updateRootViewController(setTabIndex tabIndex: Int?) {
         let status = UserDefaults.standard.bool(forKey: "loginStatusKey")
         var rootVC: UIViewController?
-        
-        print("Login status: \(status)")
-        
+                
         if status {
             if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarViewController") as? TabBarViewController {
+                vc.selectedIndex = tabIndex ?? 0
                 rootVC = vc
             }
             

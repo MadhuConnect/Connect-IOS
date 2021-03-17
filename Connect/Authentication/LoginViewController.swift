@@ -39,16 +39,18 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var btn_cancelBtn: UIButton!
     @IBOutlet weak var btn_submitBtn: UIButton!
     @IBOutlet weak var lbl_errorForgotMobileLbl: UILabel!
+    @IBOutlet weak var lbl_versionNo: UILabel!
+    @IBOutlet weak var btn_showPassword: UIButton!
     
     let animationView = AnimationView()
     
     private let client = APIClient()
     
+    var showPassword: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-//        self.tf_mobileTF.text = "9121089404"
-//        self.tf_passwordTF.text = "123123"
-
+        
         self.updateDefaultUI()
     }
     
@@ -62,6 +64,7 @@ class LoginViewController: UIViewController {
         self.vw_alertBackView.isHidden = false
         self.vw_alertView.isHidden = false
         self.tf_alertTF.text = ""
+        self.tf_alertTF.keyboardType = .phonePad
         self.tf_alertTF.becomeFirstResponder()
         self.emptyData()
     }
@@ -86,7 +89,6 @@ class LoginViewController: UIViewController {
             newMobile = mobile
         }
 
-        print(newMobile)
         self.forgotUserPassword(withName: newMobile)
     }
 
@@ -104,13 +106,25 @@ class LoginViewController: UIViewController {
         
         vw_loginBackView.isHidden = true
         self.setupAnimation(withAnimation: true)
-        self.self.postLoginUser(withMobile: newMobile, password: password, andToken: token)
+        self.postLoginUser(withMobile: newMobile, password: password, andToken: token)
     }
     
     @IBAction func signUpUserAction(_ sender: UIButton) {
         if let signupVC = self.storyboard?.instantiateViewController(withIdentifier: "SignUpViewController") as? SignUpViewController {
             signupVC.modalPresentationStyle = .fullScreen
             self.present(signupVC, animated: true, completion: nil)
+        }
+    }
+    
+    @IBAction func showPassword(_ sender: UIButton) {
+        if showPassword {
+            self.showPassword = false
+            self.btn_showPassword.setImage(UIImage(named: "invisible"), for: .normal)
+            self.tf_passwordTF.isSecureTextEntry = true
+        } else {
+            self.showPassword = true
+            self.btn_showPassword.setImage(UIImage(named: "visibility"), for: .normal)
+            self.tf_passwordTF.isSecureTextEntry = false
         }
     }
     
@@ -131,28 +145,32 @@ extension LoginViewController {
         self.tf_alertTF.delegate = self
         self.tf_passwordTF.isSecureTextEntry = true
         
-        
         self.tf_mobileTF.textColor = ConstHelper.hTextColor
         self.tf_mobileTF.font = ConstHelper.h3Normal
         
         self.tf_passwordTF.textColor = ConstHelper.hTextColor
         self.tf_passwordTF.font = ConstHelper.h3Normal
         
-        self.lbl_errorMobileLbl.textColor = ConstHelper.hErrorColor
-        self.lbl_errorMobileLbl.font = ConstHelper.h4Normal
+        self.lbl_errorMobileLbl.textColor = ConstHelper.white
+        self.lbl_errorMobileLbl.font = ConstHelper.h5Normal
         
-        self.lbl_errorPasswordLbl.textColor = ConstHelper.hErrorColor
-        self.lbl_errorPasswordLbl.font = ConstHelper.h4Normal
+        self.lbl_errorPasswordLbl.textColor = ConstHelper.white
+        self.lbl_errorPasswordLbl.font = ConstHelper.h5Normal
         
         self.lbl_accountLbl.textColor = ConstHelper.white
         self.lbl_accountLbl.font = ConstHelper.h3Normal
         
-        self.btn_forgotBtn.titleLabel?.font = ConstHelper.h4Normal
+        self.btn_forgotBtn.titleLabel?.font = ConstHelper.h3Normal
+        self.btn_forgotBtn.setTitleColor(ConstHelper.blue, for: .normal)
+        
+        self.btn_signUpBtn.titleLabel?.font = ConstHelper.h3Normal
         self.btn_signUpBtn.setTitleColor(ConstHelper.blue, for: .normal)
         
         self.vw_mobileBackView.setBorderForView(width: 0, color: .white, radius: 10)
         self.vw_passwordBackView.setBorderForView(width: 0, color: .white, radius: 10)
         self.vw_loginBackView.setBorderForView(width: 0, color: .white, radius: 10)
+        
+        self.loadingBackView.setBorderForView(width: 0, color: .white, radius: 10)
         
         self.vw_alertView.setBorderForView(width: 0, color: .white, radius: 10)
         self.vw_alertLineView.backgroundColor = ConstHelper.gray
@@ -172,10 +190,24 @@ extension LoginViewController {
         btn_loginBtn.setTitleColor(.lightGray, for: .normal)
         btn_loginBtn.isUserInteractionEnabled = false
         
+        self.lbl_versionNo.font = ConstHelper.h6Normal
+        self.lbl_versionNo.textColor = ConstHelper.gray
+        self.getVersionNo()
+        
         self.tf_mobileTF.addTarget(self, action: #selector(validateText(_:)), for: .editingChanged)
         self.tf_passwordTF.addTarget(self, action: #selector(validateText(_:)), for: .editingChanged)
         self.tf_alertTF.addTarget(self, action: #selector(validateForgotText(_:)), for: .editingChanged)
         
+        self.tf_mobileTF.attributedPlaceholder = NSAttributedString(string: "Mobile Number", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightWhiteGray])
+        self.tf_passwordTF.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightWhiteGray])
+        self.tf_alertTF.attributedPlaceholder = NSAttributedString(string: "Mobile Number", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightWhiteGray])
+    }
+    
+    private func getVersionNo() {
+        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+           let bundle = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+            self.lbl_versionNo.text = String(format:"Version: %@ Build: %@", version, bundle)
+        }
     }
     
     private func updateUIWhenViewWillAppear() {
@@ -190,6 +222,11 @@ extension LoginViewController {
         self.btn_submitBtn.setTitleColor(ConstHelper.lightGray, for: .normal)
         self.btn_submitBtn.titleLabel?.font = ConstHelper.h3Normal
         self.btn_submitBtn.isUserInteractionEnabled = false
+        
+        self.showPassword = false
+        btn_showPassword.setImage(UIImage(named: "invisible"), for: .normal)
+        
+        self.emptyData()
     }
     
     @objc func validateForgotText(_ textField: UITextField) {
@@ -222,7 +259,6 @@ extension LoginViewController {
         }
         self.btn_submitBtn.setTitleColor(ConstHelper.gray, for: .normal)
         btn_submitBtn.isUserInteractionEnabled = true
-        print("executed...")
     }
     
     @objc func validateText(_ textField: UITextField) {
@@ -246,16 +282,16 @@ extension LoginViewController {
                     self.lbl_errorPasswordLbl.text = ""
                     break
                 } else {
-                    self.lbl_errorPasswordLbl.text = "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character"
+                    self.lbl_errorPasswordLbl.text = "Password should be minimum six characters"
                     break
                 }
             } else {
-                self.lbl_errorPasswordLbl.text = "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character"
+                self.lbl_errorPasswordLbl.text = "Password should be minimum six characters"
                 break
             }
         default:
             self.lbl_errorMobileLbl.text = "Should be valid mobile number"
-            self.lbl_errorPasswordLbl.text = "Password should be atleast 4 characters"
+            self.lbl_errorPasswordLbl.text = "Password should be minimum six characters"
             break
         }
 
@@ -272,8 +308,6 @@ extension LoginViewController {
         vw_loginBackView.backgroundColor = ConstHelper.cyan
         btn_loginBtn.setTitleColor(ConstHelper.enableColor, for: .normal)
         btn_loginBtn.isUserInteractionEnabled = true
-
-        print("executed...")
     }
     
     private func initialRootViewController() {
@@ -292,7 +326,7 @@ extension LoginViewController {
     }
     
     private func setupAnimation(withAnimation status: Bool) {
-        animationView.animation = Animation.named("29577-dot-loader-5")
+        animationView.animation = Animation.named(ConstHelper.dot_animation)
         animationView.frame = loadingView.bounds
         animationView.backgroundColor = ConstHelper.white
         animationView.contentMode = .scaleAspectFit
@@ -352,6 +386,7 @@ extension LoginViewController {
         guard let body = try? JSONEncoder().encode(parameters) else { return }
         
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .userLogin
         
         //Req headers & body
@@ -397,6 +432,7 @@ extension LoginViewController {
         ConstHelper.DYNAMIC_TOKEN = user.data?.jwToken ?? ""
         UserDefaults.standard.set(user.data?.jwToken, forKey: "LoggedUserJWTToken")
         UserDefaults.standard.set(user.data?.profileImage, forKey: "LoggedUserProfileImage")
+        UserDefaults.standard.set(user.data?.kyc, forKey: "LoggedKYC")
         UserDefaults.standard.set(true, forKey: "loginStatusKey")
         UserDefaults.standard.synchronize()
     }
@@ -409,6 +445,7 @@ extension LoginViewController {
         UserDefaults.standard.set(nil, forKey: "LoggedUserEmail")
         UserDefaults.standard.set(nil, forKey: "LoggedUserJWTToken")
         UserDefaults.standard.set(nil, forKey: "LoggedUserProfileImage")
+        UserDefaults.standard.set(false, forKey: "LoggedKYC")
         UserDefaults.standard.set(false, forKey: "loginStatusKey")
         UserDefaults.standard.synchronize()
     }
@@ -421,6 +458,7 @@ extension LoginViewController {
         guard let body = try? JSONEncoder().encode(parameters) else { return }
         
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .forgetPassword
         
         //Req headers & body

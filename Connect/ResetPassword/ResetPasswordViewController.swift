@@ -20,8 +20,16 @@ class ResetPasswordViewController: UIViewController {
     @IBOutlet weak var lbl_heading: UILabel!
     @IBOutlet weak var tf_resetPassword: UITextField!
     @IBOutlet weak var btn_showPassword: UIButton!
+    
+    @IBOutlet weak var vw_resetConfirmBackView: UIView!
+    @IBOutlet weak var vw_resetConfirmLineView: UIView!
+    @IBOutlet weak var lbl_headingConfirm: UILabel!
+    @IBOutlet weak var tf_resetConfirmPassword: UITextField!
+    @IBOutlet weak var btn_showConfirmPassword: UIButton!
+    
     @IBOutlet weak var btn_changePassword: UIButton!
     @IBOutlet weak var lbl_error: UILabel!
+    @IBOutlet weak var lbl_errorConfirm: UILabel!
     
     //Lottie
     @IBOutlet weak var loadingBackView: UIView!
@@ -31,6 +39,7 @@ class ResetPasswordViewController: UIViewController {
     private let client = APIClient()
         
     var showPassword: Bool = false
+    var showConfirmPassword: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +50,7 @@ class ResetPasswordViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         self.showPassword = false
+        self.showConfirmPassword = false
         btn_showPassword.setImage(UIImage(named: "invisible"), for: .normal)
         self.setupAnimation(withAnimation: false, name: ConstHelper.loader_animation)
     }
@@ -58,6 +68,18 @@ class ResetPasswordViewController: UIViewController {
             self.showPassword = true
             self.btn_showPassword.setImage(UIImage(named: "visibility"), for: .normal)
             self.tf_resetPassword.isSecureTextEntry = false
+        }
+    }
+    
+    @IBAction func showConfirmPassword(_ sender: UIButton) {
+        if showConfirmPassword {
+            self.showConfirmPassword = false
+            self.btn_showConfirmPassword.setImage(UIImage(named: "invisible"), for: .normal)
+            self.tf_resetConfirmPassword.isSecureTextEntry = true
+        } else {
+            self.showConfirmPassword = true
+            self.btn_showConfirmPassword.setImage(UIImage(named: "visibility"), for: .normal)
+            self.tf_resetConfirmPassword.isSecureTextEntry = false
         }
     }
     
@@ -100,6 +122,11 @@ extension ResetPasswordViewController {
         self.lbl_heading.font = ConstHelper.h5Normal
         self.lbl_heading.textColor = ConstHelper.black
         
+        self.vw_resetConfirmBackView.backgroundColor = ConstHelper.lightGray
+        self.vw_resetConfirmLineView.backgroundColor = ConstHelper.gray
+        self.lbl_headingConfirm.font = ConstHelper.h5Normal
+        self.lbl_headingConfirm.textColor = ConstHelper.black
+        
         //Change Password button
         self.btn_changePassword.backgroundColor = ConstHelper.cyan
         self.btn_changePassword.setTitleColor(ConstHelper.white, for: .normal)
@@ -108,12 +135,20 @@ extension ResetPasswordViewController {
         self.tf_resetPassword.textColor = ConstHelper.hTextColor
         self.tf_resetPassword.font = ConstHelper.h3Normal
         self.tf_resetPassword.isSecureTextEntry = true
+        self.tf_resetPassword.delegate = self
+        self.tf_resetPassword.addTarget(self, action: #selector(validateText(_:)), for: .editingChanged)
+        
+        self.tf_resetConfirmPassword.textColor = ConstHelper.hTextColor
+        self.tf_resetConfirmPassword.font = ConstHelper.h3Normal
+        self.tf_resetConfirmPassword.isSecureTextEntry = true
+        self.tf_resetConfirmPassword.delegate = self
+        self.tf_resetConfirmPassword.addTarget(self, action: #selector(validateText(_:)), for: .editingChanged)
         
         self.lbl_error.textColor = ConstHelper.hErrorColor
         self.lbl_error.font = ConstHelper.h4Normal
         
-        self.tf_resetPassword.delegate = self
-        self.tf_resetPassword.addTarget(self, action: #selector(validateText(_:)), for: .editingChanged)
+        self.lbl_errorConfirm.textColor = ConstHelper.hErrorColor
+        self.lbl_errorConfirm.font = ConstHelper.h4Normal
 
         btn_changePassword.backgroundColor = UIColor(red: 42/255, green: 50/255, blue: 77/255, alpha: 0.5)
         btn_changePassword.setTitleColor(.lightGray, for: .normal)
@@ -135,20 +170,46 @@ extension ResetPasswordViewController {
                     self.lbl_error.text = ""
                     break
                 } else {
-                    self.lbl_error.text = "Password should be atleast 4 characters"
+                    self.lbl_error.text = "Password should be minimum six characters"
                     break
                 }
             } else {
-                self.lbl_error.text = "Password should be atleast 4 characters"
+                self.lbl_error.text = "Password should be minimum six characters"
+                break
+            }
+        case tf_resetConfirmPassword:
+            if let text = textField.text, (!text.isEmpty) {
+                if VBValidatiors.validatePassword(text)  {
+                    let pwd = tf_resetPassword  .text ?? ""
+                    if text.elementsEqual(pwd) {
+                        self.lbl_errorConfirm.text = ""
+                    } else {
+                        self.lbl_errorConfirm.text = "Entered Password is not matching."
+                    }
+                    
+                    break
+                } else {
+                    self.lbl_errorConfirm.text = "Password should be minimum six characters"
+                    break
+                }
+            } else {
+                self.lbl_errorConfirm.text = "Password should be minimum six characters"
                 break
             }
         default:
             self.lbl_error.text = "Should be valid mobile number"
-            self.lbl_error.text = "Password should be atleast 4 characters"
+            self.lbl_error.text = "Password should be minimum six characters"
+            
+            self.lbl_errorConfirm.text = "Should be valid mobile number"
+            self.lbl_errorConfirm.text = "Password should be minimum six characters"
             break
         }
         
-        guard let err = self.lbl_error.text, err.isEmpty
+        guard
+            let err1 = self.lbl_error.text, err1.isEmpty,
+            let err2 = self.lbl_errorConfirm.text, err2.isEmpty,
+            let text1 = self.tf_resetPassword.text, !text1.isEmpty,
+            let text2 = self.tf_resetConfirmPassword.text, !text2.isEmpty
             else {
                 btn_changePassword.backgroundColor = UIColor(red: 42/255, green: 50/255, blue: 77/255, alpha: 0.5)
                 btn_changePassword.setTitleColor(.lightGray, for: .normal)
@@ -158,9 +219,7 @@ extension ResetPasswordViewController {
         
         btn_changePassword.backgroundColor = ConstHelper.cyan
         btn_changePassword.setTitleColor(ConstHelper.enableColor, for: .normal)
-        btn_changePassword.isUserInteractionEnabled = true
-        
-        print("executed...")
+        btn_changePassword.isUserInteractionEnabled = true        
     }
 }
 
@@ -169,6 +228,8 @@ extension ResetPasswordViewController: UITextFieldDelegate {
         switch textField {
         case tf_resetPassword:
             tf_resetPassword.resignFirstResponder()
+        case tf_resetConfirmPassword:
+        tf_resetConfirmPassword.resignFirstResponder()
         default:
             return false
         }
@@ -198,8 +259,11 @@ extension ResetPasswordViewController {
                 guard  let user = user else { return }
                 
                 if user.status {
-                    print(user.message as Any)
                     strongSelf.tf_resetPassword.text = ""
+                    strongSelf.tf_resetConfirmPassword.text = ""
+                    strongSelf.tf_resetPassword.resignFirstResponder()
+                    strongSelf.tf_resetConfirmPassword.resignFirstResponder()
+                    strongSelf.dismiss(animated: true, completion: nil)
                 } else {
                     strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(user.message ?? "")", actionTitle: "Ok")
                     return

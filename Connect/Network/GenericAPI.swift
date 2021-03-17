@@ -24,7 +24,7 @@ extension GenericAPI {
                 return
             }
             
-            print("HttpResponse code: \(httpResponse.statusCode)")
+//            print("HttpResponse code: \(httpResponse.statusCode)")
             
             if (200...209).contains(httpResponse.statusCode) {
                 if let data = data {

@@ -84,11 +84,12 @@ class ChangePasswordViewController: UIViewController {
     
     @IBAction func updatePasswordAction(_ sender: UIButton) {
         guard
+            let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int,
             let password = self.tf_pwdTF.text, !password.isEmpty,
             let confirmPassword = self.tf_cPwdTF.text, !confirmPassword.isEmpty
             else { return }
         self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-        self.resetPassword(withNewPassword: password)
+        self.resetPassword(userId, withNewPassword: password)
     }
     
     private func setupAnimation(withAnimation status: Bool, name: String) {
@@ -161,11 +162,11 @@ extension ChangePasswordViewController {
                     tf_cPwdTF.text = ""
                     break
                 } else {
-                    self.lbl_errPwdLbl.text = "Password should be atleast 4 characters"
+                    self.lbl_errPwdLbl.text = "Password should be minimum six characters"
                     break
                 }
             } else {
-                self.lbl_errPwdLbl.text = "Password should be atleast 4 characters"
+                self.lbl_errPwdLbl.text = "Password should be minimum six characters"
                 break
             }
         case tf_cPwdTF:
@@ -183,16 +184,16 @@ extension ChangePasswordViewController {
                     
                     break
                 } else {
-                    self.lbl_errCPwdLbl.text = "Password should be atleast 4 characters"
+                    self.lbl_errCPwdLbl.text = "Password should be minimum six characters"
                     break
                 }
             } else {
-                self.lbl_errCPwdLbl.text = "Password should be atleast 4 characters"
+                self.lbl_errCPwdLbl.text = "Password should be minimum six characters"
                 break
             }
         default:
             self.lbl_errPwdLbl.text = "Should be valid mobile number"
-            self.lbl_errCPwdLbl.text = "Password should be atleast 4 characters"
+            self.lbl_errCPwdLbl.text = "Password should be minimum six characters"
             break
         }
         
@@ -211,8 +212,6 @@ extension ChangePasswordViewController {
         btn_updatePassword.backgroundColor = ConstHelper.cyan
         btn_updatePassword.setTitleColor(ConstHelper.enableColor, for: .normal)
         btn_updatePassword.isUserInteractionEnabled = true
-        
-        print("executed...")
     }
 }
 
@@ -232,10 +231,9 @@ extension ChangePasswordViewController: UITextFieldDelegate {
 
 //MARK: API CAll
 extension ChangePasswordViewController {
-    private func resetPassword(withNewPassword password: String) {
+    private func resetPassword(_ userId: Int, withNewPassword password: String) {
         //begin..
-        let parameters = ["password": password]
-        
+        let parameters: ResetReqModel = ResetReqModel(userId: userId, password: password)
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
         
@@ -243,7 +241,7 @@ extension ChangePasswordViewController {
         let api: Apifeed = .resetPassword
         
         //Req headers & body
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
         
         client.post_resetPassword(from: endpoint) { [weak self] result in
             guard let strongSelf = self else { return }
@@ -253,7 +251,6 @@ extension ChangePasswordViewController {
                 guard  let user = user else { return }
                 
                 if user.status {
-                    print(user.message as Any)
                     strongSelf.tf_pwdTF.text = ""
                     strongSelf.tf_cPwdTF.text = ""
                     

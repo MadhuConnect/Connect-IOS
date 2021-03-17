@@ -8,16 +8,26 @@
 
 import UIKit
 import Kingfisher
+import Lottie
 
 class EmergencyTypesCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var vw_emergencyBackView: UIView!
     @IBOutlet weak var lbl_title: UILabel!
     @IBOutlet weak var iv_typeImgView: UIImageView!
     
+    let animationView = AnimationView()
+    
     override var isSelected: Bool {
         didSet {
             isSelected ? setSelectedCellAppearance(lbl_title) : setDeselectedCellAppearance(lbl_title)
         }
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        lbl_title.font = ConstHelper.h5Normal
+        lbl_title.textColor = ConstHelper.black
     }
     
     func setSelectedCellAppearance(_ label: UILabel) {
@@ -30,39 +40,24 @@ class EmergencyTypesCollectionViewCell: UICollectionViewCell {
         lbl_title.textColor = ConstHelper.black
     }
     
-    func setEmergencyTypeCell(_ image: String?, title: String?) {
+    func setEmergencyTypeCell(_ image: String?, title: String?, lottie: String) {
         self.vw_emergencyBackView.setBorderForView(width: 1, color: ConstHelper.white, radius: 10)
         
-         if let imgUrl = URL(string: image ?? "") {
-             self.downloadImage(url: imgUrl)
-         }
+        self.setupAnimation(withAnimation: true, name: lottie)
          
          self.lbl_title.text = title
         
      }
     
-    func downloadImage(url: URL) {
-        let processor = DownsamplingImageProcessor(size: iv_typeImgView.bounds.size)
-            |> RoundCornerImageProcessor(cornerRadius: 10)
-        self.iv_typeImgView.kf.indicatorType = .activity
-        iv_typeImgView.kf.setImage(
-            with: url,
-            placeholder: UIImage(named: "noimage"),
-            options: [
-                .processor(processor),
-                .scaleFactor(UIScreen.main.scale),
-                .transition(.fade(1)),
-                .cacheOriginalImage
-            ])
-        {
-            result in
-            switch result {
-            case .success(let value):
-                print("Task done for: \(value.source.url?.absoluteString ?? "")")
-            case .failure(let error):
-                print("Job failed: \(error.localizedDescription)")
-            }
-        }
+    private func setupAnimation(withAnimation status: Bool, name: String) {
+        animationView.animation = Animation.named(name)
+        animationView.frame = vw_emergencyBackView.bounds
+        animationView.backgroundColor = ConstHelper.white
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        animationView.play()
+        vw_emergencyBackView.addSubview(animationView)
     }
+    
 }
 
