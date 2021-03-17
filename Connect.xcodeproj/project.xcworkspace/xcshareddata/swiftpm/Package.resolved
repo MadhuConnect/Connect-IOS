@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "BSImagePicker",
+        "repositoryURL": "https://github.com/mikaoj/BSImagePicker.git",
+        "state": {
+          "branch": null,
+          "revision": "afc6b934b92cd2f450832ce450e491429766bd28",
+          "version": "3.2.1"
+        }
+      },
+      {
         "package": "IQKeyboardManagerSwift",
         "repositoryURL": "https://github.com/hackiftekhar/IQKeyboardManager.git",
         "state": {

@@ -13,6 +13,7 @@ import Lottie
 class NotificationViewController: UIViewController {
 
     @IBOutlet weak var notificationTableView: UITableView!
+    @IBOutlet weak var tv_notificationBottomContraint: NSLayoutConstraint!
     @IBOutlet weak var vw_prodBackView: UIView!
     @IBOutlet weak var vw_lineView: UIView!
     @IBOutlet weak var iv_prodImageView: UIImageView!
@@ -29,10 +30,13 @@ class NotificationViewController: UIViewController {
     @IBOutlet weak var loadingBackView: UIView!
     @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var lbl_message: UILabel!
+    
+    @IBOutlet weak var btn_proceedConnection: UIButton!
+    
     let animationView = AnimationView()
     
     private let client = APIClient()
-    var qrInfo: QRInfoModel?
+    var qrInfo: QrCodeData?
     var notificationModel: [NotificationModel]?
     var filterNotificationModel: [NotificationModel]?
     var isSearchEnable: Bool = false
@@ -46,27 +50,34 @@ class NotificationViewController: UIViewController {
         self.notificationTableView.dataSource = self
         self.notificationTableView.tableFooterView = UIView(frame: .zero)
         
-        self.getNotificationList()
         self.updateDefaultUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        ConstHelper.selectedNotificationModel.removeAll()
+        self.getNotificationList()
         self.updateUIWhenViewWillAppear()
         
     }
     
     private func getNotificationList() {
-        guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
-            return
-        }
-        self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-        self.getNotificationsList(withUserId: userId, qrId: (qrInfo?.qrId ?? 0), qrStatus: (qrInfo?.qrStatus ?? ""))
+        self.lbl_message.text = "Loading notifications..."
+        self.setupAnimation(withAnimation: true, name: ConstHelper.lottie_notification)
+        self.getNotificationsList(withQrId: (qrInfo?.qrId ?? 0), qrStatus: (qrInfo?.qrStatus ?? ""))
     }
     
     @IBAction func backToHomeAction(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @IBAction func emergencyReqAction(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Emergency", bundle: nil)
+        if let emergencyRequestVC = storyboard.instantiateViewController(withIdentifier: "EmergencyRequestViewController") as? EmergencyRequestViewController {
+            emergencyRequestVC.modalPresentationStyle = .fullScreen
+            emergencyRequestVC.isFromNotHome = true
+            self.present(emergencyRequestVC, animated: true, completion: nil)
+        }
     }
     
     @IBAction func searchEnableAction(_ sender: UIButton) {
@@ -82,6 +93,14 @@ class NotificationViewController: UIViewController {
         isSearchEnable = false
         self.filterNotificationModel = nil
         self.notificationTableView.reloadData()
+    }
+    
+    @IBAction func proceedConnectionAction(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Notification", bundle: nil)
+        if let summaryVC = storyboard.instantiateViewController(withIdentifier: "SummaryUsersViewController") as? SummaryUsersViewController {
+            summaryVC.qrInfo = qrInfo
+            self.navigationController?.pushViewController(summaryVC, animated: true)
+         }
     }
     
     private func setupAnimation(withAnimation status: Bool, name: String) {
@@ -103,8 +122,7 @@ class NotificationViewController: UIViewController {
     }
     
     private func disableLoaderView() {
-        self.loadingBackView.backgroundColor = ConstHelper.lightGray
-        self.loadingView.backgroundColor = .clear
+        self.loadingBackView.backgroundColor = ConstHelper.white
     }
 
 }
@@ -118,22 +136,37 @@ extension NotificationViewController {
         self.tf_searchTF.textColor = ConstHelper.white
         self.tf_searchTF.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.white])
         
-        self.lbl_message.font = ConstHelper.h4Normal
-        self.lbl_message.textColor = ConstHelper.cyan
+        self.lbl_message.font = ConstHelper.h6Normal
+        self.lbl_message.textColor = ConstHelper.gray
         
+        self.lbl_productName.font = ConstHelper.h2Normal
+        self.lbl_productName.textColor = ConstHelper.black
+        
+        self.lbl_personType.font = ConstHelper.h4Normal
+        self.lbl_personType.textColor = ConstHelper.black
+                
+        //Proceed connection button
+        self.btn_proceedConnection.isHidden = true
+        self.btn_proceedConnection.setTitle("PROCEED", for: .normal)
+        self.btn_proceedConnection.backgroundColor = ConstHelper.orange
+        self.btn_proceedConnection.setTitleColor(ConstHelper.white, for: .normal)
+        self.btn_proceedConnection.titleLabel?.font = ConstHelper.h3Bold
+        
+        self.tv_notificationBottomContraint.constant = 0
         self.disableLoaderView()
     }
     
     private func updateUIWhenViewWillAppear() {
         self.vw_searchBackView.isHidden = true
+        self.btn_proceedConnection.isHidden = true
         
         if let qrInfo = self.qrInfo {
-            guard let productImageUrl = URL(string: qrInfo.productImage) else { return }
+            guard let productImageUrl = URL(string: qrInfo.productImage ?? "") else { return }
             self.downloadImage(url: productImageUrl)
             
             DispatchQueue.main.async {
                 self.lbl_productName.text = qrInfo.productName
-                if qrInfo.personType.lowercased() == "OFFEROR".lowercased() {
+                if (qrInfo.personType ?? "").lowercased() == "OFFEROR".lowercased() {
                     self.lbl_personType.text = "SEEKER"
                 } else {
                     self.lbl_personType.text = "OFFEROR"
@@ -169,11 +202,16 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
         
         if isSearchEnable {
             if let notification = self.filterNotificationModel?[indexPath.row] {
-                notificationsCell.setNotificationsForQRCode(notification)
+                let isSelected = ConstHelper.selectedNotificationModel.contains { ($0.connectedUserId ?? 0) == (notification.connectedUserId ?? 0) }
+                                
+                notificationsCell.setNotificationsForQRCode(notification, isAddedCart: isSelected)
             }
         } else {
             if let notification = self.notificationModel?[indexPath.row] {
-                notificationsCell.setNotificationsForQRCode(notification)
+                
+                let isSelected = ConstHelper.selectedNotificationModel.contains { ($0.connectedUserId ?? 0) == (notification.connectedUserId ?? 0) }
+                
+                notificationsCell.setNotificationsForQRCode(notification, isAddedCart: isSelected)
             }
         }
         
@@ -183,26 +221,79 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
         notificationsCell.btn_block.tag = indexPath.row
         notificationsCell.btn_block.addTarget(self, action: #selector(blockUserAction(_:)), for: .touchUpInside)
     
+        notificationsCell.btn_addCart.tag = indexPath.row
+        notificationsCell.btn_addCart.addTarget(self, action: #selector(addCartAction(_:)), for: .touchUpInside)
+        
+        notificationsCell.btn_call.tag = indexPath.row
+        notificationsCell.btn_call.addTarget(self, action: #selector(makeCallAction(_:)), for: .touchUpInside)
+        
         return notificationsCell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 140.0
+        return 150.0
     }
     
     @objc private func lockUserAction(_ sender: UIButton) {
         if let notification = self.notificationModel?[sender.tag] {
-            guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int, let qrId = qrInfo?.qrId else { return }
+            guard let qrId = qrInfo?.qrId else { return }
             self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-            self.unlockuser(withUserId: userId, qrId: qrId, connectedUserId: notification.connectedUserId, qrStatus: "lock")
+            if let connectedUserId = notification.connectedUserId {
+                self.unlockuser(qrId, connectedUserId: connectedUserId, qrStatus: "lock")
+            }
         }
     }
     
     @objc private func blockUserAction(_ sender: UIButton) {
         if let notification = self.notificationModel?[sender.tag] {
-            guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int, let qrId = qrInfo?.qrId else { return }
             self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-            self.unBlockuser(withUserId: userId, qrId: qrId, connectedUserId: notification.connectedUserId, qrStatus: "block")
+            if let connectedUserId = notification.connectedUserId {
+                self.blockUser(connectedUserId, qrStatus: "block")
+            }
+        }
+    }
+    
+    @objc private func addCartAction(_ sender: UIButton) {
+        if let notification = self.notificationModel?[sender.tag] {
+            let isSelected =  ConstHelper.selectedNotificationModel.contains { ($0.connectedUserId) == (notification.connectedUserId ?? 0) }
+            if !isSelected {
+                ConstHelper.selectedNotificationModel.append(notification)
+            }
+        }
+        
+        self.tv_notificationBottomContraint.constant = 66
+        self.btn_proceedConnection.isHidden = false
+        self.notificationTableView.reloadData()
+    }
+    
+    @objc private func makeCallAction(_ sender: UIButton) {
+        if isSearchEnable {
+            if let notification = self.filterNotificationModel?[sender.tag] {
+                self.dialNumber(notification.mobile ?? "")
+            }
+        } else {
+            if let notification = self.notificationModel?[sender.tag] {
+                self.dialNumber(notification.mobile ?? "")
+            }
+        }
+        
+    }
+    
+    private func dialNumber(_ mobile: String) {
+        if mobile.count > 0 {
+            if let url = URL(string: "tel://\(mobile)"), UIApplication.shared.canOpenURL(url) {
+                if #available(iOS 10, *) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                } else {
+                    UIApplication.shared.openURL(url)
+                }
+            } else {
+                self.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "Something went wrong", actionTitle: "Ok")
+                return
+            }
+        } else {
+            self.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "Something went wrong", actionTitle: "Ok")
+            return
         }
     }
     
@@ -211,17 +302,17 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
 //MARK: - API Call
 extension NotificationViewController {
     //Post and Get All Notifications Selected Product
-    private func getNotificationsList(withUserId userId: Int, qrId: Int, qrStatus: String) {
-        let parameters: NotificationReqModel = NotificationReqModel(userId: userId, qrId: qrId, status: qrStatus)
-        print("Par: \(parameters)")
+    private func getNotificationsList(withQrId qrId: Int, qrStatus: String) {
+        let parameters: NotificationReqModel = NotificationReqModel(qrId: qrId, status: qrStatus)
 
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
 
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .notifications
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
         client.post_getOrderNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
@@ -239,14 +330,18 @@ extension NotificationViewController {
                         }
                      }
                  } else {
-                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
-                    
+                    strongSelf.lbl_message.text = "No new notifications"
+                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.lottie_nodata)
+                    strongSelf.notificationModel = nil
                     DispatchQueue.main.async {
-                        strongSelf.lbl_message.text = response.message
                         strongSelf.notificationTableView.reloadData()
                     }
                  }
              case .failure(let error):
+                strongSelf.notificationModel = nil
+                DispatchQueue.main.async {
+                    strongSelf.notificationTableView.reloadData()
+                }
                  strongSelf.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "\(error.localizedDescription)", actionTitle: "Ok")
              }
          }
@@ -276,10 +371,9 @@ extension NotificationViewController {
         }
     }
     
-    //Post to lock user
-    private func unlockuser(withUserId userId: Int, qrId: Int, connectedUserId: Int, qrStatus: String) {
-        let parameters: LockUnLockReqModel = LockUnLockReqModel(userId: userId, qrId: qrId, connectedUserId: connectedUserId, status: qrStatus)
-            print("Par: \(parameters)")
+    //Post to lock users
+    private func unlockuser(_ qrId: Int, connectedUserId: Int, qrStatus: String) {
+        let parameters: LockUnLockReqModel = LockUnLockReqModel(qrId: qrId, connectedUserId: connectedUserId, status: qrStatus)
 
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
@@ -287,7 +381,7 @@ extension NotificationViewController {
         //API
         let api: Apifeed = .lockUsers
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
         client.post_lockUnLockUserNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
@@ -299,6 +393,7 @@ extension NotificationViewController {
                  if response.status {
                     strongSelf.getNotificationList()
                  } else {
+                    strongSelf.lbl_message.text = response.message ?? ""
                     strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
                  }
              case .failure(let error):
@@ -308,19 +403,19 @@ extension NotificationViewController {
     }
     
     //Post to block user
-    private func unBlockuser(withUserId userId: Int, qrId: Int, connectedUserId: Int, qrStatus: String) {
-        let parameters: LockUnLockReqModel = LockUnLockReqModel(userId: userId, qrId: qrId, connectedUserId: connectedUserId, status: qrStatus)
-            print("Par: \(parameters)")
+    private func blockUser(_ connectedUserId: Int, qrStatus: String) {
+        let parameters: BlockUserReqModel = BlockUserReqModel(connectedUserId: connectedUserId, status: qrStatus)
 
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
 
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .blockUsers
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
-        client.post_lockUnLockUserNotifications(from: endpoint) { [weak self] result in
+        client.post_blockUnBlockUserNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
             strongSelf.setupAnimation(withAnimation: false, name: ConstHelper.loader_animation)
              switch result {
@@ -330,6 +425,7 @@ extension NotificationViewController {
                  if response.status {
                     strongSelf.getNotificationList()
                  } else {
+                    strongSelf.lbl_message.text = response.message ?? ""
                     strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
                  }
              case .failure(let error):
@@ -367,7 +463,7 @@ extension NotificationViewController: UITextFieldDelegate {
     
     func filterSearchText(_ text: String) {
         if let notificationModel = self.notificationModel {
-            self.filterNotificationModel = notificationModel.filter { $0.name.lowercased().contains(text.lowercased()) || $0.connectedLocation.lowercased().contains(text.lowercased()) || $0.mobile.lowercased().contains(text.lowercased())                
+            self.filterNotificationModel = notificationModel.filter { ($0.name ?? "").lowercased().contains(text.lowercased()) || ($0.connectedLocation ?? "").lowercased().contains(text.lowercased()) || ($0.mobile ?? "").lowercased().contains(text.lowercased())                
             }
         }
     }

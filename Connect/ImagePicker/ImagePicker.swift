@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public protocol ImagePickerDelegate: class {
-    func didSelect(image: UIImage?, imagePath: String?)
+    func didSelect(image: UIImage?, imagePath: String?, name: String?)
 }
 
 open class ImagePicker: NSObject {
@@ -67,10 +67,10 @@ open class ImagePicker: NSObject {
         self.presentationController?.present(alertController, animated: true)
     }
     
-    private func pickerController(_ controller: UIImagePickerController, didSelect image: UIImage?, imagePath: String?) {
+    private func pickerController(_ controller: UIImagePickerController, didSelect image: UIImage?, imagePath: String?, name: String?) {
         controller.dismiss(animated: true, completion: nil)
         
-        self.delegate?.didSelect(image: image, imagePath: imagePath)
+        self.delegate?.didSelect(image: image, imagePath: imagePath, name: name)
     }
     
     private func getDocumentsDirectory() -> URL {
@@ -82,7 +82,7 @@ open class ImagePicker: NSObject {
 extension ImagePicker: UIImagePickerControllerDelegate {
 
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        self.pickerController(picker, didSelect: nil, imagePath: nil)
+        self.pickerController(picker, didSelect: nil, imagePath: nil, name: nil)
     }
 
     public func imagePickerController(_ picker: UIImagePickerController,
@@ -93,13 +93,33 @@ extension ImagePicker: UIImagePickerControllerDelegate {
             let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
             let localPath = documentDirectory?.appending("/" + imgName)
             let image = info[.originalImage] as! UIImage
-            let data = image.pngData()! as NSData
+            let data = image.jpegData(compressionQuality: 1)! as NSData
             data.write(toFile: localPath!, atomically: true)
-            //let imageData = NSData(contentsOfFile: localPath!)!
-            let photoURL = URL.init(fileURLWithPath: localPath!)//NSURL(fileURLWithPath: localPath!)
-            print(photoURL.path)
-            self.pickerController(picker, didSelect: image, imagePath: photoURL.path)
+            let photoURL = URL.init(fileURLWithPath: localPath!)
+            self.pickerController(picker, didSelect: image, imagePath: photoURL.path, name: photoURL.lastPathComponent)
             
+        } else {
+            if let image = info[.originalImage] as? UIImage {
+                UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+                
+                if picker.sourceType == .camera {
+                    let imgName = UUID().uuidString
+                    let documentDirectory = NSTemporaryDirectory()
+                    let localPath = documentDirectory.appending(imgName)
+
+                    let data = image.jpegData(compressionQuality: 1)! as NSData
+                    data.write(toFile: localPath, atomically: true)
+                    let photoURL = URL.init(fileURLWithPath: localPath)
+                    self.pickerController(picker, didSelect: image, imagePath: photoURL.path, name: photoURL.lastPathComponent)
+                }
+            }
+        }
+    }
+    
+    
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            print("ERROR: \(error)")
         }
     }
     

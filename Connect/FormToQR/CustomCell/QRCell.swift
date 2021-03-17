@@ -17,10 +17,11 @@ class QRCell: UITableViewCell {
     @IBOutlet weak var vw_qrCodeBackView: UIView!
     @IBOutlet weak var vw_qrLineView: UIView!
     @IBOutlet weak var vw_nameLineView: UIView!
+    @IBOutlet weak var vw_productTypeView: UIView!
     @IBOutlet weak var vw_typeLineView: UIView!
     @IBOutlet weak var vw_descriptionLineView: UIView!
     @IBOutlet weak var vw_priceLineView: UIView!
-    @IBOutlet weak var vw_expiresLineView: UIView!
+    @IBOutlet weak var vw_titleLineView: UIView!
     @IBOutlet weak var vw_rangeLineView: UIView!
     
     //QR Code
@@ -42,17 +43,21 @@ class QRCell: UITableViewCell {
     @IBOutlet weak var lbl_priceRangeHeading: UILabel!
     @IBOutlet weak var lbl_priceRangeValue: UILabel!
     //Expires on
-    @IBOutlet weak var lbl_expireHeading: UILabel!
-    @IBOutlet weak var lbl_expireValue: UILabel!
+    @IBOutlet weak var lbl_titleHeading: UILabel!
+    @IBOutlet weak var lbl_titleValue: UILabel!
     //Person type
     @IBOutlet weak var lbl_connectRangeHeading: UILabel!
     @IBOutlet weak var lbl_connectRangeValue: UILabel!
     
+    @IBOutlet weak var slideImageHeight: NSLayoutConstraint!
+    @IBOutlet weak var descripitonTopContraint: NSLayoutConstraint!
+    
     //slide images
-    var qrImages: [QRImageModel]?
+    var qrImages: [QRCodeImageModel]?
     
     var timer = Timer()
     var counter = 0
+    let rupee = "\u{20B9}"
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -100,18 +105,33 @@ class QRCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setQRInformation(_ qrInfo: QRInfoModel?) {
+    func setQRInformation(_ qrInfo: QrCodeData?) {
         if let qrInfo = qrInfo {
-            self.iv_qrCode.image = generateQRCode(from: qrInfo.qrCode)
+            self.iv_qrCode.image = generateQRCode(from: qrInfo.qrCode ?? "")
             lbl_personTypeValue.text = qrInfo.personType
             lbl_productNameValue.text = qrInfo.productName
             lbl_productTypeValue.text = qrInfo.productType
             lbl_descValue.text = qrInfo.description
-            lbl_priceRangeValue.text = "\(qrInfo.minAmount)" + " - " + "\(qrInfo.maxAmount)"
-            lbl_expireValue.text = getDateSpecificFormat(qrInfo.expireDate)
+            lbl_priceRangeValue.text = "\(rupee)\(qrInfo.minAmount ?? 0)" + " - " + "\(rupee)\(qrInfo.maxAmount ?? 0)"
+            lbl_titleValue.text = qrInfo.title
             lbl_connectRangeValue.text = qrInfo.connectRange
-            
             self.qrImages = qrInfo.images
+            
+            if let images = self.qrImages, (images.count != 0) {
+                self.slideImageHeight.constant = 220
+            } else {
+                self.slideImageHeight.constant = 0
+            }
+            
+            if let productType = qrInfo.productType, (productType.lowercased().elementsEqual("New".lowercased()) || productType.lowercased().elementsEqual("Used".lowercased())) {
+                self.descripitonTopContraint.constant = 12
+                self.vw_productTypeView.isHidden = false
+                self.vw_typeLineView.isHidden = false
+            } else {
+                self.descripitonTopContraint.constant = -60
+                self.vw_productTypeView.isHidden = true
+                self.vw_typeLineView.isHidden = true
+            }
             
             DispatchQueue.main.async {
                 self.loadPageView()
@@ -130,8 +150,54 @@ extension QRCell {
         self.vw_typeLineView.backgroundColor = ConstHelper.gray
         self.vw_descriptionLineView.backgroundColor = ConstHelper.gray
         self.vw_rangeLineView.backgroundColor = ConstHelper.gray
-        self.vw_expiresLineView.backgroundColor = ConstHelper.gray
+        self.vw_titleLineView.backgroundColor = ConstHelper.gray
         self.vw_rangeLineView.backgroundColor = ConstHelper.gray
+        
+        self.lbl_titleValue.font = ConstHelper.h3Normal
+        self.lbl_titleValue.textColor = ConstHelper.black
+        
+        self.lbl_personTypeValue.font = ConstHelper.h3Normal
+        self.lbl_personTypeValue.textColor = ConstHelper.black
+        
+        self.lbl_productNameValue.font = ConstHelper.h3Normal
+        self.lbl_productNameValue.textColor = ConstHelper.black
+        
+        self.lbl_productTypeValue.font = ConstHelper.h3Normal
+        self.lbl_productTypeValue.textColor = ConstHelper.black
+        
+        self.lbl_descValue.font = ConstHelper.h3Normal
+        self.lbl_descValue.textColor = ConstHelper.black
+        
+        self.lbl_priceRangeValue.font = ConstHelper.h3Normal
+        self.lbl_priceRangeValue.textColor = ConstHelper.black
+        
+        self.lbl_connectRangeValue.font = ConstHelper.h3Normal
+        self.lbl_connectRangeValue.textColor = ConstHelper.black
+        
+        self.lbl_qrCodeHeading.font = ConstHelper.h6Normal
+        self.lbl_qrCodeHeading.textColor = ConstHelper.black
+        
+        self.lbl_personTypeHeading.font = ConstHelper.h6Normal
+        self.lbl_personTypeHeading.textColor = ConstHelper.black
+        
+        self.lbl_productNameHeading.font = ConstHelper.h6Normal
+        self.lbl_productNameHeading.textColor = ConstHelper.black
+        
+        self.lbl_productTypeHeading.font = ConstHelper.h6Normal
+        self.lbl_productTypeHeading.textColor = ConstHelper.black
+        
+        self.lbl_descHeading.font = ConstHelper.h6Normal
+        self.lbl_descHeading.textColor = ConstHelper.black
+        
+        self.lbl_priceRangeHeading.font = ConstHelper.h6Normal
+        self.lbl_priceRangeHeading.textColor = ConstHelper.black
+        
+        self.lbl_titleHeading.font = ConstHelper.h6Normal
+        self.lbl_titleHeading.textColor = ConstHelper.black
+        
+        self.lbl_connectRangeHeading.font = ConstHelper.h6Normal
+        self.lbl_connectRangeHeading.textColor = ConstHelper.black
+        
     }
 }
 

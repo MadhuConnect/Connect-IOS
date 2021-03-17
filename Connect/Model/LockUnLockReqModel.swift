@@ -9,7 +9,6 @@
 import Foundation
 
 struct LockUnLockReqModel: Codable {
-    let userId: Int
     let qrId: Int
     let connectedUserId: Int
     let status: String

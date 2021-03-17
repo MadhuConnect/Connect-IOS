@@ -84,6 +84,21 @@ extension UITableViewCell {
          
          return daystr
      }
+    
+    func getDateSpecificFormatForEmergency(_ date: String) -> String {
+         let dateFormatter = DateFormatter()
+         dateFormatter.dateFormat = "yyyy-MM-dd"
+         
+         let genDate = dateFormatter.date(from: date) ?? Date()
+         dateFormatter.dateFormat = "dd MMM yy"
+         
+         var daystr = dateFormatter.string(from: genDate)
+         if daystr.count == 10 {
+             daystr = "0"+daystr
+         }
+         
+         return daystr
+     }
      
      func getDay(_ date: String) -> String {
          let dateFormatter = DateFormatter()
@@ -132,6 +147,12 @@ extension UITableViewCell {
         }
 
         return nil
+    }
+    
+    func getLast4DigitFromPhoneNumber(_ phone: String) -> String {
+        let last4 = (phone as NSString).substring(from: max(phone.count-4,0))
+        let res = String(format: "xxxxxx%@",last4 as CVarArg)
+        return res
     }
     
 }

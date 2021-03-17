@@ -21,6 +21,7 @@ struct QRInfoModel: Codable {
     let productName: String
     let productImage: String
     let productType: String
+    let title: String
     let description: String
     let minAmount: Int
     let maxAmount: Int
@@ -29,17 +30,17 @@ struct QRInfoModel: Codable {
     let activeCount: Int
     let lockCount: Int
     let chatCount: Int
+    let paidCount: Int
     let qrStatus: String
     let qrGeneratedDate: String
-    let expireDate: String
     let turnOn: Bool
-    let images: [QRImageModel]?
+    let images: [QRCodeImageModel]?
 }
 
-struct QRImageModel: Codable {
-    let name: String
-    let productImage: String
-}
+//struct QRImageModel: Codable {
+//    let name: String
+//    let productImage: String
+//}
 
 /*
  
@@ -60,9 +61,9 @@ struct QRImageModel: Codable {
          "activeCount": 0,
          "lockCount": 0,
          "chatCount": 0,
+         "paidCount": 0,
          "qrStatus": "Active",
          "qrGeneratedDate": "2020-08-21",
-         "expireDate": "2020-09-20",
          "turnOn": true,
          "images": [
              {

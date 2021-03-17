@@ -28,13 +28,23 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var lbl_errorPasswordLbl: UILabel!
     @IBOutlet weak var lbl_accountLbl: UILabel!
     
+    @IBOutlet weak var btn_termsCheck: UIButton!
+    @IBOutlet weak var lbl_termsTitle: UILabel!
+    @IBOutlet weak var lbl_termsAnd: UILabel!
+    @IBOutlet weak var btn_termsService: UIButton!
+    @IBOutlet weak var btn_privacyPolicy: UIButton!
+    
     //Lottie
     @IBOutlet weak var loadingBackView: UIView!
     @IBOutlet weak var loadingView: UIView!
     
+    @IBOutlet weak var btn_showPassword: UIButton!
+    var showPassword: Bool = false
+    
     let animationView = AnimationView()
     
     private let client = APIClient()
+    var isCheckTerms: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,13 +63,66 @@ class SignUpViewController: UIViewController {
             return
         }
         
+        var newMobile: String = ""
+        if !mobile.contains("+91") {
+            newMobile = "+91" + mobile
+        } else {
+            newMobile = mobile
+        }
+        
+        if !isCheckTerms {
+            self.showAlertMini(title: AlertMessage.appTitle.rawValue, message: "Please agree the our Terms of service and Privacy policy", actionTitle: "Ok")
+            return
+        }
+        
         vw_signUpBackView.isHidden = true
         self.setupAnimation(withAnimation: true)
-        self.postRegistrationUser(withName: name, mobile: mobile, andPassword: password)
+        self.postRegistrationUser(withName: name, mobile: newMobile, andPassword: password)
     }
     
     @IBAction func signInUserAction(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func checkboxAction(_ sender: UIButton) {
+        if isCheckTerms {
+            self.isCheckTerms = false
+            self.btn_termsCheck.setImage(UIImage(named: "uncheckbox"), for: .normal)
+        } else {
+            self.isCheckTerms = true
+            self.btn_termsCheck.setImage(UIImage(named: "checkbox"), for: .normal)
+        }
+    }
+    
+    @IBAction func showTermsAction(_ sender: UIButton) {
+        self.moveToTermsViewControler(ConstHelper.termsAndConditions, title: "Terms of service")
+    }
+    
+    @IBAction func showPrivacyPolicyAction(_ sender: UIButton) {
+        self.moveToTermsViewControler(ConstHelper.privacyPolicy, title: "Privacy policy")
+    }
+    
+    private func moveToTermsViewControler(_ url: String, title: String) {
+        let storyboard = UIStoryboard(name: "Terms", bundle: nil)
+        if let termsVC = storyboard.instantiateViewController(withIdentifier: "TermsViewController") as? TermsViewController {
+            termsVC.loadUrl = url
+            termsVC.headerTitle = title
+            termsVC.modalPresentationStyle = .fullScreen
+            self.present(termsVC, animated: true, completion: nil)
+        }
+        
+    }
+    
+    @IBAction func showPassword(_ sender: UIButton) {
+        if showPassword {
+            self.showPassword = false
+            self.btn_showPassword.setImage(UIImage(named: "invisible"), for: .normal)
+            self.tf_passwordTF.isSecureTextEntry = true
+        } else {
+            self.showPassword = true
+            self.btn_showPassword.setImage(UIImage(named: "visibility"), for: .normal)
+            self.tf_passwordTF.isSecureTextEntry = false
+        }
     }
 }
 
@@ -68,9 +131,11 @@ extension SignUpViewController {
         self.tf_mobileTF.delegate = self
         self.tf_passwordTF.delegate = self
         self.tf_fullNameTF.delegate = self
+        self.tf_passwordTF.isSecureTextEntry = true
         
         self.tf_mobileTF.textColor = ConstHelper.hTextColor
         self.tf_mobileTF.font = ConstHelper.h3Normal
+        self.tf_mobileTF.keyboardType = .phonePad
         
         self.tf_passwordTF.textColor = ConstHelper.hTextColor
         self.tf_passwordTF.font = ConstHelper.h3Normal
@@ -78,25 +143,36 @@ extension SignUpViewController {
         self.tf_fullNameTF.textColor = ConstHelper.hTextColor
         self.tf_fullNameTF.font = ConstHelper.h3Normal
         
-        self.lbl_errorMobileLbl.textColor = ConstHelper.hErrorColor
-        self.lbl_errorMobileLbl.font = ConstHelper.h4Normal
+        self.lbl_errorMobileLbl.textColor = ConstHelper.white
+        self.lbl_errorMobileLbl.font = ConstHelper.h5Normal
         
-        self.lbl_errorPasswordLbl.textColor = ConstHelper.hErrorColor
-        self.lbl_errorPasswordLbl.font = ConstHelper.h3Normal
+        self.lbl_errorPasswordLbl.textColor = ConstHelper.white
+        self.lbl_errorPasswordLbl.font = ConstHelper.h5Normal
         
-        self.lbl_errorFullNameLbl.textColor = ConstHelper.hErrorColor
-        self.lbl_errorFullNameLbl.font = ConstHelper.h3Normal
+        self.lbl_errorFullNameLbl.textColor = ConstHelper.white
+        self.lbl_errorFullNameLbl.font = ConstHelper.h5Normal
         
         self.vw_fullNameBackView.setBorderForView(width: 0, color: .white, radius: 10)
         self.vw_mobileBackView.setBorderForView(width: 0, color: .white, radius: 10)
         self.vw_passwordBackView.setBorderForView(width: 0, color: .white, radius: 10)
         self.vw_signUpBackView.setBorderForView(width: 0, color: .white, radius: 10)
         
+        self.loadingBackView.setBorderForView(width: 0, color: .white, radius: 10)
+        
         self.lbl_accountLbl.textColor = ConstHelper.white
         self.lbl_accountLbl.font = ConstHelper.h3Normal
         
         self.btn_signUpBtn.titleLabel?.font = ConstHelper.h4Normal
         self.btn_signUpBtn.setTitleColor(ConstHelper.blue, for: .normal)
+        
+        self.btn_loginBtn.titleLabel?.font = ConstHelper.h3Normal
+        self.btn_loginBtn.setTitleColor(ConstHelper.blue, for: .normal)
+        
+        self.btn_termsService.titleLabel?.font = ConstHelper.h5Normal
+        self.btn_termsService.setTitleColor(ConstHelper.blue, for: .normal)
+        
+        self.btn_privacyPolicy.titleLabel?.font = ConstHelper.h5Normal
+        self.btn_privacyPolicy.setTitleColor(ConstHelper.blue, for: .normal)
         
         btn_signUpBtn.titleLabel?.font = ConstHelper.h4Bold
         vw_signUpBackView.backgroundColor = ConstHelper.disableColor
@@ -106,6 +182,10 @@ extension SignUpViewController {
         self.tf_mobileTF.addTarget(self, action: #selector(validateText(_:)), for: .editingChanged)
         self.tf_passwordTF.addTarget(self, action: #selector(validateText(_:)), for: .editingChanged)
         self.tf_fullNameTF.addTarget(self, action: #selector(validateText(_:)), for: .editingChanged)
+        
+        self.tf_fullNameTF.attributedPlaceholder = NSAttributedString(string: "Full Name", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightWhiteGray])
+        self.tf_mobileTF.attributedPlaceholder = NSAttributedString(string: "Mobile Number", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightWhiteGray])
+        self.tf_passwordTF.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.lightWhiteGray])
     }
     
     private func updateUIWhenViewWillAppear() {
@@ -114,6 +194,14 @@ extension SignUpViewController {
         self.lbl_errorFullNameLbl.text = ""
         self.loadingBackView.isHidden = true
         self.vw_signUpBackView.isHidden = false
+        
+        self.isCheckTerms = false
+        btn_termsCheck.setImage(UIImage(named: "uncheckbox"), for: .normal)
+        btn_termsCheck.isUserInteractionEnabled = false
+        btn_signUpBtn.isUserInteractionEnabled = false
+        
+        self.showPassword = false
+        btn_showPassword.setImage(UIImage(named: "invisible"), for: .normal)
     }
     
     @objc func validateText(_ textField: UITextField) {
@@ -124,11 +212,11 @@ extension SignUpViewController {
                     self.lbl_errorFullNameLbl.text = ""
                     break
                 } else {
-                    self.lbl_errorFullNameLbl.text = "Name should be minimum 3 characters"
+                    self.lbl_errorFullNameLbl.text = "Name should be minimum 4 characters"
                     break
                 }
             } else {
-                self.lbl_errorFullNameLbl.text = "Name should be minimum 3 characters"
+                self.lbl_errorFullNameLbl.text = "Name should be minimum 4 characters"
                 break
             }
         case tf_mobileTF:
@@ -150,16 +238,16 @@ extension SignUpViewController {
                     self.lbl_errorPasswordLbl.text = ""
                     break
                 } else {
-                    self.lbl_errorPasswordLbl.text = "Password should be atleast 4 characters"
+                    self.lbl_errorPasswordLbl.text = "Password should be minimum six characters"
                     break
                 }
             } else {
-                self.lbl_errorPasswordLbl.text = "Password should be atleast 4 characters"
+                self.lbl_errorPasswordLbl.text = "Password should be minimum six characters"
                 break
             }
         default:
             self.lbl_errorMobileLbl.text = "Should be valid mobile number"
-            self.lbl_errorPasswordLbl.text = "Password should be atleast 4 characters"
+            self.lbl_errorPasswordLbl.text = "Password should be minimum six characters"
             break
         }
         
@@ -172,14 +260,14 @@ extension SignUpViewController {
                 vw_signUpBackView.backgroundColor = ConstHelper.disableColor
                 btn_signUpBtn.setTitleColor(.lightGray, for: .normal)
                 btn_signUpBtn.isUserInteractionEnabled = false
+                btn_termsCheck.isUserInteractionEnabled = false
                 return
         }
         
         vw_signUpBackView.backgroundColor = ConstHelper.cyan
         btn_signUpBtn.setTitleColor(ConstHelper.enableColor, for: .normal)
         btn_signUpBtn.isUserInteractionEnabled = true
-        
-        print("executed...")
+        btn_termsCheck.isUserInteractionEnabled = true        
     }
     
     private func otpViewController(_ registrationUserInfo: RegistrationResModel) {
@@ -242,6 +330,7 @@ extension SignUpViewController {
         guard let body = try? JSONEncoder().encode(parameters) else { return }
         
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .userRegistration
         
         //Req headers & body

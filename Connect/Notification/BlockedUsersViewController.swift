@@ -7,17 +7,11 @@
 //
 
 import UIKit
-import Kingfisher
 import Lottie
 
 class BlockedUsersViewController: UIViewController {
 
-    @IBOutlet weak var notificationTableView: UITableView!
-    @IBOutlet weak var vw_prodBackView: UIView!
-    @IBOutlet weak var vw_lineView: UIView!
-    @IBOutlet weak var iv_prodImageView: UIImageView!
-    @IBOutlet weak var lbl_productName: UILabel!
-    @IBOutlet weak var lbl_personType: UILabel!
+    @IBOutlet weak var blockedUsersTableView: UITableView!
     
     //Search
     @IBOutlet weak var vw_searchBackView: UIView!
@@ -32,9 +26,9 @@ class BlockedUsersViewController: UIViewController {
     let animationView = AnimationView()
     
     private let client = APIClient()
-    var qrInfo: QRInfoModel?
-    var notificationModel: [NotificationModel]?
-    var filterNotificationModel: [NotificationModel]?
+    
+    var blockedUsers: [BlockedUsers]?
+    var filterBlockedUsers: [BlockedUsers]?
     var isSearchEnable: Bool = false
     
     override func viewDidLoad() {
@@ -42,27 +36,23 @@ class BlockedUsersViewController: UIViewController {
         
         self.tf_searchTF.delegate = self
 
-        self.notificationTableView.delegate = self
-        self.notificationTableView.dataSource = self
-        self.notificationTableView.tableFooterView = UIView(frame: .zero)
+        self.blockedUsersTableView.delegate = self
+        self.blockedUsersTableView.dataSource = self
+        self.blockedUsersTableView.tableFooterView = UIView(frame: .zero)
         
-        self.getLockedUsers()
+        self.getBlockedUsers()
         self.updateDefaultUI()
     }
     
-    private func getLockedUsers() {
-        guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
-            return
-        }
+    private func getBlockedUsers() {
         self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-        self.getNotificationsList(withUserId: userId, qrId: (qrInfo?.qrId ?? 0), qrStatus: ("lock"))
+        self.getBlockedUsersList()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.updateUIWhenViewWillAppear()
-        
     }
     
     @IBAction func backToHomeAction(_ sender: UIButton) {
@@ -80,8 +70,17 @@ class BlockedUsersViewController: UIViewController {
         self.tf_searchTF.resignFirstResponder()
         self.vw_searchBackView.isHidden = true
         isSearchEnable = false
-        self.filterNotificationModel = nil
-        self.notificationTableView.reloadData()
+        self.filterBlockedUsers = nil
+        self.blockedUsersTableView.reloadData()
+    }
+    
+    @IBAction func emergencyReqAction(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Emergency", bundle: nil)
+        if let emergencyRequestVC = storyboard.instantiateViewController(withIdentifier: "EmergencyRequestViewController") as? EmergencyRequestViewController {
+            emergencyRequestVC.modalPresentationStyle = .fullScreen
+            emergencyRequestVC.isFromNotHome = true
+            self.present(emergencyRequestVC, animated: true, completion: nil)
+        }
     }
 
     private func setupAnimation(withAnimation status: Bool, name: String) {
@@ -107,40 +106,24 @@ class BlockedUsersViewController: UIViewController {
 extension BlockedUsersViewController {
     private func updateDefaultUI() {
         self.tf_searchTF.addTarget(self, action: #selector(searchWhenTextIsChange(_:)), for: .editingChanged)
-        self.vw_prodBackView.setBorderForView(width: 1, color: ConstHelper.lightGray, radius: 10)
-        self.vw_lineView.backgroundColor = ConstHelper.cyan
+    
         self.tf_searchTF.font = ConstHelper.h4Normal
         self.tf_searchTF.textColor = ConstHelper.white
         self.tf_searchTF.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.white])
         
-        self.lbl_message.font = ConstHelper.h4Normal
-        self.lbl_message.textColor = ConstHelper.cyan
+        self.lbl_message.font = ConstHelper.h6Normal
+        self.lbl_message.textColor = ConstHelper.gray
         
         self.disableLoaderView()
     }
     
     private func updateUIWhenViewWillAppear() {
         self.vw_searchBackView.isHidden = true
-        
-        if let qrInfo = self.qrInfo {
-            guard let productImageUrl = URL(string: qrInfo.productImage) else { return }
-            self.downloadImage(url: productImageUrl)
-            
-            DispatchQueue.main.async {
-                self.lbl_productName.text = qrInfo.productName
-                if qrInfo.personType.lowercased() == "OFFEROR".lowercased() {
-                    self.lbl_personType.text = "SEEKER"
-                } else {
-                    self.lbl_personType.text = "OFFEROR"
-                }
-            }
-
-        }
+        self.blockedUsersTableView.reloadData()
     }
     
     private func disableLoaderView() {
-        self.loadingBackView.backgroundColor = ConstHelper.lightGray
-        self.loadingView.backgroundColor = .clear
+        self.loadingBackView.backgroundColor = ConstHelper.white        
     }
 }
 
@@ -153,12 +136,12 @@ extension BlockedUsersViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isSearchEnable {
-            if let notifications = self.filterNotificationModel {
-                return notifications.count
+            if let blockedUsers = self.filterBlockedUsers {
+                return blockedUsers.count
             }
         } else {
-            if let notifications = self.notificationModel {
-                return notifications.count
+            if let blockedUsers = self.blockedUsers {
+                return blockedUsers.count
             }
         }
         return 0
@@ -168,12 +151,12 @@ extension BlockedUsersViewController: UITableViewDelegate, UITableViewDataSource
         let blockedUsersCell = tableView.dequeueReusableCell(withIdentifier: ConstHelper.blockedUsersCellIdentifier, for: indexPath) as! BlockedUsersCell
         
         if isSearchEnable {
-            if let notification = self.filterNotificationModel?[indexPath.row] {
-                blockedUsersCell.setBlockedUsersCellForQRCode(notification)
+            if let blockedUsers = self.filterBlockedUsers?[indexPath.row] {
+                blockedUsersCell.setBlockedUsersCellForQRCode(blockedUsers)
             }
         } else {
-            if let notification = self.notificationModel?[indexPath.row] {
-                blockedUsersCell.setBlockedUsersCellForQRCode(notification)
+            if let blockedUsers = self.blockedUsers?[indexPath.row] {
+                blockedUsersCell.setBlockedUsersCellForQRCode(blockedUsers)
             }
         }
         
@@ -188,50 +171,50 @@ extension BlockedUsersViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     @objc private func unBlockUserAction(_ sender: UIButton) {
-        if let notification = self.notificationModel?[sender.tag] {
-            guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int, let qrId = qrInfo?.qrId else { return }
-            self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-            self.unBlockuser(withUserId: userId, qrId: qrId, connectedUserId: notification.connectedUserId, qrStatus: "unblock")
+        if isSearchEnable {
+            if let blockedUser = self.filterBlockedUsers?[sender.tag] {
+                self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
+                self.unBlockuser(blockedUser.blockedUserId, qrStatus: "unblock")
+            }
+        } else {
+            if let blockedUser = self.blockedUsers?[sender.tag] {
+                self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
+                self.unBlockuser(blockedUser.blockedUserId, qrStatus: "unblock")
+            }
         }
-
     }
 }
 
 //MARK: - API Call
 extension BlockedUsersViewController {
     //Post and Get All Notifications Selected Product
-    private func getNotificationsList(withUserId userId: Int, qrId: Int, qrStatus: String) {
-        let parameters: NotificationReqModel = NotificationReqModel(userId: userId, qrId: qrId, status: qrStatus)
-        print("Par: \(parameters)")
-
-        //Encode parameters
-        guard let body = try? JSONEncoder().encode(parameters) else { return }
-
+    private func getBlockedUsersList() {
         //API
-        let api: Apifeed = .notifications
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
+        let api: Apifeed = .blockUsersList
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .get , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: nil, timeInterval: 120)
 
-        client.post_getOrderNotifications(from: endpoint) { [weak self] result in
+        client.post_blockedUsersList(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
             strongSelf.setupAnimation(withAnimation: false, name: ConstHelper.loader_animation)
              switch result {
              case .success(let response):
                  guard let response = response else { return }
-                 strongSelf.notificationModel = nil
+                 strongSelf.blockedUsers = nil
                  strongSelf.lbl_message.text = ""
                  if response.status {
                     if let results = response.data {
-                        strongSelf.notificationModel = results
+                        strongSelf.blockedUsers = results
                         DispatchQueue.main.async {
-                            strongSelf.notificationTableView.reloadData()
+                            strongSelf.blockedUsersTableView.reloadData()
                         }
                      }
                  } else {
-                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
+                    strongSelf.lbl_message.text = "No blocked users"
+                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.lottie_nodata)
                     DispatchQueue.main.async {
-                        strongSelf.lbl_message.text = response.message
-                        strongSelf.notificationTableView.reloadData()
+                        strongSelf.blockedUsersTableView.reloadData()
                     }
                  }
              case .failure(let error):
@@ -240,44 +223,20 @@ extension BlockedUsersViewController {
          }
     }
     
-    func downloadImage(url: URL) {
-        let processor = DownsamplingImageProcessor(size: iv_prodImageView.bounds.size)
-            |> RoundCornerImageProcessor(cornerRadius: 10)
-        self.iv_prodImageView.kf.indicatorType = .activity
-        iv_prodImageView.kf.setImage(
-            with: url,
-            placeholder: UIImage(named: "noimage"),
-            options: [
-                .processor(processor),
-                .scaleFactor(UIScreen.main.scale),
-                .transition(.fade(1)),
-                .cacheOriginalImage
-            ])
-        {
-            result in
-            switch result {
-            case .success(let value):
-                print("Task done for: \(value.source.url?.absoluteString ?? "")")
-            case .failure(let error):
-                print("Job failed: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    //Post to unlock user
-    private func unBlockuser(withUserId userId: Int, qrId: Int, connectedUserId: Int, qrStatus: String) {
-        let parameters: LockUnLockReqModel = LockUnLockReqModel(userId: userId, qrId: qrId, connectedUserId: connectedUserId, status: qrStatus)
-            print("Par: \(parameters)")
+    //Post to unblock user
+    private func unBlockuser(_ connectedUserId: Int, qrStatus: String) {
+        let parameters: BlockUserReqModel = BlockUserReqModel(connectedUserId: connectedUserId, status: qrStatus)
 
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
 
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .blockUsers
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
-        client.post_lockUnLockUserNotifications(from: endpoint) { [weak self] result in
+        client.post_blockUnBlockUserNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
             strongSelf.setupAnimation(withAnimation: false, name: ConstHelper.loader_animation)
              switch result {
@@ -285,8 +244,9 @@ extension BlockedUsersViewController {
                  guard let response = response else { return }
                  
                  if response.status {
-                    strongSelf.getLockedUsers()
+                    strongSelf.getBlockedUsers()
                  } else {
+                    strongSelf.lbl_message.text = response.message ?? ""
                     strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
                  }
              case .failure(let error):
@@ -316,15 +276,15 @@ extension BlockedUsersViewController: UITextFieldDelegate {
             self.filterSearchText(searchText)
             isSearchEnable = true
         } else {
-            self.filterNotificationModel = nil
+            self.filterBlockedUsers = nil
             isSearchEnable = false
         }
-        self.notificationTableView.reloadData()
+        self.blockedUsersTableView.reloadData()
     }
     
     func filterSearchText(_ text: String) {
-        if let notificationModel = self.notificationModel {
-            self.filterNotificationModel = notificationModel.filter { $0.name.lowercased().contains(text.lowercased()) || $0.connectedLocation.lowercased().contains(text.lowercased()) || $0.mobile.lowercased().contains(text.lowercased())
+        if let blockedUsers = self.blockedUsers {
+            self.filterBlockedUsers = blockedUsers.filter { $0.name.lowercased().contains(text.lowercased()) || $0.mobile.lowercased().contains(text.lowercased())
             }
         }
     }

@@ -21,6 +21,13 @@ class CategoryCollectionCell: UICollectionViewCell {
         }
     }
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        lbl_titleLbl.font = ConstHelper.h5Normal
+        lbl_titleLbl.textColor = ConstHelper.black
+    }
+    
     func setCategoryCell(_ image: String?, title: String?) {
         if let imgUrl = URL(string: image ?? "") {
             self.downloadImage(url: imgUrl)

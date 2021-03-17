@@ -32,9 +32,9 @@ class LockedUsersViewController: UIViewController {
     let animationView = AnimationView()
     
     private let client = APIClient()
-    var qrInfo: QRInfoModel?
-    var notificationModel: [NotificationModel]?
-    var filterNotificationModel: [NotificationModel]?
+    var qrInfo: QrCodeData?
+    var notificationModel: [LockedUserModel]?
+    var filterNotificationModel: [LockedUserModel]?
     var isSearchEnable: Bool = false
     
     override func viewDidLoad() {
@@ -51,11 +51,9 @@ class LockedUsersViewController: UIViewController {
     }
     
     private func getLockedUsers() {
-        guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int else {
-            return
-        }
+        self.lbl_message.text = "Loading locked users..."
         self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-        self.getNotificationsList(withUserId: userId, qrId: (qrInfo?.qrId ?? 0), qrStatus: ("lock"))
+        self.getNotificationsList((qrInfo?.qrId ?? 0), qrStatus: ("lock"))        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,6 +65,15 @@ class LockedUsersViewController: UIViewController {
     
     @IBAction func backToHomeAction(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func emergencyReqAction(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Emergency", bundle: nil)
+        if let emergencyRequestVC = storyboard.instantiateViewController(withIdentifier: "EmergencyRequestViewController") as? EmergencyRequestViewController {
+            emergencyRequestVC.modalPresentationStyle = .fullScreen
+            emergencyRequestVC.isFromNotHome = true
+            self.present(emergencyRequestVC, animated: true, completion: nil)
+        }
     }
     
     @IBAction func searchEnableAction(_ sender: UIButton) {
@@ -113,8 +120,14 @@ extension LockedUsersViewController {
         self.tf_searchTF.textColor = ConstHelper.white
         self.tf_searchTF.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor: ConstHelper.white])
         
-        self.lbl_message.font = ConstHelper.h4Normal
-        self.lbl_message.textColor = ConstHelper.cyan
+        self.lbl_message.font = ConstHelper.h6Normal
+        self.lbl_message.textColor = ConstHelper.gray
+        
+        self.lbl_productName.font = ConstHelper.h2Normal
+        self.lbl_productName.textColor = ConstHelper.black
+        
+        self.lbl_personType.font = ConstHelper.h4Normal
+        self.lbl_personType.textColor = ConstHelper.black
         
         self.disableLoaderView()
     }
@@ -123,12 +136,12 @@ extension LockedUsersViewController {
         self.vw_searchBackView.isHidden = true
         
         if let qrInfo = self.qrInfo {
-            guard let productImageUrl = URL(string: qrInfo.productImage) else { return }
+            guard let productImageUrl = URL(string: qrInfo.productImage ?? "") else { return }
             self.downloadImage(url: productImageUrl)
             
             DispatchQueue.main.async {
                 self.lbl_productName.text = qrInfo.productName
-                if qrInfo.personType.lowercased() == "OFFEROR".lowercased() {
+                if (qrInfo.personType ?? "").lowercased() == "OFFEROR".lowercased() {
                     self.lbl_personType.text = "SEEKER"
                 } else {
                     self.lbl_personType.text = "OFFEROR"
@@ -139,8 +152,7 @@ extension LockedUsersViewController {
     }
     
     private func disableLoaderView() {
-        self.loadingBackView.backgroundColor = ConstHelper.lightGray
-        self.loadingView.backgroundColor = .clear
+        self.loadingBackView.backgroundColor = ConstHelper.white
     }
 }
 
@@ -180,6 +192,9 @@ extension LockedUsersViewController: UITableViewDelegate, UITableViewDataSource 
         lockedUsersCell.btn_lock.tag = indexPath.row
         lockedUsersCell.btn_lock.addTarget(self, action: #selector(unLockUserAction(_:)), for: .touchUpInside)
     
+        lockedUsersCell.btn_call.tag = indexPath.row
+        lockedUsersCell.btn_call.addTarget(self, action: #selector(makeCallAction(_:)), for: .touchUpInside)
+        
         return lockedUsersCell
     }
     
@@ -189,30 +204,59 @@ extension LockedUsersViewController: UITableViewDelegate, UITableViewDataSource 
     
     @objc private func unLockUserAction(_ sender: UIButton) {
         if let notification = self.notificationModel?[sender.tag] {
-            guard let userId = UserDefaults.standard.value(forKey: "LoggedUserId") as? Int, let qrId = qrInfo?.qrId else { return }
+            guard let qrId = qrInfo?.qrId else { return }
             self.setupAnimation(withAnimation: true, name: ConstHelper.loader_animation)
-            self.unlockuser(withUserId: userId, qrId: qrId, connectedUserId: notification.connectedUserId, qrStatus: "unlock")
+            
+            if let connectedUserId = notification.connectedUserId {
+                self.unlockuser(qrId, connectedUserId: connectedUserId, qrStatus: "unlock")
+            }
         }
 
+    }
+    
+    @objc private func makeCallAction(_ sender: UIButton) {
+        if let notification = self.notificationModel?[sender.tag] {
+            if let mobile = notification.mobile {
+                if mobile.count > 0 {
+                    if let url = URL(string: "tel://\(mobile)"), UIApplication.shared.canOpenURL(url) {
+                        if #available(iOS 10, *) {
+                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                        } else {
+                            UIApplication.shared.openURL(url)
+                        }
+                    } else {
+                            self.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "Something went wrong", actionTitle: "Ok")
+                            return
+                    }
+                } else {
+                    self.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "Something went wrong", actionTitle: "Ok")
+                    return
+                }
+
+            }
+        } else {
+            self.showAlertMini(title: AlertMessage.errTitle.rawValue, message: "Something went wrong", actionTitle: "Ok")
+            return
+        }
     }
 }
 
 //MARK: - API Call
 extension LockedUsersViewController {
     //Post and Get All Notifications Selected Product
-    private func getNotificationsList(withUserId userId: Int, qrId: Int, qrStatus: String) {
-        let parameters: NotificationReqModel = NotificationReqModel(userId: userId, qrId: qrId, status: qrStatus)
-        print("Par: \(parameters)")
+    private func getNotificationsList(_ qrId: Int, qrStatus: String) {
+        let parameters: NotificationReqModel = NotificationReqModel(qrId: qrId, status: qrStatus)
 
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
 
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .notifications
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
-        client.post_getOrderNotifications(from: endpoint) { [weak self] result in
+        client.post_getLockedUsers(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
             strongSelf.setupAnimation(withAnimation: false, name: ConstHelper.loader_animation)
              switch result {
@@ -228,9 +272,9 @@ extension LockedUsersViewController {
                         }
                      }
                  } else {
-                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
+                    strongSelf.lbl_message.text = "No locked users"
+                    strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.lottie_nodata)
                     DispatchQueue.main.async {
-                        strongSelf.lbl_message.text = response.message
                         strongSelf.notificationTableView.reloadData()
                     }
                  }
@@ -265,17 +309,17 @@ extension LockedUsersViewController {
     }
     
     //Post to unlock user
-    private func unlockuser(withUserId userId: Int, qrId: Int, connectedUserId: Int, qrStatus: String) {
-        let parameters: LockUnLockReqModel = LockUnLockReqModel(userId: userId, qrId: qrId, connectedUserId: connectedUserId, status: qrStatus)
-            print("Par: \(parameters)")
+    private func unlockuser(_ qrId: Int, connectedUserId: Int, qrStatus: String) {
+        let parameters: LockUnLockReqModel = LockUnLockReqModel(qrId: qrId, connectedUserId: connectedUserId, status: qrStatus)
 
         //Encode parameters
         guard let body = try? JSONEncoder().encode(parameters) else { return }
 
         //API
+        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
         let api: Apifeed = .lockUsers
 
-        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json")], body: body, timeInterval: 120)
+        let endpoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .post , headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: body, timeInterval: 120)
 
         client.post_lockUnLockUserNotifications(from: endpoint) { [weak self] result in
              guard let strongSelf = self else { return }
@@ -287,6 +331,7 @@ extension LockedUsersViewController {
                  if response.status {
                     strongSelf.getLockedUsers()
                  } else {
+                    strongSelf.lbl_message.text = response.message ?? ""
                     strongSelf.setupAnimation(withAnimation: true, name: ConstHelper.error_animation)
                  }
              case .failure(let error):
@@ -324,7 +369,7 @@ extension LockedUsersViewController: UITextFieldDelegate {
     
     func filterSearchText(_ text: String) {
         if let notificationModel = self.notificationModel {
-            self.filterNotificationModel = notificationModel.filter { $0.name.lowercased().contains(text.lowercased()) || $0.connectedLocation.lowercased().contains(text.lowercased()) || $0.mobile.lowercased().contains(text.lowercased())
+            self.filterNotificationModel = notificationModel.filter { ($0.name ?? "").lowercased().contains(text.lowercased()) || ($0.connectedLocation ?? "").lowercased().contains(text.lowercased()) || ($0.mobile ?? "").lowercased().contains(text.lowercased())
             }
         }
     }

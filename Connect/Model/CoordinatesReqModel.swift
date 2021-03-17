@@ -8,8 +8,7 @@
 
 import Foundation
 
-struct CoordinatesReqModel: Codable {
-    let userId: Int
+struct CoordinatesReqModel: Codable {    
     let latitude: Double
     let longitude: Double
     let location: String

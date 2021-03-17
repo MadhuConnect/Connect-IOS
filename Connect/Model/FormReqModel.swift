@@ -14,6 +14,7 @@ struct FormReqModel: Codable {
     let personType: String
     let productType: String
     let uploadImages: String?
+    let title: String
     let description: String
     let minAmount: Int
     let maxAmount: Int

@@ -22,7 +22,9 @@ public struct Endpoint {
 extension Endpoint {
     
     var urlComponents: URLComponents {
-        let base: String = ConstHelper.testBaseURL
+        #warning("It should be change to prod-url while depoying to production")
+        
+        let base = ConstHelper.dynamicBaseUrl
         var component = URLComponents(string: base)!
         component.path = path
         component.queryItems = queryItems

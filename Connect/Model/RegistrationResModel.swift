@@ -16,3 +16,4 @@ struct RegistrationResModel: Codable {
 
 
 //{"status":true,"mobile":"+919502244622","message":"Registration Otp Is Sent To +919502244622 Mobile Number "}
+
