@@ -62,6 +62,8 @@ public class ConstHelper {
     public static var emergencyTypesCollectionViewCell = "EmergencyTypesCollectionViewCell"
     public static var bloodGroupsCollectionViewCell = "BloodGroupsCollectionViewCell"
     public static var emergencyNearByTableViewCell = "EmergencyNearByTableViewCell"
+    public static var choosePlanCellTableViewCell = "ChoosePlanCell"
+    public static var adPremiumListCellTableViewCell = "AdPremiumListCell"
     
     // Color
     public static var orange = UIColor(red: 218/255, green: 95/255, blue: 57/255, alpha: 1.0)
@@ -99,6 +101,7 @@ public class ConstHelper {
     
     public static var disableColor = UIColor(red: 226/255, green: 226/255, blue: 226/255, alpha: 1.0)
     public static var enableColor = UIColor.white
+    public static var lineColor = UIColor(red: 198/255, green: 223/255, blue: 218/255, alpha: 1.0)
     
     //Lottie
     public static var lottie_heartbeat = "heartbeat"

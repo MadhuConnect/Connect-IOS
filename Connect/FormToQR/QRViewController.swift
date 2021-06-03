@@ -106,7 +106,6 @@ extension QRViewController {
         self.vw_qrBuyBackView.setBorderForView(width: 0, color: ConstHelper.white, radius: vw_qrBuyBackView.frame.size.height / 2)
         self.vw_qrBuyBackView.addShadow(offset: CGSize(width: 0, height: 1), color: ConstHelper.gray, radius: vw_qrBuyBackView.frame.height / 2, opacity: 0.50)
         
-        
         self.tv_qrTableView.tableFooterView = UIView(frame: .zero)
     }
     
@@ -142,6 +141,9 @@ extension QRViewController: UITableViewDelegate, UITableViewDataSource {
         if let _ = self.qrInfo {
             qrCell.setQRInformation(qrInfo)
         }
+        
+        qrCell.btn_adPremium.tag = indexPath.row
+        qrCell.delegate = self
         
         return qrCell
     }
@@ -190,4 +192,18 @@ extension QRViewController {
              }
          }
     }
+    
+}
+
+extension QRViewController: PostAdPremiumDelegate {
+    func isPostAdPremiumRequsted(_ staus: Bool, b2b: B2bRequest?) {
+        if !staus {
+            if let addPremiumVC = self.storyboard?.instantiateViewController(withIdentifier: "AdPremiumViewController") as? AdPremiumViewController {
+                addPremiumVC.qrCodeId = self.qrInfo?.qrId
+                addPremiumVC.modalPresentationStyle = .fullScreen
+                self.present(addPremiumVC, animated: true, completion: nil)
+          }
+        }
+    }
+    
 }

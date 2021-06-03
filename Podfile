@@ -11,6 +11,7 @@ target 'Connect' do
   # Add the pod for Firebase Cloud Messaging
     pod 'Firebase/Messaging'
     pod "youtube-ios-player-helper"
+    pod 'OneSignal', '>= 3.0.0', '< 4.0'
 
   target 'ConnectTests' do
     inherit! :search_paths
@@ -22,3 +23,10 @@ target 'Connect' do
   end
 
 end
+
+
+target 'OneSignalNotification' do
+  use_frameworks!
+  pod 'OneSignal', '>= 3.0.0', '< 4.0'
+end
+

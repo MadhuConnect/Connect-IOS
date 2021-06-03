@@ -13,8 +13,21 @@ class SlideCollectionViewCell: UICollectionViewCell {
     
      @IBOutlet weak var iv_slideImageView: UIImageView!
     
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        iv_slideImageView.contentMode = .scaleToFill
+    }
+    
     func setQRSlider(_ qrImage: QRCodeImageModel?) {
         if let imgUrl = URL(string: qrImage?.productImage ?? "") {
+            self.downloadImage(url: imgUrl, imageView: iv_slideImageView)
+        }
+    }
+    
+    func setB2bApprovedlider(_ image: B2bViewImagesModel?) {
+        if let imgUrl = URL(string: image?.image ?? "") {
             self.downloadImage(url: imgUrl, imageView: iv_slideImageView)
         }
     }

@@ -16,11 +16,12 @@ class SubscriptionCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-//        contentView.backgroundColor = .yellow
+//        iv_subcribeImageView.contentMode = .scaleAspectFit
+//        iv_subcribeImageView.image = UIImage(named: "dummyBanner")
     }
     
-    func setBannerCell(_ banner: String?) {
-        if let imgUrl = URL(string: banner ?? "") {
+    func setB2bApprovedCell(_ image: String?) {
+        if let imgUrl = URL(string: image ?? "") {
             self.downloadImage(url: imgUrl)
         }
     }

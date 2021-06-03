@@ -35,6 +35,7 @@ struct QRInfoModel: Codable {
     let qrGeneratedDate: String
     let turnOn: Bool
     let images: [QRCodeImageModel]?
+    let b2bRequest: B2bRequest?
 }
 
 //struct QRImageModel: Codable {

@@ -38,5 +38,12 @@ public class VBValidatiors {
         let validate = NSPredicate(format:"SELF MATCHES %@", regex)
         return validate.evaluate(with: trimmedText)
     }
+    
+    public static func validateEmailId(_ email: String) -> Bool {
+        let regex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let trimmedText = email.trimmingCharacters(in: .whitespaces)
+        let validate = NSPredicate(format:"SELF MATCHES %@", regex)
+        return validate.evaluate(with: trimmedText)
+    }
 }
 //

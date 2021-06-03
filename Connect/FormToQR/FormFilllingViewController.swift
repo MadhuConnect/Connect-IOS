@@ -773,7 +773,7 @@ extension FormFilllingViewController {
     func moveToQRGenerateViewController(withQRInfo qrInfo: FormResModel) {
         if let qrVC = self.storyboard?.instantiateViewController(withIdentifier: "QRViewController") as? QRViewController {
             if let qr = qrInfo.data {
-                let info = QrCodeData(qrId: qr.qrId, qrCode: qr.qrCode, personType: qr.personType, productName: qr.productName, productImage: qr.productImage, productType: qr.productType, title: qr.title, description: qr.description, minAmount: qr.minAmount, maxAmount: qr.maxAmount, privacyStatus: qr.privacyStatus, connectRange: qr.connectRange, activeCount: qr.activeCount, lockCount: qr.lockCount, paidCount: qr.paidCount, chatCount: qr.chatCount, qrStatus: qr.qrStatus, qrGeneratedDate: qr.qrGeneratedDate, turnOn: qr.turnOn, paidConnections: nil, images: qr.images)
+                let info = QrCodeData(qrId: qr.qrId, qrCode: qr.qrCode, personType: qr.personType, productName: qr.productName, productImage: qr.productImage, productType: qr.productType, title: qr.title, description: qr.description, minAmount: qr.minAmount, maxAmount: qr.maxAmount, privacyStatus: qr.privacyStatus, connectRange: qr.connectRange, activeCount: qr.activeCount, lockCount: qr.lockCount, paidCount: qr.paidCount, chatCount: qr.chatCount, qrStatus: qr.qrStatus, qrGeneratedDate: qr.qrGeneratedDate, turnOn: qr.turnOn, paidConnections: nil, images: qr.images, b2bRequest: qr.b2bRequest)
                 qrVC.qrInfo = info
             }
         self.navigationController?.pushViewController(qrVC, animated: true)

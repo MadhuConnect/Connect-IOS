@@ -366,6 +366,36 @@ extension APIClient {
              return result
         }, completion: completion)
     }
+    
+    //MARK: - Get Premium Plans
+    func get_premiumPlans(from endpoint: Endpoint, completion: @escaping (Result<AdPremiumPlanResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> AdPremiumPlanResModel? in
+            guard let result = json as? AdPremiumPlanResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
+    
+    //MARK: - B2b Request
+    func post_b2bRequest(from endpoint: Endpoint, completion: @escaping (Result<B2bResponseModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> B2bResponseModel? in
+            guard let result = json as? B2bResponseModel else { return nil }
+             return result
+        }, completion: completion)
+    }
+    
+    //MARK: - B2b Request
+    func get_b2bApprovedList(from endpoint: Endpoint, completion: @escaping (Result<B2bApprovedListResModel?, APIError>) -> Void) {
+        let request = endpoint.request
+
+        makeRequest(with: request, codable: { (json) -> B2bApprovedListResModel? in
+            guard let result = json as? B2bApprovedListResModel else { return nil }
+             return result
+        }, completion: completion)
+    }
 }
 
 

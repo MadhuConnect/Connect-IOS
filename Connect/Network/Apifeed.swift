@@ -10,8 +10,8 @@ import Foundation
 
 enum DynamicBaseUrl: String {
 //    case baseUrl = "http://ios.connectyourneed.in" // DEV
-    case baseUrl = "http://ipro.connectyourneed.in" //PROD
-//        case baseUrl = "http://test.connectyourneed.in" // DEV
+  //  case baseUrl = "http://ipro.connectyourneed.in" //PROD
+       case baseUrl = "http://test.connectyourneed.in" // DEV
 //    http://ipro.connectyourneed.in/api/QuickNeeds/userRegistration
 //    http://test.connectyourneed.in/api/QuickNeeds/getBanners
 }
@@ -64,6 +64,11 @@ enum Apifeed: String {
     case kycSendOtp = "/api/QuickNeeds/kycSendOtp"
     case kycCheckOtp = "/api/QuickNeeds/kycCheckOtp"
     case getKycStatus = "/api/QuickNeeds/getKycStatus"
+    
+    //b2b
+    case getPremiumPlans = "/api/QuickNeeds/getPlans"
+    case b2bRequest = "/api/QuickNeeds/b2bRequest"
+    case getApprovedList = "/api/QuickNeeds/getApprovedList"
         
     func getApiEndpoint(queryItems: [URLQueryItem] = [], httpMethod: HTTPMethod, headers: [HTTPHeader], body: Data? = Data(), timeInterval: TimeInterval) -> Endpoint {
         return Endpoint(path: self.rawValue, httpMethod: httpMethod, headers: headers, body: body, queryItems: queryItems, timeOut: timeInterval)

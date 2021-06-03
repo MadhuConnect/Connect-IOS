@@ -37,6 +37,17 @@ struct QrCodeData: Codable {
     let turnOn: Bool?
     let paidConnections: [PaidConnection]?
     let images: [QRCodeImageModel]?
+    let b2bRequest: B2bRequest?
+}
+
+struct B2bRequest: Codable {
+    let title: String?
+    let backgroundColor: String?
+    let color: String?
+    let description: String?
+    let requestStatus: String?
+    let buttonTitle: String?
+    let isAdCreated: Bool?
 }
 
 struct QRCodeImageModel: Codable {
@@ -83,6 +94,41 @@ struct PaidConnection: Codable {
     let paymentStatus: Int?
     let paymentId: String?
 }
+
+/*
+activeCount = 0;
+b2bRequest =             {
+ backgroundColor = "#0288D1";
+ color = "#FFFFFFF";
+ description = "our support team will guide you on call for the further process";
+ requestStatus = "your add request is sent for approval";
+ title = "Oppo Mobiles";
+};
+chatCount = 0;
+connectRange = "100 Km";
+description = Testing;
+images =             (
+);
+lockCount = 0;
+maxAmount = 5000;
+minAmount = 500;
+paidConnections =             (
+);
+paidCount = 0;
+personType = OFFEROR;
+privacyStatus = Any;
+productImage = "https://connectyourneed.s3.ap-south-1.amazonaws.com/production/uploads/products/44-mobiles-oppo.png";
+productName = Oppo;
+productType = New;
+qrCode = "ODdATmV3QEBRcmNvZGUtY29ubmVjdA==";
+qrGeneratedDate = "2021-05-01";
+qrId = 60;
+qrStatus = Active;
+title = oppo;
+turnOn = 1;
+}
+ */
+
 
 /*
  "paidConnections": [

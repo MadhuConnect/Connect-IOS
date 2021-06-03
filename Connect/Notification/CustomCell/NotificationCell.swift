@@ -93,14 +93,14 @@ extension NotificationCell {
         self.vw_lockBackView.addRightBorder(with: ConstHelper.lightGray, andWidth: 1)
         self.vw_blockBackView.addRightBorder(with: ConstHelper.lightGray, andWidth: 1)
                 
-        btn_call.isUserInteractionEnabled = false
+//        btn_call.isUserInteractionEnabled = false
     }
     
     private func updateCell(_ notification: NotificationModel, isAddedCart: Bool) {
         self.lbl_personName.text = notification.name
         
         if let mobile = notification.mobile {
-            self.lbl_mobile.text = self.getLast4DigitFromPhoneNumber(mobile)
+            self.lbl_mobile.text = mobile//self.getLast4DigitFromPhoneNumber(mobile)
         }
         
         self.lbl_description.text = notification.description

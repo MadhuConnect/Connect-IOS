@@ -9,6 +9,10 @@
 import UIKit
 import Kingfisher
 
+protocol PostAdPremiumDelegate: NSObject {
+    func isPostAdPremiumRequsted(_ staus: Bool, b2b: B2bRequest?)
+}
+
 class QRCell: UITableViewCell {
     
     @IBOutlet weak var cv_sliderCollectionView: UICollectionView!
@@ -52,8 +56,16 @@ class QRCell: UITableViewCell {
     @IBOutlet weak var slideImageHeight: NSLayoutConstraint!
     @IBOutlet weak var descripitonTopContraint: NSLayoutConstraint!
     
+    @IBOutlet weak var vw_adPremiumBackView: UIView!
+    @IBOutlet weak var btn_adPremium: UIButton!
+    
+    @IBOutlet weak var lbl_requestStatus: UILabel!
+    
     //slide images
     var qrImages: [QRCodeImageModel]?
+    var delegate: PostAdPremiumDelegate?
+    var isAddApproved: Bool = false
+    var b2bRequest: B2bRequest?
     
     var timer = Timer()
     var counter = 0
@@ -67,6 +79,10 @@ class QRCell: UITableViewCell {
         
         self.cv_sliderCollectionView.delegate = self
         self.cv_sliderCollectionView.dataSource = self
+
+        btn_adPremium.setTitle("Post ADD", for: .normal)
+        btn_adPremium.tintColor = UIColor.init(hex: "#0D0B0B")
+        btn_adPremium.backgroundColor = UIColor.init(hex: "#3FEB30")
         
         self.loadPageView()
     }
@@ -105,8 +121,14 @@ class QRCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    @IBAction func adPremiumRequested(_ sender: UIButton) {
+        delegate?.isPostAdPremiumRequsted(self.isAddApproved, b2b: self.b2bRequest)
+    }
+    
     func setQRInformation(_ qrInfo: QrCodeData?) {
         if let qrInfo = qrInfo {
+            self.isAddApproved = qrInfo.b2bRequest?.isAdCreated ?? false
+            self.b2bRequest = qrInfo.b2bRequest
             self.iv_qrCode.image = generateQRCode(from: qrInfo.qrCode ?? "")
             lbl_personTypeValue.text = qrInfo.personType
             lbl_productNameValue.text = qrInfo.productName
@@ -131,6 +153,18 @@ class QRCell: UITableViewCell {
                 self.descripitonTopContraint.constant = -60
                 self.vw_productTypeView.isHidden = true
                 self.vw_typeLineView.isHidden = true
+            }
+            
+            btn_adPremium.setTitle(qrInfo.b2bRequest?.requestStatus, for: .normal)
+            btn_adPremium.backgroundColor = UIColor(hex: qrInfo.b2bRequest?.backgroundColor ?? "#000000")
+            btn_adPremium.tintColor = UIColor(hex: qrInfo.b2bRequest?.color ?? "#FFFFFF")
+            
+            let isAdCreated = qrInfo.b2bRequest?.isAdCreated ?? false
+            
+            if isAdCreated {
+                lbl_requestStatus.text = qrInfo.b2bRequest?.description
+            } else {
+                lbl_requestStatus.isHidden = true
             }
             
             DispatchQueue.main.async {
@@ -198,6 +232,7 @@ extension QRCell {
         self.lbl_connectRangeHeading.font = ConstHelper.h6Normal
         self.lbl_connectRangeHeading.textColor = ConstHelper.black
         
+        btn_adPremium.layer.cornerRadius = 6
     }
 }
 

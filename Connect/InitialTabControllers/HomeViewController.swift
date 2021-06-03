@@ -86,6 +86,8 @@ class HomeViewController: UIViewController {
     
     @IBOutlet weak var vw_notificationNearByBadgeView: UIView!
     @IBOutlet weak var lbl_notificationNearByBadge: UILabel!
+    
+    @IBOutlet weak var btn_viewAll: UIButton!
         
     var locationManager: MyLocationManager?
     weak var timer: Timer?
@@ -103,6 +105,7 @@ class HomeViewController: UIViewController {
     var miniCategoryModel: [MiniCategoryModel]?
     var productModel: [ProductModel]?
     var banners: [Banners]?
+    var b2bApprovedList: B2bApprovedListResModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -303,6 +306,15 @@ class HomeViewController: UIViewController {
         }
     }
     
+    private func addPremiumListViewController(_ b2nApproved: B2bApprovedModel) {
+        let storyboard = UIStoryboard(name: "AdPremium", bundle: nil)
+        if let adPremiumDetailVC = storyboard.instantiateViewController(withIdentifier: "AdPremiumDetailViewController") as? AdPremiumDetailViewController {
+            adPremiumDetailVC.b2bApprovedModel = b2nApproved
+            adPremiumDetailVC.modalPresentationStyle = .fullScreen
+            self.present(adPremiumDetailVC, animated: true, completion: nil)
+        }
+    }
+    
     @IBAction func myOrdersNotificationAction(_ sender: UIButton) {
         Switcher.updateRootViewController(setTabIndex: 2)
     }
@@ -310,6 +322,15 @@ class HomeViewController: UIViewController {
     //MARK: - StopTimer Methods
     func stopTimer() {
         timer?.invalidate()
+    }
+    
+    @IBAction func viewAllAction(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "AdPremium", bundle: nil)
+        if let adPremiumListVC = storyboard.instantiateViewController(withIdentifier: "AdPremiumListViewController") as? AdPremiumListViewController {
+            adPremiumListVC.b2bList = self.b2bApprovedList?.data
+            adPremiumListVC.modalPresentationStyle = .fullScreen
+            self.present(adPremiumListVC, animated: true, completion: nil)
+        }
     }
 }
 
@@ -402,8 +423,8 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView {
         case self.cv_subsciptionCollectionView:
-            if let banners = self.banners {
-                return banners.count
+            if let b2bList = self.b2bApprovedList?.data {
+                return b2bList.count
             }
             return 0
         case self.cv_mainCategoryCollectionView:
@@ -435,8 +456,8 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             switch collectionView {
             case self.cv_subsciptionCollectionView:
                 let subscriptionCollectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: ConstHelper.subscriptionCollectionIdentifier, for: indexPath) as! SubscriptionCell
-                if let banner = self.banners?[indexPath.item] {
-                    subscriptionCollectionCell.setBannerCell(banner.image)
+                if let b2bApproved = self.b2bApprovedList?.data?[indexPath.item] {
+                    subscriptionCollectionCell.setB2bApprovedCell(b2bApproved.banner)
                 }
                 return subscriptionCollectionCell
             case self.cv_mainCategoryCollectionView:
@@ -474,7 +495,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch collectionView {
         case self.cv_subsciptionCollectionView:
-            return CGSize(width: vw_subscriptionBackView.frame.width, height: 83)
+            return CGSize(width: vw_subscriptionBackView.frame.width, height: 155)
         case self.cv_mainCategoryCollectionView:
             return CGSize(width: 100, height: 120)
         case self.cv_subCategoryCollectionView:
@@ -491,18 +512,8 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch collectionView {
         case self.cv_subsciptionCollectionView:
-            if let banner = self.banners?[indexPath.item] {
-                if let bannerId = banner.id {
-                    switch bannerId {
-                    case 1:
-                        self.subcribeViewController()
-                    case 2:
-                        let mediaUrl = banner.videoId ?? ""
-                        self.playAppTutorial(mediaUrl)
-                    default:
-                        break
-                    }
-                }
+            if let b2bApproved = self.b2bApprovedList?.data?[indexPath.item] {
+                self.addPremiumListViewController(b2bApproved)
             }
         case self.cv_mainCategoryCollectionView:
             if let category = self.mainCategoryModel?[indexPath.row] {
@@ -615,7 +626,8 @@ extension HomeViewController {
                 if categories.status {
                     strongSelf.handleResult(categories)
                     strongSelf.getAllNotificationsCount()
-                    strongSelf.getBanners()
+//                    strongSelf.getBanners()
+                    strongSelf.getB2bApprovedList()
                 }
                 
             case .failure(let error):
@@ -624,21 +636,47 @@ extension HomeViewController {
         }
     }
     
-    private func getBanners() {
+//    private func getBanners() {
+//        ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
+//        let api: Apifeed = .getBanners
+//        let endPoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .get, headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: nil, timeInterval: 120)
+//
+//        client.get_getBanners(from: endPoint) { [weak self] result in
+//            guard let strongSelf = self else { return }
+//            strongSelf.setupAnimation(withAnimation: false)
+//            switch result {
+//            case .success(let banners):
+//                guard let bannersRes = banners else { return }
+//                print("Banners: \(bannersRes)")
+//                if bannersRes.status {
+//                    strongSelf.banners = bannersRes.data
+////                    strongSelf.getKYCStatus()
+//                }
+//
+//                strongSelf.cv_subsciptionCollectionView.reloadData()
+//
+//            case .failure(let error):
+//                print("Error: \(error.localizedDescription)")
+////                strongSelf.setNilAllDataWhenNetworkError()
+//            }
+//        }
+//    }
+    
+    private func getB2bApprovedList() {
         ConstHelper.dynamicBaseUrl = DynamicBaseUrl.baseUrl.rawValue
-        let api: Apifeed = .getBanners
-        print(ConstHelper.dynamicBaseUrl)
+        let api: Apifeed = .getApprovedList
+        
         let endPoint: Endpoint = api.getApiEndpoint(queryItems: [], httpMethod: .get, headers: [.contentType("application/json"), .authorization(ConstHelper.DYNAMIC_TOKEN)], body: nil, timeInterval: 120)
         
-        client.get_getBanners(from: endPoint) { [weak self] result in
+        client.get_b2bApprovedList(from: endPoint) { [weak self] result in
             guard let strongSelf = self else { return }
             strongSelf.setupAnimation(withAnimation: false)
             switch result {
-            case .success(let banners):
-                guard let bannersRes = banners else { return }
-                print("Banners: \(bannersRes)")
-                if bannersRes.status {
-                    strongSelf.banners = bannersRes.data
+            case .success(let res):
+                guard let res = res else { return }
+                
+                if res.status {
+                    strongSelf.b2bApprovedList = res
                     strongSelf.getKYCStatus()
                 }
                 
@@ -646,7 +684,6 @@ extension HomeViewController {
                 
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
-//                strongSelf.setNilAllDataWhenNetworkError()
             }
         }
     }
@@ -831,6 +868,7 @@ extension HomeViewController {
         
         videoPlayer.delegate = self
         videoPlayer.load(withVideoId: videoId)
+        
     }
 }
 
